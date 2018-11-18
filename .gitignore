@@ -1,0 +1,11 @@
+# Ignore object files and the obj directory
+src/obj/*
+
+# Vim swap files
+*.swp
+
+# Test Executables
+*.exe
+
+# Error Loggings
+error.log
