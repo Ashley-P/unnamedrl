@@ -1,7 +1,8 @@
-#include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "main.h"
+#include "game.h"
 
 
 /* For initialisation */
@@ -16,16 +17,23 @@
 #define SCREENHEIGHT 50
 
 
-static HANDLE h_console;
+//static HANDLE h_inputthread;
+//static HANDLE h_drawthread;
 static HANDLE h_stdin;
-static HANDLE h_inputthread;
-static CHAR_INFO *ci_screen;
-
-/* Needed for initialisation - Might be able to replace with defines */
-static COORD c_screensize;
-static SMALL_RECT sr_screensize;
+//HANDLE h_console;
+//CHAR_INFO *ci_screen;
 
 
+wchar_t map[10][10] = {L"##########",
+                       L"#........#",
+                       L"#........#",
+                       L"#........#",
+                       L"#........#",
+                       L"#........#",
+                       L"#........#",
+                       L"#........#",
+                       L"#........#",
+                       L"##########",};
 
 void gameInit() {
     FreeConsole();
@@ -40,19 +48,14 @@ void gameInit() {
 
     
     ci_screen = (CHAR_INFO *)calloc(SCREENWIDTH * SCREENHEIGHT, sizeof(CHAR_INFO));
-    c_screensize = (COORD) {(short) SCREENWIDTH, (short) SCREENHEIGHT};
-    sr_screensize = (SMALL_RECT) {0, 0, (short) SCREENWIDTH - 1, (short) SCREENHEIGHT - 1};
 
-
-    if(!SetConsoleWindowInfo(h_console, 1, &smallSMALLRECT)) printf("test1");
-    test = GetLargestConsoleWindowSize(h_console);
-    if(!SetConsoleScreenBufferSize(h_console, COORDsize)) printf("test2");
-    if(!SetConsoleActiveScreenBuffer(h_console)) printf("test3");
-    if(!SetConsoleWindowInfo(h_console, TRUE, &SMALLRECTsize)) printf("test4");
-    test = GetLargestConsoleWindowSize(h_console);
-    if(!SetConsoleMode(h_console, ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT)) printf("test5");
-    if(!SetConsoleMode(h_stdin, ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT)) printf("test6");
-    if(!SetConsoleCursorInfo(h_console, &CURSORINFO)) printf("test7");    /* Removing blinking cursor */
+    SetConsoleWindowInfo(h_console, 1, &smallSMALLRECT);
+    SetConsoleScreenBufferSize(h_console, COORDsize);
+    SetConsoleActiveScreenBuffer(h_console);
+    SetConsoleWindowInfo(h_console, TRUE, &SMALLRECTsize);
+    SetConsoleMode(h_console, ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT);
+    SetConsoleMode(h_stdin, ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT);
+    SetConsoleCursorInfo(h_console, &CURSORINFO);    /* Removing blinking cursor */
 
 
     /*
@@ -65,11 +68,17 @@ void gameInit() {
     */
 
     /* Testing drawing to the screen */
-    for (int i = 0; i < SCREENWIDTH * SCREENHEIGHT; i++) {
+    int i, j;
+    for (i = 0; i < SCREENWIDTH * SCREENHEIGHT; i++) {
         (ci_screen + i)->Char.UnicodeChar = L' ';
-        (ci_screen + i)->Attributes       = 0xA0;
+        (ci_screen + i)->Attributes       = 0x07;
     }
-    (ci_screen + 1)->Char.UnicodeChar = L'A';
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            (ci_screen + i + 10 + ((j + 10) * SCREENWIDTH))->Char.UnicodeChar = map[i][j];
+        }
+    }
+
 
     WriteConsoleOutputW(h_console,
                         ci_screen,

@@ -1,13 +1,14 @@
-src = $(wildcard src/*.c)
-obj = $(src:.c=.o)
+src  = $(wildcard src/*.c)
+obj  = $(src:.c=.o)
+head = $(wildcard src/*.h)
+CC   = gcc
 
-LDFLAGS = -g -Wall
 
-$(obj): $(src)
-	gcc -c $(LDFLAGS) -o $@ $<
+LDFLAGS = -g -Wall -Isrc
 
-HoboSim: $(obj)
-	gcc -o $@ $^ $(LDFLAGS)
+game: $(obj)
+	$(CC) -o HoboSim.exe $^ $(LDFLAGS)
+
 
 .PHONY: clean
 
