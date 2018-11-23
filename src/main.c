@@ -8,7 +8,7 @@
 #define CURSORINFO     ((CONSOLE_CURSOR_INFO) {1, 0})
 
 
-static HANDLE h_stdin;
+//static HANDLE h_stdin;
 //HANDLE h_console;
 //CHAR_INFO *ci_screen;
 

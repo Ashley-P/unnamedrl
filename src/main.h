@@ -12,6 +12,7 @@
 #define SCREENHEIGHT 50
 
 
+HANDLE h_stdin;
 HANDLE h_console;
 CHAR_INFO *ci_screen;
 
