@@ -1,6 +1,6 @@
-#include "main.h"
-#include "game.h"
 #include "defs.h"
+#include "game.h"
+#include "main.h"
 
 
 /* For initialisation */
@@ -8,12 +8,12 @@
 #define CURSORINFO     ((CONSOLE_CURSOR_INFO) {1, 0})
 
 
-//static HANDLE h_stdin;
-//HANDLE h_console;
-//CHAR_INFO *ci_screen;
+HANDLE h_stdin;
+HANDLE h_console;
+CHAR_INFO *ci_screen;
 
-
-void gameInit() {
+void console_init() {
+    /* Sets up the windows console */
     FreeConsole();
     AllocConsole();
 
@@ -36,14 +36,18 @@ void gameInit() {
     SetConsoleCursorInfo(h_console, &CURSORINFO);    /* Removing blinking cursor */
 }
 
-void gameDeInit() {
+void console_deinit() {
     free(ci_screen);
 }
 
 int main() {
-    gameInit();
-    gameLoop();
-    gameDeInit();
+    /* Initialising stuff */
+    console_init();
+
+    play_game();
+
+    /* Deinitialising stuff */
+    console_deinit();
 
     return 0;
 }

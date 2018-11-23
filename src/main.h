@@ -1,5 +1,5 @@
-#ifndef MAIN_H_
-#define MAIN_H_
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <windows.h>
 
@@ -12,8 +12,9 @@
 #define SCREENHEIGHT 50
 
 
-HANDLE h_stdin;
-HANDLE h_console;
-CHAR_INFO *ci_screen;
+/* Externs */
+extern HANDLE h_stdin;
+extern HANDLE h_console;
+extern CHAR_INFO *ci_screen;
 
 #endif

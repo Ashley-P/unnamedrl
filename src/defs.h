@@ -1,5 +1,5 @@
-#ifndef DEFS_H_
-#define DEFS_H_
+#ifndef DEFS_H
+#define DEFS_H
 
 
 #endif
