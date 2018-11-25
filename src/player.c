@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include "map.h"
 #include "player.h"
 
 /* Player struct */
@@ -5,7 +7,7 @@ struct Player *player;
 
 
 
-void init_player() {
+void player_init() {
     /**/
     player = (struct Player *)malloc(sizeof(struct Player));
 
@@ -15,4 +17,18 @@ void init_player() {
 
     /* Setting the character to show */
     player->player_char = L'@';
+}
+
+/**
+ * Moves the player and does collision detection between the player
+ * and impassable objects.
+ */
+void player_move(struct Player *player, struct Map *map, int dx, int dy) {
+
+    /* Checking that the tile is passable */
+    if (((map->map) + player->px + dx + ((player->py + dy) * map->x))->is_passable) {
+        player->px += dx;
+        player->py += dy;
+    } else
+        return;
 }

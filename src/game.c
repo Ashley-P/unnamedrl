@@ -51,16 +51,16 @@ void game_input() {
 
                 switch (key) {
                     case VK_NUMPAD2:
-                        player->py += 1;
+                        player_move(player, map, 0, 1);
                         break;
                     case VK_NUMPAD4:
-                        player->px -= 1;
+                        player_move(player, map, -1, 0);
                         break;
                     case VK_NUMPAD6:
-                        player->px += 1;
+                        player_move(player, map, 1, 0);
                         break;
                     case VK_NUMPAD8:
-                        player->py -= 1;
+                        player_move(player, map, 0, -1);
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;
@@ -78,8 +78,8 @@ void play_game() {
     done_playing = 0;
 
     /* Game specific initialisation */
-    init_player();
-
+    map_init();
+    player_init();
 
     /* Game loop */
     while (!done_playing) {
