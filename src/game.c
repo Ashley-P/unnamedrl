@@ -5,6 +5,7 @@
 #include "main.h"
 #include "map.h"
 #include "player.h"
+#include "ui.h"
 
 
 int done_playing;
@@ -16,7 +17,6 @@ void clear_screen() {
         (ci_screen + i)->Char.UnicodeChar = L' ';
         (ci_screen + i)->Attributes       = 0x07;
     }
-
 }
 
 void draw_map() {
@@ -24,7 +24,7 @@ void draw_map() {
     int i, j;
     for (i = 0; i < map->x; i++) {
         for (j = 0; j < map->y; j++) {
-            (ci_screen + i + (j * SCREENWIDTH))->Char.UnicodeChar = ((map->map) + i + (j * map->x))->glyph;
+            (ci_screen + i + 1 + ((j + 1) * SCREENWIDTH))->Char.UnicodeChar = ((map->map) + i + (j * map->x))->glyph;
         }
     }
 }
@@ -89,6 +89,7 @@ void play_game() {
         /* Drawing */
         clear_screen();
         draw_map();
+        draw_ui_borders();
         (ci_screen + player->px + (player->py * SCREENWIDTH))->Char.UnicodeChar = player->player_char;
 
         /* Drawing to the screen */

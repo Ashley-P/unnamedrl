@@ -8,8 +8,8 @@
 #define SMALLRECTsize  ((SMALL_RECT) {0, 0, (short) SCREENWIDTH - 1, (short) SCREENHEIGHT - 1})
 
 /* Constants */
-#define SCREENWIDTH  150
-#define SCREENHEIGHT 50
+#define SCREENWIDTH  100
+#define SCREENHEIGHT 40
 
 
 /* Externs */
