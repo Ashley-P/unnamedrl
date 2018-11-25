@@ -3,23 +3,14 @@
 #include "defs.h"
 #include "game.h"
 #include "main.h"
+#include "map.h"
 #include "player.h"
 
 
 int done_playing;
 
-/* Temp map for testing */
-wchar_t map[10][10] = {L"##########",
-                       L"#........#",
-                       L"#........#",
-                       L"#........#",
-                       L"#........#",
-                       L"#........#",
-                       L"#........#",
-                       L"#........#",
-                       L"#........#",
-                       L"##########",};
 
+/* drawing stuff should be moved elsewhere to a sort of controller function */
 void clear_screen() {
     for (int i = 0; i < SCREENWIDTH * SCREENHEIGHT; i++) {
         (ci_screen + i)->Char.UnicodeChar = L' ';
@@ -31,9 +22,9 @@ void clear_screen() {
 void draw_map() {
     /* Drawing the premade temp map, this should be expanded later */
     int i, j;
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 10; j++) {
-            (ci_screen + i + (j * SCREENWIDTH))->Char.UnicodeChar = map[i][j];
+    for (i = 0; i < map->x; i++) {
+        for (j = 0; j < map->y; j++) {
+            (ci_screen + i + (j * SCREENWIDTH))->Char.UnicodeChar = ((map->map) + i + (j * map->x))->glyph;
         }
     }
 }

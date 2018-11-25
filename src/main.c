@@ -1,6 +1,7 @@
 #include "defs.h"
 #include "game.h"
 #include "main.h"
+#include "map.h"
 
 
 /* For initialisation */
@@ -43,6 +44,8 @@ void console_deinit() {
 int main() {
     /* Initialising stuff */
     console_init();
+    map_init();
+
 
     play_game();
 
