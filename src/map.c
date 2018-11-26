@@ -15,7 +15,9 @@
 /* Externs */
 struct Map *map;
 
-/* Just generates a simple room for testing */
+/**
+ * Just generates a simple room for testing
+ */
 struct Map *map_gen() {
     struct Map *ptr = (struct Map *)malloc(sizeof(struct Map));
     ptr->map        = (struct MapTile *)malloc(BASIC_ROOM_X * BASIC_ROOM_Y * sizeof(struct MapTile));
@@ -38,6 +40,7 @@ struct Map *map_gen() {
         ((ptr->map) + i)->is_passable = 0;
     }
 
+    /* Hollowing out a room */
     for (i = 1; i < ptr->x - 1; i++) {
         for (j = 1; j < ptr->y - 1; j++) {
             ((ptr->map) + i + (j * ptr->x))->tile_type   = FLOOR;
@@ -55,4 +58,12 @@ struct Map *map_gen() {
  */
 void map_init() {
     map = map_gen();
+}
+
+/**
+ * freeing up memory taken by map_init()
+ */
+void map_deinit() {
+    free(map->map);
+    free(map);
 }

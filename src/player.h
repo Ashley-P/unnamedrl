@@ -22,6 +22,7 @@ struct Player {
 extern struct Player *player;
 
 void player_init();
+void player_deinit();
 void player_move(struct Player *player, struct Map *map, int dx, int dy);
 
 #endif

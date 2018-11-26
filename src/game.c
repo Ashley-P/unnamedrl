@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include "defs.h"
+#include "draw_utils.h"
 #include "game.h"
 #include "main.h"
 #include "map.h"
@@ -74,12 +75,30 @@ void game_input() {
     }
 }
 
+/**
+ * Initialising the game, mainly by calling other init functions
+ */
+void game_init() {
+    map_init();
+    player_init();
+}
+
+/**
+ * De initialising the game, mainly by calling other deinit functions
+ */
+void game_deinit() {
+    map_deinit();
+    player_deinit();
+}
+
+/**
+ * Main game loop is in here
+ */
 void play_game() {
     done_playing = 0;
 
-    /* Game specific initialisation */
-    map_init();
-    player_init();
+    /* Initialisation */
+    game_init();
 
     /* Game loop */
     while (!done_playing) {
@@ -90,7 +109,8 @@ void play_game() {
         clear_screen();
         draw_map();
         draw_ui_borders();
-        (ci_screen + player->px + (player->py * SCREENWIDTH))->Char.UnicodeChar = player->player_char;
+        //(ci_screen + player->px + (player->py * SCREENWIDTH))->Char.UnicodeChar = player->player_char;
+        draw_character(player->px, player->py, player->player_char);
 
         /* Drawing to the screen */
         WriteConsoleOutputW(h_console,
@@ -99,4 +119,8 @@ void play_game() {
                             (COORD) {0, 0},
                             &SMALLRECTsize);
     }
+
+
+    /* Deinitialisation */
+    game_deinit();
 }

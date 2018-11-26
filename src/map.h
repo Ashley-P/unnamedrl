@@ -32,5 +32,6 @@ struct Map {
 extern struct Map *map;
 
 void map_init();
+void map_deinit();
 
 #endif

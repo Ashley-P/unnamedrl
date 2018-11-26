@@ -1,8 +1,7 @@
-#include "main.h"
+#include "defs.h"
 #include "draw_utils.h"
+#include "main.h"
 
-#define HORIZONTAL 1
-#define VERTICAL   2
 
 #define BOX_DRAWINGS_DOUBLE_HORIZONTAL     L'\u2550'
 #define BOX_DRAWINGS_DOUBLE_VERTICAL       L'\u2551'
@@ -18,14 +17,13 @@
  * Split into this function to make everything look nice
  */
 void draw_border_line(const int x, const int y, const int len, const int direction) {
-    /* Vertical line */
-    if (direction == VERTICAL) {
-        for (int j = 0; j < len; j++) {
-            (ci_screen + x + ((y + j) * SCREENWIDTH))->Char.UnicodeChar = BOX_DRAWINGS_DOUBLE_VERTICAL;
-        }
-    } else if (direction == HORIZONTAL) {
+    if (direction == HORIZONTAL) {
         for (int j = 0; j < len; j++) {
             (ci_screen + x + j + (y * SCREENWIDTH))->Char.UnicodeChar = BOX_DRAWINGS_DOUBLE_HORIZONTAL;
+        }
+    } else if (direction == VERTICAL) {
+        for (int j = 0; j < len; j++) {
+            (ci_screen + x + ((y + j) * SCREENWIDTH))->Char.UnicodeChar = BOX_DRAWINGS_DOUBLE_VERTICAL;
         }
     }
 }

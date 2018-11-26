@@ -7,6 +7,9 @@ struct Player *player;
 
 
 
+/**
+ * Inits the player struct and any other sub structs
+ */
 void player_init() {
     /**/
     player = (struct Player *)malloc(sizeof(struct Player));
@@ -17,6 +20,13 @@ void player_init() {
 
     /* Setting the character to show */
     player->player_char = L'@';
+}
+
+/**
+ * Frees up memory used by player_init()
+ */
+void player_deinit() {
+    free(player);
 }
 
 /**
