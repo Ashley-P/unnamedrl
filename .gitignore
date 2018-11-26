@@ -1,5 +1,5 @@
 # Ignore object files and the obj directory
-src/*.o
+src/obj/*.o
 
 # Vim swap files
 *.swp

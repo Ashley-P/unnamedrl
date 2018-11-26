@@ -1,17 +1,25 @@
-src  = $(wildcard src/*.c)
-obj  = $(src:.c=.o)
-head = $(wildcard src/*.h)
-CC   = gcc
+CC     = gcc
+CLFAGS = -Wall
+BUILD_DIR = .\src\obj
 
+src = $(wildcard src/*.c)
+obj = $(patsubst src/%.c,src/obj/%.o,$(src))
 
-LDFLAGS = -g -Wall -Isrc
+.PHONY: all game checkdirs clean
+
+all: checkdirs game
 
 game: $(obj)
-	$(CC) -o HoboSim.exe $^ $(LDFLAGS)
+	$(CC) -o HoboSim.exe $^ $(CFLAGS) 
 
+src/obj/%.o: src/%.c
+	$(CC) -c $< -o $@
 
-.PHONY: clean
+checkdirs: $(BUILD_DIR)
+
+$(BUILD_DIR):
+	@mkdir $@
 
 clean:
-	del ".\src\*.o"
-	del "*.exe"
+	del /q $(BUILD_DIR)
+	del HoboSim.exe
