@@ -13,7 +13,7 @@
 
 
 /* Externs */
-struct Map *map;
+struct Map *test_map;
 
 /**
  * Just generates a simple room for testing
@@ -57,13 +57,13 @@ struct Map *map_gen() {
  * Right now just generates the test map
  */
 void map_init() {
-    map = map_gen();
+    test_map = map_gen();
 }
 
 /**
  * freeing up memory taken by map_init()
  */
 void map_deinit() {
-    free(map->map);
-    free(map);
+    free(test_map->map);
+    free(test_map);
 }

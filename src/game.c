@@ -11,23 +11,20 @@
 
 int done_playing;
 
-
-/* drawing stuff should be moved elsewhere to a sort of controller function */
-void clear_screen() {
-    for (int i = 0; i < SCREENWIDTH * SCREENHEIGHT; i++) {
-        (ci_screen + i)->Char.UnicodeChar = L' ';
-        (ci_screen + i)->Attributes       = 0x07;
-    }
+/**
+ * Initialising the game, mainly by calling other init functions
+ */
+void game_init() {
+    map_init();
+    player_init();
 }
 
-void draw_map() {
-    /* Drawing the premade temp map, this should be expanded later */
-    int i, j;
-    for (i = 0; i < map->x; i++) {
-        for (j = 0; j < map->y; j++) {
-            (ci_screen + i + 1 + ((j + 1) * SCREENWIDTH))->Char.UnicodeChar = ((map->map) + i + (j * map->x))->glyph;
-        }
-    }
+/**
+ * De initialising the game, mainly by calling other deinit functions
+ */
+void game_deinit() {
+    map_deinit();
+    player_deinit();
 }
 
 void game_input() {
@@ -52,16 +49,16 @@ void game_input() {
 
                 switch (key) {
                     case VK_NUMPAD2:
-                        player_move(player, map, 0, 1);
+                        player_move(player, test_map, 0, 1);
                         break;
                     case VK_NUMPAD4:
-                        player_move(player, map, -1, 0);
+                        player_move(player, test_map, -1, 0);
                         break;
                     case VK_NUMPAD6:
-                        player_move(player, map, 1, 0);
+                        player_move(player, test_map, 1, 0);
                         break;
                     case VK_NUMPAD8:
-                        player_move(player, map, 0, -1);
+                        player_move(player, test_map, 0, -1);
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;
@@ -73,22 +70,6 @@ void game_input() {
                 break;
         }
     }
-}
-
-/**
- * Initialising the game, mainly by calling other init functions
- */
-void game_init() {
-    map_init();
-    player_init();
-}
-
-/**
- * De initialising the game, mainly by calling other deinit functions
- */
-void game_deinit() {
-    map_deinit();
-    player_deinit();
 }
 
 /**
@@ -107,10 +88,7 @@ void play_game() {
 
         /* Drawing */
         clear_screen();
-        draw_map();
-        draw_ui_borders();
-        //(ci_screen + player->px + (player->py * SCREENWIDTH))->Char.UnicodeChar = player->player_char;
-        draw_character(player->px, player->py, player->player_char);
+        draw_ui();
 
         /* Drawing to the screen */
         WriteConsoleOutputW(h_console,

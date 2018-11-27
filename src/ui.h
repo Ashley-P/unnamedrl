@@ -2,6 +2,8 @@
 #define UI_H
 
 /* Externs */
-void draw_ui_borders();
+void draw_border_line(const int x, const int y, const int len, const int direction);
+void draw_border_box(const int x, const int y, const int width, const int height);
+void draw_ui();
 
 #endif

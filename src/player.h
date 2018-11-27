@@ -8,6 +8,7 @@
  * Player info is stored in here either directly or through
  * sub-structs
  */
+#define MAX_HEALTH 100
 struct Player {
     /* Position */
     char px;
@@ -15,6 +16,10 @@ struct Player {
 
     /* Character to draw */
     wchar_t player_char;
+
+    /* Stats */
+    char hp;
+
 };
 
 

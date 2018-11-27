@@ -1,14 +1,8 @@
 #include "defs.h"
 #include "draw_utils.h"
 #include "main.h"
+#include "ui_main.h"
 
-
-#define BOX_DRAWINGS_DOUBLE_HORIZONTAL     L'\u2550'
-#define BOX_DRAWINGS_DOUBLE_VERTICAL       L'\u2551'
-#define BOX_DRAWINGS_DOUBLE_DOWN_AND_RIGHT L'\u2554'
-#define BOX_DRAWINGS_DOUBLE_DOWN_AND_LEFT  L'\u2557'
-#define BOX_DRAWINGS_DOUBLE_UP_AND_RIGHT   L'\u255A'
-#define BOX_DRAWINGS_DOUBLE_UP_AND_LEFT    L'\u255D'
 
 
 
@@ -45,30 +39,8 @@ void draw_border_box(const int x, const int y, const int width, const int height
 }
 
 /**
- * Draws the border for the UI splitting the screen up
- * Hardcoding values because I'm bad
+ * Controller function to draw the correct UI
  */
-#define WIDTH_ONE_FIFTH   (int) (SCREENWIDTH  * (1. / 5.))
-#define WIDTH_FOUR_FIFTH  (int) (SCREENWIDTH  * (4. / 5.))
-#define HEIGHT_ONE_FIFTH  (int) (SCREENHEIGHT * (1. / 5.))
-#define HEIGHT_FOUR_FIFTH (int) (SCREENHEIGHT * (4. / 5.))
-
-void draw_ui_borders() {
-    /* Play Screen */
-    draw_border_box(0,
-                    0,
-                    WIDTH_FOUR_FIFTH,
-                    HEIGHT_FOUR_FIFTH);
-
-    /* Message Box Borders */
-    draw_border_box(0,
-                    HEIGHT_FOUR_FIFTH,
-                    SCREENWIDTH,
-                    HEIGHT_ONE_FIFTH);
-
-    /* Stats Borders */
-    draw_border_box(WIDTH_FOUR_FIFTH,
-                    0,
-                    WIDTH_ONE_FIFTH,
-                    HEIGHT_FOUR_FIFTH);
+void draw_ui() {
+    draw_ui_main();
 }

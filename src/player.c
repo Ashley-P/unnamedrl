@@ -20,6 +20,9 @@ void player_init() {
 
     /* Setting the character to show */
     player->player_char = L'@';
+
+    /* Giving the player stats */
+    player->hp = MAX_HEALTH;
 }
 
 /**

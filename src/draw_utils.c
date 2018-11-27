@@ -1,6 +1,15 @@
-#include "defs.h"
 #include "main.h"
+#include "draw_utils.h"
 
+/**
+ * Sets all characters in the buffer to be spaces
+ */
+void clear_screen() {
+    for (int i = 0; i < SCREENWIDTH * SCREENHEIGHT; i++) {
+        (ci_screen + i)->Char.UnicodeChar = L' ';
+        (ci_screen + i)->Attributes       = 0x07;
+    }
+}
 
 
 /**
@@ -25,3 +34,24 @@ void draw_string(const struct String *str, const int x, const int y, const int d
         }
     }
 } 
+
+/**
+ * Draws the map to the confines of the play screen
+ * Should be replaced by a camera system later
+ */
+void draw_map(struct Map *map) {
+    /* Drawing the premade temp map, this should be expanded later */
+    int i, j;
+    for (i = 0; i < map->x; i++) {
+        for (j = 0; j < map->y; j++) {
+            (ci_screen + i + 1 + ((j + 1) * SCREENWIDTH))->Char.UnicodeChar = ((map->map) + i + (j * map->x))->glyph;
+        }
+    }
+}
+
+/**
+ * Draws the player onto the screen
+ */
+void draw_player(struct Player *p) {
+    (ci_screen + p->px + 1 + ((p->py + 1) * SCREENWIDTH))->Char.UnicodeChar = p->player_char;
+}
