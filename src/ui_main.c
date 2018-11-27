@@ -30,7 +30,7 @@ void draw_ui_main() {
                     WIDTH_ONE_FIFTH,
                     HEIGHT_FOUR_FIFTH);
 
-    /* Drawing stuff on the play_screen */
+    /* Drawing stuff on the play_screen actors, objects etc */
     draw_map(test_map);
     draw_player(player);
 

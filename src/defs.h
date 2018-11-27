@@ -4,6 +4,13 @@
 #include <stdlib.h>
 
 /* For Drawing the borders */
+#define DOUBLE_HORIZONTAL     BOX_DRAWINGS_DOUBLE_HORIZONTAL
+#define DOUBLE_VERTICAL       BOX_DRAWINGS_DOUBLE_VERTICAL
+#define DOUBLE_DOWN_AND_RIGHT BOX_DRAWINGS_DOUBLE_DOWN_AND_RIGHT
+#define DOUBLE_DOWN_AND_LEFT  BOX_DRAWINGS_DOUBLE_DOWN_AND_LEFT 
+#define DOUBLE_UP_AND_RIGHT   BOX_DRAWINGS_DOUBLE_UP_AND_RIGHT  
+#define DOUBLE_UP_AND_LEFT    BOX_DRAWINGS_DOUBLE_UP_AND_LEFT   
+
 #define BOX_DRAWINGS_DOUBLE_HORIZONTAL     L'\u2550'
 #define BOX_DRAWINGS_DOUBLE_VERTICAL       L'\u2551'
 #define BOX_DRAWINGS_DOUBLE_DOWN_AND_RIGHT L'\u2554'
@@ -24,7 +31,8 @@
 /* Custom String struct for convenience uses wchar_t instead of char */
 struct String {
     wchar_t const *str;
-    size_t  len;
+    unsigned char colour;
+    size_t len;
 };
 
 #endif
