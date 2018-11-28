@@ -1,4 +1,5 @@
 #include "main.h"
+#include "defs.h"
 #include "draw_utils.h"
 
 /**

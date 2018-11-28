@@ -1,6 +1,5 @@
 #include "defs.h"
 #include "draw_utils.h"
-#include "main.h"
 #include "ui_main.h"
 
 

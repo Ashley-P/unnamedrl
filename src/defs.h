@@ -24,6 +24,10 @@
 #define HEIGHT_ONE_FIFTH  (int) (SCREENHEIGHT * (1. / 5.))
 #define HEIGHT_FOUR_FIFTH (int) (SCREENHEIGHT * (4. / 5.))
 
+/* Constants */
+#define SCREENWIDTH  100
+#define SCREENHEIGHT 40
+
 #define HORIZONTAL 1
 #define VERTICAL   2
 

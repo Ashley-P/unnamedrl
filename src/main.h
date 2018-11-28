@@ -7,10 +7,6 @@
 #define COORDsize      ((COORD) {(short) SCREENWIDTH, (short) SCREENHEIGHT})
 #define SMALLRECTsize  ((SMALL_RECT) {0, 0, (short) SCREENWIDTH - 1, (short) SCREENHEIGHT - 1})
 
-/* Constants */
-#define SCREENWIDTH  100
-#define SCREENHEIGHT 40
-
 
 /* Externs */
 extern HANDLE h_stdin;

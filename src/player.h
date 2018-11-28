@@ -9,6 +9,7 @@
  * sub-structs
  */
 #define MAX_HEALTH 100
+
 struct Player {
     /* Position */
     char px;
