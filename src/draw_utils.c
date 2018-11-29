@@ -42,16 +42,19 @@ void draw_character_line(const int x, const int y, const int len, const int dire
 /**
  * Draws a string at the location specified
  */
-void draw_string(const struct String *str, const int x, const int y, const int direction) {
+void draw_string(const struct String str, const int x, const int y, const int direction) {
+    int j = 0;
     if (direction == HORIZONTAL) {
-        for (int j = 0; j < str->len; j++) {
-            (ci_screen + x + j + (y * SCREENWIDTH))->Char.UnicodeChar = *(str->str + j);
-            (ci_screen + x + j + (y * SCREENWIDTH))->Attributes       = str->colour;
+        while (*(str.str + j) != L'\0') {
+            (ci_screen + x + j + (y * SCREENWIDTH))->Char.UnicodeChar = *(str.str + j);
+            (ci_screen + x + j + (y * SCREENWIDTH))->Attributes       = str.colour;
+            j++;
         }
     } else if (direction == VERTICAL) {
-        for (int j = 0; j < str->len; j++) {
-            (ci_screen + x + ((y + j) * SCREENWIDTH))->Char.UnicodeChar = *(str->str + j);
-            (ci_screen + x + ((y + j) * SCREENWIDTH))->Attributes       = str->colour;
+        while (*(str.str + j) != L'\0') {
+            (ci_screen + x + ((y + j) * SCREENWIDTH))->Char.UnicodeChar = *(str.str + j);
+            (ci_screen + x + ((y + j) * SCREENWIDTH))->Attributes       = str.colour;
+            j++;
         }
     }
 } 

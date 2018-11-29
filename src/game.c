@@ -60,6 +60,9 @@ void game_input() {
                     case VK_NUMPAD8:
                         player_move(player, test_map, 0, -1);
                         break;
+                    case 0x41: // 'A'
+                        player->hp -= 1;
+                        break;
                     case VK_ESCAPE:
                         done_playing = 1;
                         break;

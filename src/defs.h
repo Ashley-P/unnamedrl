@@ -18,11 +18,29 @@
 #define BOX_DRAWINGS_DOUBLE_UP_AND_RIGHT   L'\u255A'
 #define BOX_DRAWINGS_DOUBLE_UP_AND_LEFT    L'\u255D'
 
+
+#define LIGHT_HORIZONTAL     BOX_DRAWINGS_LIGHT_HORIZONTAL       
+#define LIGHT_VERTICAL       BOX_DRAWINGS_LIGHT_VERTICAL      
+#define LIGHT_DOWN_AND_RIGHT BOX_DRAWINGS_LIGHT_DOWN_AND_RIGHT
+#define LIGHT_DOWN_AND_LEFT  BOX_DRAWINGS_LIGHT_DOWN_AND_LEFT 
+#define LIGHT_UP_AND_RIGHT   BOX_DRAWINGS_LIGHT_UP_AND_RIGHT  
+#define LIGHT_UP_AND_LEFT    BOX_DRAWINGS_LIGHT_UP_AND_LEFT   
+
+#define BOX_DRAWINGS_LIGHT_HORIZONTAL     L'\u2500'
+#define BOX_DRAWINGS_LIGHT_VERTICAL       L'\u2502'
+#define BOX_DRAWINGS_LIGHT_DOWN_AND_RIGHT L'\u250C'
+#define BOX_DRAWINGS_LIGHT_DOWN_AND_LEFT  L'\u2510'
+#define BOX_DRAWINGS_LIGHT_UP_AND_RIGHT   L'\u2514'
+#define BOX_DRAWINGS_LIGHT_UP_AND_LEFT    L'\u2518'
+
+
+
 /* For splitting the boxes for the main screen ui */
 #define WIDTH_ONE_FIFTH   (int) (SCREENWIDTH  * (1. / 5.))
 #define WIDTH_FOUR_FIFTH  (int) (SCREENWIDTH  * (4. / 5.))
 #define HEIGHT_ONE_FIFTH  (int) (SCREENHEIGHT * (1. / 5.))
 #define HEIGHT_FOUR_FIFTH (int) (SCREENHEIGHT * (4. / 5.))
+
 
 /* Constants */
 #define SCREENWIDTH  100
@@ -32,11 +50,13 @@
 #define VERTICAL   2
 
 
-/* Custom String struct for convenience uses wchar_t instead of char */
+/**
+ * Custom String struct for convenience uses wchar_t instead of char
+ * String should be null terminated or bad things will happen in
+ */
 struct String {
     wchar_t const *str;
     unsigned char colour;
-    size_t len;
 };
 
 #endif
