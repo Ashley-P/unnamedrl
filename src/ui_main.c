@@ -17,7 +17,7 @@ void draw_stat_numbers(const int x, const int y, const int current, const int ma
     swprintf(test, L"%d/%d", current, max);
     int ch = 0;
     while (test[ch] != L'\0') {
-        draw_character(x + ch, y, test[ch], 0x02);
+        draw_character(x + ch, y, test[ch], colour);
         ch++;
     }
 }
@@ -75,8 +75,16 @@ void draw_ui_main() {
     draw_player(player);
 
     /* Drawing Stats */
+    /* TODO: Make it so the colour the stat gets drawn in changes with it's value */
+
     /* Health */
-    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 2, L"HP: ", player->hp, MAX_HEALTH, WIDTH_ONE_FIFTH - 4, 0x02);
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 2, L"HP:     ", player->hp, MAX_HEALTH, WIDTH_ONE_FIFTH - 4, 0x02);
+
+    /* Hunger */
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 4, L"Hunger: ", player->hunger, MAX_HUNGER, WIDTH_ONE_FIFTH - 4, 0x06);
+
+    /* Thirst */
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 6, L"Thirst: ", player->thirst, MAX_THIRST, WIDTH_ONE_FIFTH - 4, 0x01);
 
     /* Drawing Messages */
 }

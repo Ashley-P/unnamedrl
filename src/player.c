@@ -15,14 +15,16 @@ void player_init() {
     player = (struct Player *)malloc(sizeof(struct Player));
 
     /* Setting up position */
-    player->px = 5;
-    player->py = 5;
+    player->px = 1;
+    player->py = 1;
 
     /* Setting the character to show */
     player->player_char = L'@';
 
     /* Giving the player stats */
-    player->hp = MAX_HEALTH;
+    player->hp     = MAX_HEALTH;
+    player->hunger = MAX_HUNGER; 
+    player->thirst = MAX_THIRST; 
 }
 
 /**

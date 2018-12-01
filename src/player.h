@@ -9,6 +9,8 @@
  * sub-structs
  */
 #define MAX_HEALTH 100
+#define MAX_HUNGER 100
+#define MAX_THIRST 100
 
 struct Player {
     /* Position */
@@ -20,6 +22,8 @@ struct Player {
 
     /* Stats */
     char hp;
+    char hunger;
+    char thirst;
 
 };
 
