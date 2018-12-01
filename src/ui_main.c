@@ -12,7 +12,7 @@ struct String test = { L"HP\0", 0x02};
 /**
  * Drawing the stats as numbers e.g HP:20/100
  */
-void draw_stat_numbers(const int x, const int y, const int current, const int max, const int colour) {
+void draw_stat_numbers(const int x, const int y, const int current, const int max, const unsigned char colour) {
     wchar_t test[20];
     swprintf(test, L"%d/%d", current, max);
     int ch = 0;
@@ -26,9 +26,25 @@ void draw_stat_numbers(const int x, const int y, const int current, const int ma
  * Drawing the status bars
  */
 void draw_stat_bar(const int x, const int y, const float len, const float current, const float max,
-        const int colour) {
+        const unsigned char colour) {
     draw_character_line(x, y, len, HORIZONTAL, LIGHT_HORIZONTAL, colour);
     draw_character_line(x, y, (int) ceil((current / max) * len), HORIZONTAL, DOUBLE_HORIZONTAL, colour);
+}
+
+/**
+ * Combines the other two functions plus some other stuff to come up with the
+ * complete stat on the ui. Should look like this :
+ *
+ * HP: 50/100
+ * ======------
+ *
+ */
+void draw_stat_full(const int x, const int y, const wchar_t *str, const float current,
+        const float max, const int len, const unsigned char colour) {
+
+    int tmp = draw_string((struct String) {str, colour}, x, y, HORIZONTAL);
+    draw_stat_numbers(x + tmp, y, current, max, colour);
+    draw_stat_bar(x, y + 1, (float) len, (float) current, (float) max, colour); 
 }
 
 /**
@@ -60,14 +76,7 @@ void draw_ui_main() {
 
     /* Drawing Stats */
     /* Health */
-    /**
-     * Hard coding this in until I can be bothered to write a function that takes into
-     * account how many characters the string drew and then work with that
-     */
-    draw_string((struct String) {L"HP:", 0x02}, WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL);
-    draw_stat_numbers(WIDTH_FOUR_FIFTH + 6, 2, player->hp, MAX_HEALTH, 0x02);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, (float) WIDTH_ONE_FIFTH - 4,
-           (float) player->hp, (float) MAX_HEALTH, 0x02); 
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 2, L"HP: ", player->hp, MAX_HEALTH, WIDTH_ONE_FIFTH - 4, 0x02);
 
     /* Drawing Messages */
 }

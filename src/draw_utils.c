@@ -41,8 +41,10 @@ void draw_character_line(const int x, const int y, const int len, const int dire
 
 /**
  * Draws a string at the location specified
+ * If strings aren't null terminated then it's all over
+ * Returns character's written
  */
-void draw_string(const struct String str, const int x, const int y, const int direction) {
+int draw_string(const struct String str, const int x, const int y, const int direction) {
     int j = 0;
     if (direction == HORIZONTAL) {
         while (*(str.str + j) != L'\0') {
@@ -57,6 +59,8 @@ void draw_string(const struct String str, const int x, const int y, const int di
             j++;
         }
     }
+
+    return j;
 } 
 
 /**
