@@ -3,6 +3,9 @@
 
 #include <stdlib.h>
 
+#define GAME_DEBUG 0
+
+
 /* For Drawing the borders */
 #define DOUBLE_HORIZONTAL     BOX_DRAWINGS_DOUBLE_HORIZONTAL
 #define DOUBLE_VERTICAL       BOX_DRAWINGS_DOUBLE_VERTICAL
@@ -42,12 +45,18 @@
 #define HEIGHT_FOUR_FIFTH (int) (SCREENHEIGHT * (4. / 5.))
 
 
-/* Constants */
+/* Define Constants */
 #define SCREENWIDTH  100
 #define SCREENHEIGHT 40
 
 #define HORIZONTAL 1
 #define VERTICAL   2
+
+
+/* Other Constants */
+/* Defined in game.c */
+extern struct Actor *actor_list;
+//extern struct OBJECT_STRUCT_NAME_HERE *obj_list;
 
 
 /**

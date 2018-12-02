@@ -19,12 +19,14 @@ void player_init() {
     player->py = 1;
 
     /* Setting the character to show */
-    player->player_char = L'@';
+    player->ch    = L'@';
+    player->chcol = 0x07;
 
     /* Giving the player stats */
-    player->hp     = MAX_HEALTH;
-    player->hunger = MAX_HUNGER; 
-    player->thirst = MAX_THIRST; 
+    player->hp      = MAX_HEALTH;
+    player->hunger  = MAX_HUNGER; 
+    player->thirst  = MAX_THIRST; 
+    player->hygiene = MAX_HYGIENE; 
 }
 
 /**

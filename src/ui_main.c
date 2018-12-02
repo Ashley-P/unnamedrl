@@ -78,13 +78,16 @@ void draw_ui_main() {
     /* TODO: Make it so the colour the stat gets drawn in changes with it's value */
 
     /* Health */
-    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 2, L"HP:     ", player->hp, MAX_HEALTH, WIDTH_ONE_FIFTH - 4, 0x02);
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 2, L"HP:      ", player->hp, MAX_HEALTH, WIDTH_ONE_FIFTH - 4, 0x0A);
 
     /* Hunger */
-    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 4, L"Hunger: ", player->hunger, MAX_HUNGER, WIDTH_ONE_FIFTH - 4, 0x06);
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 4, L"Hunger:  ", player->hunger, MAX_HUNGER, WIDTH_ONE_FIFTH - 4, 0x0E);
 
     /* Thirst */
-    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 6, L"Thirst: ", player->thirst, MAX_THIRST, WIDTH_ONE_FIFTH - 4, 0x01);
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 6, L"Thirst:  ", player->thirst, MAX_THIRST, WIDTH_ONE_FIFTH - 4, 0x09);
+
+    /* Thirst */
+    draw_stat_full(WIDTH_FOUR_FIFTH + 2, 8, L"Hygiene: ", player->hygiene, MAX_HYGIENE, WIDTH_ONE_FIFTH - 4, 0x0B);
 
     /* Drawing Messages */
 }

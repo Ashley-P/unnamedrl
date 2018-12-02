@@ -81,5 +81,5 @@ void draw_map(struct Map *map) {
  * Draws the player onto the screen
  */
 void draw_player(struct Player *p) {
-    (ci_screen + p->px + 1 + ((p->py + 1) * SCREENWIDTH))->Char.UnicodeChar = p->player_char;
+    (ci_screen + p->px + 1 + ((p->py + 1) * SCREENWIDTH))->Char.UnicodeChar = p->ch;
 }

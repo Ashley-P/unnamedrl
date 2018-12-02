@@ -8,13 +8,17 @@
 #include "player.h"
 #include "ui.h"
 
-
+/* Constants */
 int done_playing;
+long long ticks;
 
 /**
  * Initialising the game, mainly by calling other init functions
  */
 void game_init() {
+    done_playing = 0;
+    ticks = 0;
+    /* 
     map_init();
     player_init();
 }
@@ -79,7 +83,6 @@ void game_input() {
  * Main game loop is in here
  */
 void play_game() {
-    done_playing = 0;
 
     /* Initialisation */
     game_init();
