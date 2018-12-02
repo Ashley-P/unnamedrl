@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include "actor.h"
 #include "defs.h"
 #include "draw_utils.h"
 #include "game.h"
@@ -11,6 +12,8 @@
 /* Constants */
 int done_playing;
 long long ticks;
+struct Actor *test_actor;
+
 
 /**
  * Initialising the game, mainly by calling other init functions
@@ -18,7 +21,10 @@ long long ticks;
 void game_init() {
     done_playing = 0;
     ticks = 0;
-    /* 
+
+    /* Test actor because I can't be bothered setting up a linked list yet */
+    test_actor = actor_init(5, 5);
+
     map_init();
     player_init();
 }
@@ -27,6 +33,7 @@ void game_init() {
  * De initialising the game, mainly by calling other deinit functions
  */
 void game_deinit() {
+    free(test_actor);
     map_deinit();
     player_deinit();
 }
@@ -95,6 +102,8 @@ void play_game() {
         /* Drawing */
         clear_screen();
         draw_ui();
+        /* Test actor here to prevent pointless includes */
+        draw_actor(test_actor);
 
         /* Drawing to the screen */
         WriteConsoleOutputW(h_console,

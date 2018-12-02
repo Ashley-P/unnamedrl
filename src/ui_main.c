@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include "actor.h"
 #include "defs.h"
 #include "draw_utils.h"
 #include "map.h"

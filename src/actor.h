@@ -27,4 +27,5 @@ struct Actor {
 
 /* Externs */
 struct Actor *actor_init(int px, int py);
+void draw_actor(struct Actor *actor);
 #endif

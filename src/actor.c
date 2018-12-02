@@ -1,4 +1,6 @@
+#include <stdlib.h>
 #include "actor.h"
+
 
 
 struct Actor *actor_init(int px, int py) {

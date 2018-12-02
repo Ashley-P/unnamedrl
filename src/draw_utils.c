@@ -1,6 +1,8 @@
-#include "main.h"
+#include "actor.h"
 #include "defs.h"
 #include "draw_utils.h"
+#include "main.h"
+#include "player.h"
 
 /**
  * Sets all characters in the buffer to be spaces
@@ -82,4 +84,14 @@ void draw_map(struct Map *map) {
  */
 void draw_player(struct Player *p) {
     (ci_screen + p->px + 1 + ((p->py + 1) * SCREENWIDTH))->Char.UnicodeChar = p->ch;
+    (ci_screen + p->px + 1 + ((p->py + 1) * SCREENWIDTH))->Attributes  = p->chcol;
+}
+
+/**
+ * Draws actors to the screen, will probably be called by another function
+ * called draw_actors in the future
+ */
+void draw_actor(struct Actor *actor) {
+    (ci_screen + actor->px + 1 + ((actor->py + 1) * SCREENWIDTH))->Char.UnicodeChar = actor->ch;
+    (ci_screen + actor->px + 1 + ((actor->py + 1) * SCREENWIDTH))->Attributes  = actor->chcol;
 }
