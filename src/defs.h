@@ -52,6 +52,9 @@
 #define HORIZONTAL 1
 #define VERTICAL   2
 
+#define PLAY_SCREEN_OFFSET_X 1
+#define PLAY_SCREEN_OFFSET_Y 1
+
 
 /* Other Constants */
 /* Defined in game.c */

@@ -20,7 +20,8 @@ void clear_screen() {
  */
 void draw_character(const int x, const int y, const wchar_t ch, const unsigned char colour) {
     (ci_screen + x + (y * SCREENWIDTH))->Char.UnicodeChar = ch;
-    (ci_screen + x + (y * SCREENWIDTH))->Attributes       = colour;
+    if (colour != 0x00)
+        (ci_screen + x + (y * SCREENWIDTH))->Attributes   = colour;
 }
 
 /**
@@ -30,13 +31,11 @@ void draw_character_line(const int x, const int y, const int len, const int dire
         const wchar_t ch, const unsigned char colour) {
     if (direction == HORIZONTAL) {
         for (int j = 0; j < len; j++) {
-            (ci_screen + x + j + (y * SCREENWIDTH))->Char.UnicodeChar = ch;
-            (ci_screen + x + j + (y * SCREENWIDTH))->Attributes       = colour;
+            draw_character(x + j, y, ch, colour);
         }
     } else if (direction == VERTICAL) {
         for (int j = 0; j < len; j++) {
-            (ci_screen + x + ((y + j) * SCREENWIDTH))->Char.UnicodeChar = ch;
-            (ci_screen + x + ((y + j) * SCREENWIDTH))->Attributes       = colour;
+            draw_character(x, y + j, ch, colour);
         }
     }
 }
@@ -50,14 +49,12 @@ int draw_string(const struct String str, const int x, const int y, const int dir
     int j = 0;
     if (direction == HORIZONTAL) {
         while (*(str.str + j) != L'\0') {
-            (ci_screen + x + j + (y * SCREENWIDTH))->Char.UnicodeChar = *(str.str + j);
-            (ci_screen + x + j + (y * SCREENWIDTH))->Attributes       = str.colour;
+            draw_character(x + j, y, *(str.str + j), str.colour);
             j++;
         }
     } else if (direction == VERTICAL) {
         while (*(str.str + j) != L'\0') {
-            (ci_screen + x + ((y + j) * SCREENWIDTH))->Char.UnicodeChar = *(str.str + j);
-            (ci_screen + x + ((y + j) * SCREENWIDTH))->Attributes       = str.colour;
+            draw_character(x, y + j, *(str.str + j), str.colour);
             j++;
         }
     }
@@ -74,7 +71,8 @@ void draw_map(struct Map *map) {
     int i, j;
     for (i = 0; i < map->x; i++) {
         for (j = 0; j < map->y; j++) {
-            (ci_screen + i + 1 + ((j + 1) * SCREENWIDTH))->Char.UnicodeChar = ((map->map) + i + (j * map->x))->glyph;
+            draw_character(i + PLAY_SCREEN_OFFSET_X, j + PLAY_SCREEN_OFFSET_Y,
+                    ((map->map) + i + (j * map->x))->glyph, 0x00);
         }
     }
 }
@@ -83,8 +81,7 @@ void draw_map(struct Map *map) {
  * Draws the player onto the screen
  */
 void draw_player(struct Player *p) {
-    (ci_screen + p->px + 1 + ((p->py + 1) * SCREENWIDTH))->Char.UnicodeChar = p->ch;
-    (ci_screen + p->px + 1 + ((p->py + 1) * SCREENWIDTH))->Attributes  = p->chcol;
+    draw_character(p->px + PLAY_SCREEN_OFFSET_X, p->py + PLAY_SCREEN_OFFSET_Y, p->ch, p->chcol);
 }
 
 /**
@@ -92,6 +89,5 @@ void draw_player(struct Player *p) {
  * called draw_actors in the future
  */
 void draw_actor(struct Actor *actor) {
-    (ci_screen + actor->px + 1 + ((actor->py + 1) * SCREENWIDTH))->Char.UnicodeChar = actor->ch;
-    (ci_screen + actor->px + 1 + ((actor->py + 1) * SCREENWIDTH))->Attributes  = actor->chcol;
+    draw_character(actor->px + PLAY_SCREEN_OFFSET_X, actor->py + PLAY_SCREEN_OFFSET_Y, actor->ch, actor->chcol);
 }

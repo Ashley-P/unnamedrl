@@ -13,5 +13,6 @@ void draw_character_line(const int x, const int y, const int len, const int dire
 int draw_string(const struct String str, const int x, const int y, const int direction);
 void draw_map(struct Map *map);
 void draw_player(struct Player *p);
+void draw_actor(struct Actor *actor);
 
 #endif
