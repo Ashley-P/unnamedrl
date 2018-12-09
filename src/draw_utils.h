@@ -1,6 +1,7 @@
 #ifndef DRAW_UTILS_H
 #define DRAW_UTILS_H
 
+#include "actor.h"
 #include "defs.h"
 #include "map.h"
 #include "player.h"

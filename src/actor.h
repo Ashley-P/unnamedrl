@@ -23,6 +23,9 @@ struct Actor {
     /* state */
     enum ActorState state;
 
+    /* ID */
+    int actor_id;
+
 };
 
 /* Externs */

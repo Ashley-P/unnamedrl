@@ -1,8 +1,8 @@
-#include "actor.h"
-#include "defs.h"
+//#include "actor.h"
+//#include "defs.h"
 #include "draw_utils.h"
 #include "main.h"
-#include "player.h"
+//#include "player.h"
 
 /**
  * Sets all characters in the buffer to be spaces

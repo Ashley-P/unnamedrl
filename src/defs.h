@@ -58,7 +58,7 @@
 
 /* Other Constants */
 /* Defined in game.c */
-extern struct Actor *actor_list;
+extern struct ListNode *actor_list;
 //extern struct OBJECT_STRUCT_NAME_HERE *obj_list;
 
 
