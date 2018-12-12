@@ -15,5 +15,6 @@ int draw_string(const struct String str, const int x, const int y, const int dir
 void draw_map(struct Map *map);
 void draw_player(struct Player *p);
 void draw_actor(struct Actor *actor);
+void draw_actors(struct ListNode *head);
 
 #endif

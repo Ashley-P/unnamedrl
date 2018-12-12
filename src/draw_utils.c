@@ -1,6 +1,7 @@
 //#include "actor.h"
 //#include "defs.h"
 #include "draw_utils.h"
+#include "llist.h"
 #include "main.h"
 //#include "player.h"
 
@@ -90,4 +91,16 @@ void draw_player(struct Player *p) {
  */
 void draw_actor(struct Actor *actor) {
     draw_character(actor->px + PLAY_SCREEN_OFFSET_X, actor->py + PLAY_SCREEN_OFFSET_Y, actor->ch, actor->chcol);
+}
+
+/* Iterates through a list of actors and draws their characters to the screen */
+void draw_actors(struct ListNode *node) {
+    /* Draws the first actor in the list */
+    draw_actor(node->data);
+
+    /* Does the rest of the actors if the list is bigger than 1 */
+    while (node->next != NULL) {
+        node = node->next;
+        draw_actor(node->data);
+    }
 }

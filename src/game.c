@@ -16,6 +16,17 @@ long long ticks;
 struct ListNode *actor_list;
 
 
+/* De initialising the actor_list */
+void actor_list_deinit(struct ListNode **head) {
+    struct ListNode *del_node;
+
+    while (*head != NULL) {
+        del_node = ll_pop_front(head);
+        free(del_node->data);
+        free(del_node);
+    }
+    
+}
 /**
  * Initialising the game, mainly by calling other init functions
  */
@@ -23,8 +34,10 @@ void game_init() {
     done_playing = 0;
     ticks = 0;
 
-    /* Initialising the test actor using the new linked list */
+    /* Initialising test actors using the new linked list */
+    /* TODO Better actor initialisation */
     ll_push_front(&actor_list, actor_init(5, 5));
+    ll_push_front(&actor_list, actor_init(2, 2));
 
     map_init();
     player_init();
@@ -34,7 +47,7 @@ void game_init() {
  * De initialising the game, mainly by calling other deinit functions
  */
 void game_deinit() {
-    /* TODO: add deinitialisation for the actor list */
+    actor_list_deinit(&actor_list);
     map_deinit();
     player_deinit();
 }
@@ -105,6 +118,7 @@ void play_game() {
         draw_ui();
         /* Test actor here to prevent pointless includes */
         //draw_actor(test_actor);
+        draw_actors(actor_list);
 
         /* Drawing to the screen */
         WriteConsoleOutputW(h_console,
