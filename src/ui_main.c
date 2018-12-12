@@ -8,7 +8,6 @@
 #include "ui.h"
 #include "ui_main.h"
 
-struct String test = { L"HP\0", 0x02};
 
 /**
  * Drawing the stats as numbers e.g HP:20/100
