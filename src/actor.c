@@ -23,3 +23,27 @@ struct Actor *actor_init(int px, int py) {
 
     return ptr;
 }
+
+/**
+ * Creates a list of actors and returns the head of the list
+ * Right now it's hardcoded
+ */
+struct ListNode *actor_list_init() {
+    struct ListNode **rtn;
+    ll_push_front(rtn, actor_init(5, 5));
+    ll_push_front(rtn, actor_init(2, 2));
+
+    return *rtn;
+}
+
+/* De initialising the actor_list */
+void actor_list_deinit(struct ListNode **head) {
+    struct ListNode *del_node;
+
+    while (*head != NULL) {
+        del_node = ll_pop_front(head);
+        free(del_node->data);
+        free(del_node);
+    }
+    
+}

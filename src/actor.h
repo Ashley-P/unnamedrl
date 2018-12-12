@@ -30,4 +30,6 @@ struct Actor {
 
 /* Externs */
 struct Actor *actor_init(int px, int py);
+struct ListNode *actor_list_init();
+void actor_list_deinit(struct ListNode **head);
 #endif
