@@ -14,6 +14,7 @@
 int done_playing;
 long long ticks;
 struct ListNode *actor_list;
+struct ListNode *messages;
 
 
 /**

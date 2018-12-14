@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include "map.h"
+#include "draw_utils.h"
 
 /* defines just for basic testing so I don't have to write constants everwhere */
 #define BASIC_ROOM_X 10
@@ -50,6 +51,21 @@ struct Map *map_gen() {
     }
 
     return ptr;
+}
+
+/**
+ * Draws the map to the confines of the play screen
+ * Should be replaced by a camera system later
+ */
+void draw_map(struct Map *map) {
+    /* Drawing the premade temp map, this should be expanded later */
+    int i, j;
+    for (i = 0; i < map->x; i++) {
+        for (j = 0; j < map->y; j++) {
+            draw_character(i + PLAY_SCREEN_OFFSET_X, j + PLAY_SCREEN_OFFSET_Y,
+                    ((map->map) + i + (j * map->x))->glyph, 0x00);
+        }
+    }
 }
 
 /**

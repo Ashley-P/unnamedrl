@@ -37,7 +37,6 @@
 #define BOX_DRAWINGS_LIGHT_UP_AND_LEFT    L'\u2518'
 
 
-
 /* For splitting the boxes for the main screen ui */
 #define WIDTH_ONE_FIFTH   (int) (SCREENWIDTH  * (1. / 5.))
 #define WIDTH_FOUR_FIFTH  (int) (SCREENWIDTH  * (4. / 5.))
@@ -45,7 +44,7 @@
 #define HEIGHT_FOUR_FIFTH (int) (SCREENHEIGHT * (4. / 5.))
 
 
-/* Define Constants */
+/* Define Other Constants */
 #define SCREENWIDTH  100
 #define SCREENHEIGHT 40
 
@@ -56,10 +55,12 @@
 #define PLAY_SCREEN_OFFSET_Y 1
 
 
+
 /* Other Constants */
 /* Defined in game.c */
 extern struct ListNode *actor_list;
-//extern struct OBJECT_STRUCT_NAME_HERE *obj_list;
+extern struct ListNode *obj_list;
+extern struct ListNode *message_list;
 
 
 /**

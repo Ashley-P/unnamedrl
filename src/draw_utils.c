@@ -1,9 +1,13 @@
-//#include "actor.h"
-//#include "defs.h"
+/**
+ * This file is for the low level drawing functions that don't belong in other files
+ * e.g draw_character
+ *
+ * Stuff like draw_actors belongs in the source file where the respective variable/struct is defined
+ */
+
 #include "draw_utils.h"
 #include "llist.h"
 #include "main.h"
-//#include "player.h"
 
 /**
  * Sets all characters in the buffer to be spaces
@@ -62,45 +66,3 @@ int draw_string(const struct String str, const int x, const int y, const int dir
 
     return j;
 } 
-
-/**
- * Draws the map to the confines of the play screen
- * Should be replaced by a camera system later
- */
-void draw_map(struct Map *map) {
-    /* Drawing the premade temp map, this should be expanded later */
-    int i, j;
-    for (i = 0; i < map->x; i++) {
-        for (j = 0; j < map->y; j++) {
-            draw_character(i + PLAY_SCREEN_OFFSET_X, j + PLAY_SCREEN_OFFSET_Y,
-                    ((map->map) + i + (j * map->x))->glyph, 0x00);
-        }
-    }
-}
-
-/**
- * Draws the player onto the screen
- */
-void draw_player(struct Player *p) {
-    draw_character(p->px + PLAY_SCREEN_OFFSET_X, p->py + PLAY_SCREEN_OFFSET_Y, p->ch, p->chcol);
-}
-
-/**
- * Draws actors to the screen, will probably be called by another function
- * called draw_actors in the future
- */
-void draw_actor(struct Actor *actor) {
-    draw_character(actor->px + PLAY_SCREEN_OFFSET_X, actor->py + PLAY_SCREEN_OFFSET_Y, actor->ch, actor->chcol);
-}
-
-/* Iterates through a list of actors and draws their characters to the screen */
-void draw_actors(struct ListNode *node) {
-    /* Draws the first actor in the list */
-    draw_actor(node->data);
-
-    /* Does the rest of the actors if the list is bigger than 1 */
-    while (node->next != NULL) {
-        node = node->next;
-        draw_actor(node->data);
-    }
-}

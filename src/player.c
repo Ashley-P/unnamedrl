@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "draw_utils.h"
 #include "map.h"
 #include "player.h"
 
@@ -34,6 +35,13 @@ void player_init() {
  */
 void player_deinit() {
     free(player);
+}
+
+/**
+ * Draws the player onto the screen
+ */
+void draw_player(struct Player *p) {
+    draw_character(p->px + PLAY_SCREEN_OFFSET_X, p->py + PLAY_SCREEN_OFFSET_Y, p->ch, p->chcol);
 }
 
 /**
