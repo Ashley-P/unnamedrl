@@ -7,6 +7,7 @@
 #include "llist.h"
 #include "main.h"
 #include "map.h"
+#include "message.h"
 #include "player.h"
 #include "ui.h"
 
@@ -14,8 +15,22 @@
 int done_playing;
 long long ticks;
 struct ListNode *actor_list;
-struct ListNode *messages;
+struct ListNode *message_list;
 
+/**
+ * NOTE: TESTING PURPOSES ONLY
+ */ 
+struct String *test_message() {
+    static int i = 0;
+    wchar_t *str = (wchar_t *)malloc(sizeof(wchar_t) * 20);
+    struct String *rtn = (struct String *)malloc(sizeof(struct String));
+    swprintf(str, L"TEST MESSAGE %d", i++);
+
+    rtn->str = str;
+    rtn->colour = 0x07;
+
+    return rtn;
+}
 
 /**
  * Initialising the game, mainly by calling other init functions
@@ -71,8 +86,10 @@ void game_input() {
                     case VK_NUMPAD8:
                         player_move(player, test_map, 0, -1);
                         break;
-                    case 0x41: // 'A'
+                    case 0x41: // 'A'  Test button
                         player->hp -= 1;
+                        //add_message(&message_list, &((struct String) {L"TEST MESSAGE", 0x07}));
+                        add_message(&message_list, test_message());
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;

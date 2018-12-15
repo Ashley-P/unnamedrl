@@ -3,7 +3,9 @@
 #include "actor.h"
 #include "defs.h"
 #include "draw_utils.h"
+#include "llist.h"
 #include "map.h"
+#include "message.h"
 #include "player.h"
 #include "ui.h"
 #include "ui_main.h"
@@ -90,4 +92,5 @@ void draw_ui_main() {
     draw_stat_full(WIDTH_FOUR_FIFTH + 2, 8, L"Hygiene: ", player->hygiene, MAX_HYGIENE, WIDTH_ONE_FIFTH - 4, 0x0B);
 
     /* Drawing Messages */
+    draw_messages(2, HEIGHT_FOUR_FIFTH + 1, message_list, HEIGHT_ONE_FIFTH - 2);
 }
