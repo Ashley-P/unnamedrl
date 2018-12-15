@@ -15,6 +15,24 @@
 #include "llist.h"
 
 /**
+ * De initialising the message list
+ * Slightly different from actor_list_deinit since the string inside the struct
+ * is also a pointer
+ */
+void message_list_deinit(struct ListNode **head) {
+    struct ListNode *del_node;
+
+    while (*head != NULL) {
+        del_node = ll_pop_front(head);
+        struct String *data = del_node->data;
+        //void *data = del_node->data;
+        free((void *) data->str);
+        free(del_node->data);
+        free(del_node);
+    }
+    
+}
+/**
  * Adds the string to the message box
  * Uses ll_push_front so it can print without having to traverse the list
  * to the end
