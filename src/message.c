@@ -25,7 +25,6 @@ void message_list_deinit(struct ListNode **head) {
     while (*head != NULL) {
         del_node = ll_pop_front(head);
         struct String *data = del_node->data;
-        //void *data = del_node->data;
         free((void *) data->str);
         free(del_node->data);
         free(del_node);

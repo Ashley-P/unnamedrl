@@ -10,6 +10,7 @@
 #include "message.h"
 #include "player.h"
 #include "ui.h"
+#include "utils.h"
 
 /* Constants */
 int done_playing;
@@ -22,12 +23,7 @@ struct ListNode *message_list;
  */ 
 struct String *test_message() {
     static int i = 0;
-    wchar_t *str = (wchar_t *)malloc(sizeof(wchar_t) * 20);
-    struct String *rtn = (struct String *)malloc(sizeof(struct String));
-    swprintf(str, L"TEST MESSAGE %d", i++);
-
-    rtn->str = str;
-    rtn->colour = 0x07;
+    struct String *rtn = create_string(L"TEST MESSAGE %d", 0x07, ++i);
 
     return rtn;
 }
@@ -50,6 +46,7 @@ void game_init() {
 void game_deinit() {
     actor_list_deinit(&actor_list);
     map_deinit();
+    message_list_deinit(&message_list);
     player_deinit();
 }
 
@@ -88,8 +85,7 @@ void game_input() {
                         break;
                     case 0x41: // 'A'  Test button
                         player->hp -= 1;
-                        //add_message(&message_list, &((struct String) {L"TEST MESSAGE", 0x07}));
-                        add_message(&message_list, test_message());
+                        for (int i = 0; i < 1000000; i++) add_message(&message_list, test_message());
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;
@@ -134,4 +130,7 @@ void play_game() {
 
     /* Deinitialisation */
     game_deinit();
+
+    /* To check memory usage after deinit */
+    getchar();
 }

@@ -54,6 +54,7 @@
 #define PLAY_SCREEN_OFFSET_X 1
 #define PLAY_SCREEN_OFFSET_Y 1
 
+#define MAX_BUFSIZE 256
 
 
 /* Other Constants */
