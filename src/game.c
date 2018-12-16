@@ -9,6 +9,7 @@
 #include "map.h"
 #include "message.h"
 #include "player.h"
+#include "turns.h"
 #include "ui.h"
 #include "utils.h"
 
@@ -17,6 +18,7 @@ int done_playing;
 long long ticks;
 struct ListNode *actor_list;
 struct ListNode *message_list;
+struct ListNode *turn_list;
 struct ListNode *obj_list; // NOT IMPLEMENTED
 
 /**
@@ -40,6 +42,7 @@ void game_init() {
     actor_list = actor_list_init();
     map_init();
     player_init();
+    turn_list = turn_list_init(actor_list);
 }
 
 /**
@@ -50,6 +53,7 @@ void game_deinit() {
     map_deinit();
     message_list_deinit(&message_list);
     player_deinit();
+    ll_deinit(&turn_list);
 }
 
 void game_input() {

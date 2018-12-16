@@ -53,8 +53,9 @@ void draw_messages(const int x, int y, const struct ListNode *messages, int num_
         //struct String *str = (struct String *) (message.data);
         draw_string(*((struct String *) message.data), x, y++, HORIZONTAL);
         if (message.next == NULL) break;
-        else
+        else {
             message = *(message.next);
             num_messages--;
+        }
     }
 }

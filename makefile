@@ -1,5 +1,5 @@
 CC     = gcc
-CLFAGS = -Wall
+CLFAGS = -Wall -g
 BUILD_DIR = .\src\obj
 
 src = $(wildcard src/*.c)
@@ -13,7 +13,7 @@ game: $(obj)
 	$(CC) -o HoboSim.exe $^ $(CFLAGS) 
 
 src/obj/%.o: src/%.c
-	$(CC) -c $< -o $@
+	$(CC) -c $< -o $@ $(CLFAGS)
 
 checkdirs: $(BUILD_DIR)
 

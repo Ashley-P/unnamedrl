@@ -30,11 +30,11 @@ struct Actor *actor_init(int px, int py) {
  * Right now it's hardcoded
  */
 struct ListNode *actor_list_init() {
-    struct ListNode **rtn;
-    ll_push_front(rtn, actor_init(5, 5));
-    ll_push_front(rtn, actor_init(2, 2));
+    struct ListNode *rtn = NULL;
+    ll_push_front(&rtn, actor_init(5, 5));
+    ll_push_front(&rtn, actor_init(2, 2));
 
-    return *rtn;
+    return rtn;
 }
 
 /**

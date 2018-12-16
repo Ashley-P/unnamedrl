@@ -64,6 +64,8 @@ extern struct ListNode *message_list;
 extern struct ListNode *turn_list;
 extern struct ListNode *obj_list; // NOT IMPLEMENTED
 
+long long ticks;
+
 
 /**
  * Custom String struct for convenience uses wchar_t instead of char
