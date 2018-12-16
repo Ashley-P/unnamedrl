@@ -17,6 +17,7 @@ int done_playing;
 long long ticks;
 struct ListNode *actor_list;
 struct ListNode *message_list;
+struct ListNode *obj_list; // NOT IMPLEMENTED
 
 /**
  * NOTE: TESTING PURPOSES ONLY
@@ -35,6 +36,7 @@ void game_init() {
     done_playing = 0;
     ticks = 0;
 
+    /* message_list doesn't need initialisation */
     actor_list = actor_list_init();
     map_init();
     player_init();
@@ -44,7 +46,7 @@ void game_init() {
  * De initialising the game, mainly by calling other deinit functions
  */
 void game_deinit() {
-    actor_list_deinit(&actor_list);
+    ll_deinit(&actor_list);
     map_deinit();
     message_list_deinit(&message_list);
     player_deinit();
@@ -109,6 +111,13 @@ void play_game() {
 
     /* Game loop */
     while (!done_playing) {
+        /**
+         * Game logic / turn system here
+         * First we should check the turn list to see who's turn it is
+         * If it's the turn of an actor then the actor does stuff
+         * If it's the players turn then we get some player input
+         * If it's no ones turn then we just increase the tick counter
+         */
         /* Inputs */
         game_input();
 

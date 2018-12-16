@@ -73,3 +73,17 @@ struct ListNode *ll_pop_back(struct ListNode **head) {
     prev_node->next = NULL;
     return popped_node;
 }
+
+/**
+ * Deinitialises a list by popping the front and freein the resource
+ * Should write your own if the node.data also has pointers that need to be freed
+ */
+void ll_deinit(struct ListNode **head) {
+    struct ListNode *del_node;
+
+    while (*head != NULL) {
+        del_node = ll_pop_front(head);
+        free(del_node->data);
+        free(del_node);
+    }
+}

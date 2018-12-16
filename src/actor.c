@@ -37,18 +37,6 @@ struct ListNode *actor_list_init() {
     return *rtn;
 }
 
-/* De initialising the actor_list */
-void actor_list_deinit(struct ListNode **head) {
-    struct ListNode *del_node;
-
-    while (*head != NULL) {
-        del_node = ll_pop_front(head);
-        free(del_node->data);
-        free(del_node);
-    }
-    
-}
-
 /**
  * Draws actors to the screen, will probably be called by another function
  * called draw_actors in the future

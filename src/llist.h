@@ -33,5 +33,6 @@ void ll_push_front(struct ListNode **head, void *data);
 void ll_push_back(struct ListNode **head, void *data);
 struct ListNode *ll_pop_front(struct ListNode **head);
 struct ListNode *ll_pop_back(struct ListNode **head);
+void ll_deinit(struct ListNode **head);
 
 #endif
