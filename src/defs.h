@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define GAME_DEBUG 0
+#define GAME_DEBUG 1
 
 
 /* For Drawing the borders */
@@ -56,20 +56,11 @@
 
 #define MAX_BUFSIZE 256
 
-
-/* Other Constants */
-/* Defined in game.c */
-extern struct ListNode *actor_list;
 extern struct ListNode *message_list;
-extern struct ListNode *turn_list;
-extern struct ListNode *obj_list; // NOT IMPLEMENTED
-
-long long ticks;
-
 
 /**
  * Custom String struct for convenience uses wchar_t instead of char
- * String should be null terminated or bad things will happen in
+ * String should be null terminated or bad things will happen
  */
 struct String {
     wchar_t const *str;

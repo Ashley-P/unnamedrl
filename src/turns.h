@@ -12,4 +12,5 @@ struct TurnNode {
 
 /* Externs */
 struct ListNode *turn_list_init(struct ListNode *actor_list_head);
+void turn_list_update_tick(struct ListNode **head, struct ListNode *i_ln, const int tick);
 #endif

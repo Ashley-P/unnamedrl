@@ -21,6 +21,7 @@ struct ListNode *message_list;
 struct ListNode *turn_list;
 struct ListNode *obj_list; // NOT IMPLEMENTED
 
+#ifdef GAME_DEBUG
 /**
  * NOTE: TESTING PURPOSES ONLY
  */ 
@@ -30,6 +31,7 @@ struct String *test_message() {
 
     return rtn;
 }
+#endif
 
 /**
  * Initialising the game, mainly by calling other init functions
@@ -56,7 +58,12 @@ void game_deinit() {
     ll_deinit(&turn_list);
 }
 
-void game_input() {
+/**
+ * Handles game input
+ * returns 1 if the tick count should be increased
+ */
+int game_input() {
+    int increase_tick = 0;
     unsigned long ul_evread;
     INPUT_RECORD ir_inpbuf[256];
 
@@ -79,22 +86,34 @@ void game_input() {
                 switch (key) {
                     case VK_NUMPAD2:
                         player_move(player, test_map, 0, 1);
+                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
+                        increase_tick = 1;
                         break;
                     case VK_NUMPAD4:
                         player_move(player, test_map, -1, 0);
+                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
+                        increase_tick = 1;
                         break;
                     case VK_NUMPAD6:
                         player_move(player, test_map, 1, 0);
+                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
+                        increase_tick = 1;
                         break;
                     case VK_NUMPAD8:
                         player_move(player, test_map, 0, -1);
+                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
+                        increase_tick = 1;
                         break;
                     case 0x41: // 'A'  Test button
                         player->hp -= 1;
+                #ifdef GAME_DEBUG
                         for (int i = 0; i < 1000000; i++) add_message(&message_list, test_message());
+                #endif
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;
+                        /* Increasing the tick so we can break out of the loop */
+                        increase_tick = 1;
                         break;
                 }
                 break;
@@ -103,6 +122,7 @@ void game_input() {
                 break;
         }
     }
+    return increase_tick;
 }
 
 /**
@@ -115,16 +135,6 @@ void play_game() {
 
     /* Game loop */
     while (!done_playing) {
-        /**
-         * Game logic / turn system here
-         * First we should check the turn list to see who's turn it is
-         * If it's the turn of an actor then the actor does stuff
-         * If it's the players turn then we get some player input
-         * If it's no ones turn then we just increase the tick counter
-         */
-        /* Inputs */
-        game_input();
-
         /* Drawing */
         clear_screen();
         draw_ui();
@@ -138,6 +148,35 @@ void play_game() {
                             COORDsize,
                             (COORD) {0, 0},
                             &SMALLRECTsize);
+
+
+        /**
+         * Game logic / turn system here
+         * First we should check the turn list to see who's turn it is
+         * If it's the turn of an actor then the actor does stuff
+         * If it's the players turn then we get some player input
+         * If it's no ones turn then we just increase the tick counter
+         */
+
+        struct TurnNode *tn = turn_list->data;
+        while (tn->tick == ticks) {
+            /* Player gets a turn */
+            if (tn->actor == NULL) {
+                while (game_input()) {}
+
+            } else {
+                /* Let the actor do it's turn */
+                int tick = actor_ai(tn->actor);
+
+                /* Pop the head of the turn_list then supply it as the argument */
+                turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), tick);
+            }
+
+            /* Setting tn to be the top of the list */
+            tn = turn_list->data;
+        }
+
+        ++ticks;
     }
 
 

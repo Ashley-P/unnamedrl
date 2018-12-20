@@ -40,3 +40,34 @@ struct ListNode *turn_list_init(struct ListNode *actor_list_head) {
 
    return rtn;
 }
+
+/**
+ * Updates the tick of a node and then puts it in the correct position in the queue
+ */
+void turn_list_update_tick(struct ListNode **head, struct ListNode *i_ln, const int tick) {
+    struct ListNode *c_ln = *head;
+    struct TurnNode *c_tn = (struct TurnNode *) c_ln->data;
+    struct TurnNode *i_tn = (struct TurnNode *) i_ln->data;
+    struct ListNode *p_ln = NULL;
+
+    /* Updating the tick for insert_node */
+    i_tn->tick += tick;
+
+    /* Brute forcing the search to place the node in the correct position */
+    while (c_ln != NULL) {
+        if (c_tn->tick <= i_tn->tick) {
+            p_ln = c_ln;
+            c_ln = c_ln->next;
+            if (c_ln != NULL)
+                c_tn = c_ln->data;
+        }
+    }
+
+    /* If the very first node checked is too big then put it at the front */
+    if (p_ln == NULL)
+        ll_push_front(head, i_ln);
+    else {
+        i_ln->next = p_ln->next;
+        p_ln->next = i_ln;
+    }
+}
