@@ -98,15 +98,17 @@ int game_input() {
                         break;
                     case 0x41: // 'A'  Test button
                         player->hp -= 1;
-#ifdef GAME_DEBUG
-                        for (int i = 0; i < 1000000; i++) add_message(&message_list, test_message());
-#endif
+                        #ifdef GAME_DEBUG
+                            for (int i = 0; i < 1000000; i++) add_message(&message_list, test_message());
+                            redraw_screen();
+                        #endif
                         break;
 
                     case 0x42: // 'B'  Test button
-#ifdef GAME_DEBUG
-                        add_message(&message_list, create_string(L"TICK COUNT %d", 0x03, ticks));
-#endif
+                        #ifdef GAME_DEBUG
+                            add_message(&message_list, create_string(L"TICK COUNT %d", 0x03, ticks));
+                            redraw_screen();
+                        #endif
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;
@@ -134,18 +136,7 @@ void play_game() {
     /* Game loop */
     while (!done_playing) {
         /* Drawing */
-        clear_screen();
-        draw_ui();
-        /* Test actor here to prevent pointless includes */
-        //draw_actor(test_actor);
-        draw_actors(actor_list);
-
-        /* Drawing to the screen */
-        WriteConsoleOutputW(h_console,
-                            ci_screen,
-                            COORDsize,
-                            (COORD) {0, 0},
-                            &SMALLRECTsize);
+        redraw_screen();
 
         /**
          * Game logic / turn system here

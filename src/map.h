@@ -29,7 +29,6 @@ struct Map {
 
 
 /* Externs */
-extern struct Map *test_map;
 
 void map_init();
 void map_deinit();

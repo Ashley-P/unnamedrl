@@ -5,6 +5,9 @@
 
 #define GAME_DEBUG 1
 
+/* Here because they need to be used to call WriteConsoleOutputW */
+#define COORDsize      ((COORD) {(short) SCREENWIDTH, (short) SCREENHEIGHT})
+#define SMALLRECTsize  ((SMALL_RECT) {0, 0, (short) SCREENWIDTH - 1, (short) SCREENHEIGHT - 1})
 
 /* For Drawing the borders */
 #define DOUBLE_HORIZONTAL     BOX_DRAWINGS_DOUBLE_HORIZONTAL
@@ -56,7 +59,10 @@
 
 #define MAX_BUFSIZE 256
 
+/* Externs */
+extern struct Map *test_map;
 extern struct ListNode *message_list;
+extern struct ListNode *actor_list;
 
 /**
  * Custom String struct for convenience uses wchar_t instead of char

@@ -1,6 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+/* File is seperate from defs.h so windows.h isn't included in everything */
 #include <windows.h>
 
 /* Here because they need to be used to call WriteConsoleOutputW */

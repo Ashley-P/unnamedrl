@@ -75,6 +75,7 @@ void draw_ui_main() {
     /* Drawing stuff on the play_screen actors, objects etc */
     draw_map(test_map);
     draw_player(player);
+    draw_actors(actor_list);
 
     /* Drawing Stats */
     /* TODO: Make it so the colour the stat gets drawn in changes with it's value */

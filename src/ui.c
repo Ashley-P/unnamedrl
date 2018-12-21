@@ -1,6 +1,8 @@
+#include <windows.h>
 #include "defs.h"
 #include "draw_utils.h"
 #include "ui_main.h"
+#include "main.h"
 
 
 
@@ -27,4 +29,19 @@ void draw_border_box(const int x, const int y, const int width, const int height
  */
 void draw_ui() {
     draw_ui_main();
+}
+
+/**
+ * Forces a redraw of the screen to provide visual updates without having to go through a full game loop
+ */
+void redraw_screen() {
+    clear_screen();
+    draw_ui();
+
+    /* Drawing to the screen */
+    WriteConsoleOutputW(h_console,
+            ci_screen,
+            COORDsize,
+            (COORD) {0, 0},
+            &SMALLRECTsize);
 }
