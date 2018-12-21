@@ -85,16 +85,17 @@ int game_input() {
 
                 switch (key) {
                     case VK_NUMPAD2:
-                        increase_tick = player_move(&turn_list, player, test_map, 0, 1);
+                        //increase_tick = player_move(&turn_list, player, test_map, 0, 1);
+                        return player_move(&turn_list, player, test_map, 0, 1);
                         break;
                     case VK_NUMPAD4:
-                        increase_tick = player_move(&turn_list, player, test_map, -1, 0);
+                        return player_move(&turn_list, player, test_map, -1, 0);
                         break;
                     case VK_NUMPAD6:
-                        increase_tick = player_move(&turn_list, player, test_map, 1, 0);
+                        return player_move(&turn_list, player, test_map, 1, 0);
                         break;
                     case VK_NUMPAD8:
-                        increase_tick = player_move(&turn_list, player, test_map, 0, -1);
+                        return player_move(&turn_list, player, test_map, 0, -1);
                         break;
                     case 0x41: // 'A'  Test button
                         player->hp -= 1;
@@ -118,7 +119,8 @@ int game_input() {
                 }
                 break;
 
-            case MOUSE_EVENT: case WINDOW_BUFFER_SIZE_EVENT: case FOCUS_EVENT: case MENU_EVENT: // Ignore these
+            case MOUSE_EVENT: case WINDOW_BUFFER_SIZE_EVENT: case FOCUS_EVENT: case MENU_EVENT:
+                // Ignore these
                 break;
         }
     }
@@ -150,7 +152,7 @@ void play_game() {
         while (tn->tick == ticks) {
             /* Player gets a turn */
             if (tn->actor == NULL) {
-                while (game_input()) {}
+                while (!game_input()) {}
 
             } else {
                 /* Let the actor do it's turn */
