@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include "draw_utils.h"
 #include "map.h"
+#include "llist.h"
 #include "player.h"
+#include "turns.h"
 
 /* Player struct */
 struct Player *player;
@@ -45,16 +47,19 @@ void draw_player(struct Player *p) {
 }
 
 /**
- * Moves the player and does collision detection between the player
- * and impassable objects.
+ * Moves the player and does collision detection between the player and impassable objects.
+ * Also updates the turn list depending on what happened
+ *
  * returns 1 if the player moved else 0
  */
-void player_move(struct Player *player, struct Map *map, int dx, int dy) {
+int player_move(struct ListNode **turns, struct Player *player, struct Map *map, int dx, int dy) {
 
     /* Checking that the tile is passable */
     if (((map->map) + player->px + dx + ((player->py + dy) * map->x))->is_passable) {
         player->px += dx;
         player->py += dy;
+        turn_list_update_tick(turns, ll_pop_front(turns), 100); // Flat 100 until I do stats properly
+        return 1;
     } else
-        return;
+        return 0;
 }

@@ -85,30 +85,28 @@ int game_input() {
 
                 switch (key) {
                     case VK_NUMPAD2:
-                        player_move(player, test_map, 0, 1);
-                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
-                        increase_tick = 1;
+                        increase_tick = player_move(&turn_list, player, test_map, 0, 1);
                         break;
                     case VK_NUMPAD4:
-                        player_move(player, test_map, -1, 0);
-                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
-                        increase_tick = 1;
+                        increase_tick = player_move(&turn_list, player, test_map, -1, 0);
                         break;
                     case VK_NUMPAD6:
-                        player_move(player, test_map, 1, 0);
-                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
-                        increase_tick = 1;
+                        increase_tick = player_move(&turn_list, player, test_map, 1, 0);
                         break;
                     case VK_NUMPAD8:
-                        player_move(player, test_map, 0, -1);
-                        turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), 100);
-                        increase_tick = 1;
+                        increase_tick = player_move(&turn_list, player, test_map, 0, -1);
                         break;
                     case 0x41: // 'A'  Test button
                         player->hp -= 1;
-                #ifdef GAME_DEBUG
+#ifdef GAME_DEBUG
                         for (int i = 0; i < 1000000; i++) add_message(&message_list, test_message());
-                #endif
+#endif
+                        break;
+
+                    case 0x42: // 'B'  Test button
+#ifdef GAME_DEBUG
+                        add_message(&message_list, create_string(L"TICK COUNT %d", 0x03, ticks));
+#endif
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;
@@ -148,7 +146,6 @@ void play_game() {
                             COORDsize,
                             (COORD) {0, 0},
                             &SMALLRECTsize);
-
 
         /**
          * Game logic / turn system here
