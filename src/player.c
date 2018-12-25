@@ -27,9 +27,7 @@ void player_init() {
 
     /* Giving the player stats */
     player->hp      = MAX_HEALTH;
-    player->hunger  = MAX_HUNGER; 
-    player->thirst  = MAX_THIRST; 
-    player->hygiene = MAX_HYGIENE; 
+    player->mana    = MAX_MANA;
 }
 
 /**

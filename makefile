@@ -10,7 +10,7 @@ obj = $(patsubst src/%.c,src/obj/%.o,$(src))
 all: checkdirs game
 
 game: $(obj)
-	$(CC) -o HoboSim.exe $^ $(CFLAGS) 
+	$(CC) -o rl.exe $^ $(CFLAGS) 
 
 src/obj/%.o: src/%.c
 	$(CC) -c $< -o $@ $(CLFAGS)
@@ -22,4 +22,4 @@ $(BUILD_DIR):
 
 clean:
 	del /q $(BUILD_DIR)
-	del HoboSim.exe
+	del rl.exe
