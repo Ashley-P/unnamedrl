@@ -5,6 +5,7 @@
 
 
 /* enum for the state machine */
+/* Might get replaced later with an enum for a more specific actor */
 enum ActorState {
     WAITING,
     MOVING
@@ -12,6 +13,9 @@ enum ActorState {
 
 /* Struct for all NPCs in the game */
 struct Actor {
+    /* Name - NOTE: Not a String struct */
+    wchar_t *name;
+
     /* Position */
     int px;
     int py;

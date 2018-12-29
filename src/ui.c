@@ -3,6 +3,7 @@
 #include "draw_utils.h"
 #include "ui_main.h"
 #include "main.h"
+#include "utils.h"
 
 
 
@@ -37,6 +38,7 @@ void draw_ui() {
 void redraw_screen() {
     clear_screen();
     draw_ui();
+    plot_line(5, 5, 20, 11);
 
     /* Drawing to the screen */
     WriteConsoleOutputW(h_console,

@@ -15,6 +15,8 @@
 struct Actor *actor_init(int px, int py) {
     struct Actor *ptr = (struct Actor *)malloc(sizeof(struct Actor));
 
+    /* Name should get set in a specific constructor for the actor type */
+
     ptr->px = px;
     ptr->py = py;
 
