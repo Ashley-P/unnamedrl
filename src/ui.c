@@ -7,7 +7,6 @@
 #include "map.h"
 #include "main.h"
 #include "message.h"
-#include "player.h"
 #include "ui.h"
 #include "utils.h"
 

@@ -63,6 +63,7 @@
 extern struct Map *test_map;
 extern struct ListNode *message_list;
 extern struct ListNode *actor_list;
+extern struct Player *player;
 
 /**
  * Custom String struct for convenience uses wchar_t instead of char
