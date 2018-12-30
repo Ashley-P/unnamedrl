@@ -10,6 +10,7 @@ TODO:
 - Items
     - Weapons
         - Weapon customisation
+    - Armour
     - Comestibles
     - Utility items
 - Crafting
@@ -19,4 +20,5 @@ TODO:
 - Map generation
     - Hub Overworld (random?)
     - Individual Maps (Definitely randomised)
-- Overall goal
+- Overall quest
+- Destructible terrain? 
