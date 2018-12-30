@@ -1,0 +1,22 @@
+TODO:
+
+- FOV
+- Pathfinding
+- AI
+    - Basic stuff
+    - Enemies have other things to do than kill the player
+    - Makes plans to kill player
+- Enemies
+- Items
+    - Weapons
+        - Weapon customisation
+    - Comestibles
+    - Utility items
+- Crafting
+- Interaction
+    - With items
+    - With map objects
+- Map generation
+    - Hub Overworld (random?)
+    - Individual Maps (Definitely randomised)
+- Overall goal
