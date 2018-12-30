@@ -9,7 +9,7 @@
  * sub-structs
  */
 #define MAX_HEALTH  100
-#define MAX_MANA  100
+#define MAX_ENERGY  100
 
 struct Player {
     /* Position */
@@ -22,8 +22,7 @@ struct Player {
 
     /* Stats */
     char hp;
-    char mana;
-
+    char energy;
 };
 
 

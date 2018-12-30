@@ -26,8 +26,8 @@ void player_init() {
     player->chcol = 0x07;
 
     /* Giving the player stats */
-    player->hp      = MAX_HEALTH;
-    player->mana    = MAX_MANA;
+    player->hp     = MAX_HEALTH;
+    player->energy = MAX_ENERGY;
 }
 
 /**

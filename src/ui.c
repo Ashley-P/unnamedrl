@@ -1,12 +1,3 @@
-/*
-#include <windows.h>
-#include "defs.h"
-#include "draw_utils.h"
-#include "ui_main.h"
-#include "main.h"
-#include "utils.h"
-*/
-
 #include <math.h>
 #include <stdio.h>
 #include "actor.h"
@@ -18,7 +9,6 @@
 #include "message.h"
 #include "player.h"
 #include "ui.h"
-#include "ui_main.h"
 #include "utils.h"
 
 
@@ -63,16 +53,16 @@ void draw_ui_main() {
     /* TODO: Make it so the colour the stat gets drawn in changes with it's value */
 
     /* Health */
-    struct String *hp = create_string(L"HP:   %d/%d", 0x02, player->hp, MAX_HEALTH);
+    struct String *hp = create_string(L"HP:   %d/%d", 0x0A, player->hp, MAX_HEALTH);
     draw_string(*hp, WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, player->hp, MAX_HEALTH, 0x02);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, player->hp, MAX_HEALTH, 0x0A);
     free(hp);
 
-    /* Mana */
-    struct String *mana = create_string(L"Mana: %d/%d", 0x01, player->mana, MAX_MANA);
-    draw_string(*mana, WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, player->mana, MAX_MANA, 0x01);
-    free(mana);
+    /* Energy */
+    struct String *energy = create_string(L"Energy: %d/%d", 0x0E, player->energy, MAX_ENERGY);
+    draw_string(*energy, WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, player->energy, MAX_ENERGY, 0x0E);
+    free(energy);
 
     /* Drawing Messages */
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, message_list, HEIGHT_ONE_FIFTH - 2);
