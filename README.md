@@ -1,5 +1,5 @@
-# HoboSim
+# Unnamed RL
 
 ## Description
 
-A game about being homeless made by Ashley Pendlebury
+Some RL that doesn't have a name or a purpose right now by Ashley Pendlebury
