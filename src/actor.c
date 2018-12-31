@@ -70,7 +70,8 @@ void draw_actors(struct ListNode *node) {
  */
 int actor_ai(struct Actor *a) {
     /* Just send a message */
-    add_message(&message_list, create_string(L"Actor ID %d takes a turn", 0x07, a->actor_id));
+    struct String str = {create_string(L"Actor ID %d takes a turn", a->actor_id), 0x07};
+    add_message(&message_list, str);
 
     /* this "action" takes 100 ticks */
     return 100;

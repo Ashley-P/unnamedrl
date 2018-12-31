@@ -24,7 +24,7 @@ void draw_stat_bar(const int x, const int y, const float len, const float curren
  * Draws the border for the UI splitting the screen up
  * Hardcoding values because I'm bad
  */
-void draw_ui_main() {
+void draw_ui_game() {
     /* Play Screen */
     draw_border_box(0,
                     0,
@@ -52,14 +52,14 @@ void draw_ui_main() {
     /* TODO: Make it so the colour the stat gets drawn in changes with it's value */
 
     /* Health */
-    struct String *hp = create_string(L"HP:   %d/%d", 0x0A, player->hp, MAX_HEALTH);
-    draw_string(*hp, WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL);
+    wchar_t *hp = create_string(L"HP:     %d/%d", player->hp, MAX_HEALTH);
+    draw_string(hp, 0x0A, WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL);
     draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, player->hp, MAX_HEALTH, 0x0A);
     free(hp);
 
     /* Energy */
-    struct String *energy = create_string(L"Energy: %d/%d", 0x0E, player->energy, MAX_ENERGY);
-    draw_string(*energy, WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL);
+    wchar_t *energy = create_string(L"Energy: %d/%d", player->energy, MAX_ENERGY);
+    draw_string(energy, 0x0E, WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL);
     draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, player->energy, MAX_ENERGY, 0x0E);
     free(energy);
 
@@ -86,10 +86,11 @@ void draw_border_box(const int x, const int y, const int width, const int height
 }
 
 /**
- * Controller function to draw the correct UI
+ * Controller function to draw the correct UI based on program_state
  */
 void draw_ui() {
-    draw_ui_main();
+    if (program_state == GAME) draw_ui_game();
+    else {}
 }
 
 /**
@@ -98,7 +99,6 @@ void draw_ui() {
 void redraw_screen() {
     clear_screen();
     draw_ui();
-    plot_line(5, 5, 20, 11);
 
     /* Drawing to the screen */
     WriteConsoleOutputW(h_console,

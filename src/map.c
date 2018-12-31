@@ -12,10 +12,6 @@
 #define BASIC_ROOM_Y 10
 
 
-
-/* Externs */
-struct Map *test_map;
-
 /**
  * Just generates a simple room for testing
  */

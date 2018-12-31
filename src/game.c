@@ -14,8 +14,14 @@
 #include "utils.h"
 
 /* Constants */
-int done_playing;
+static int done_playing;
+static int paused;
 long long ticks;
+enum ProgState program_state;
+
+/* Extern Constants */
+struct Player *player;
+struct Map *test_map;
 struct ListNode *actor_list;
 struct ListNode *message_list;
 struct ListNode *turn_list;
@@ -25,9 +31,9 @@ struct ListNode *obj_list; // NOT IMPLEMENTED
 /**
  * NOTE: TESTING PURPOSES ONLY
  */ 
-struct String *test_message() {
+struct String test_message() {
     static int i = 0;
-    struct String *rtn = create_string(L"TEST MESSAGE %d", 0x07, ++i);
+    struct String rtn = {create_string(L"TEST MESSAGE %d", ++i), 0x07};
 
     return rtn;
 }
@@ -37,7 +43,9 @@ struct String *test_message() {
  * Initialising the game, mainly by calling other init functions
  */
 void game_init() {
+    program_state = GAME;
     done_playing = 0;
+    paused = 0;
     ticks = 0;
 
     /* message_list doesn't need initialisation */
@@ -60,10 +68,8 @@ void game_deinit() {
 
 /**
  * Handles game input
- * returns 1 if the tick count should be increased
  */
-int game_input() {
-    int increase_tick = 0;
+void game_input() {
     unsigned long ul_evread;
     INPUT_RECORD ir_inpbuf[256];
 
@@ -86,16 +92,16 @@ int game_input() {
                 switch (key) {
                     case VK_NUMPAD2:
                         //increase_tick = player_move(&turn_list, player, test_map, 0, 1);
-                        return player_move(&turn_list, player, test_map, 0, 1);
+                        player_move(&turn_list, player, test_map, 0, 1);
                         break;
                     case VK_NUMPAD4:
-                        return player_move(&turn_list, player, test_map, -1, 0);
+                        player_move(&turn_list, player, test_map, -1, 0);
                         break;
                     case VK_NUMPAD6:
-                        return player_move(&turn_list, player, test_map, 1, 0);
+                        player_move(&turn_list, player, test_map, 1, 0);
                         break;
                     case VK_NUMPAD8:
-                        return player_move(&turn_list, player, test_map, 0, -1);
+                        player_move(&turn_list, player, test_map, 0, -1);
                         break;
                     case 0x41: // 'A'  Test button
                         player->hp -= 1;
@@ -107,14 +113,14 @@ int game_input() {
 
                     case 0x42: // 'B'  Test button
                         #ifdef GAME_DEBUG
-                            add_message(&message_list, create_string(L"TICK COUNT %d", 0x03, ticks));
+                            ;
+                            struct String x = {create_string(L"TICK COUNT %d", ticks), 0x03};
+                            add_message(&message_list, x);
                             redraw_screen();
                         #endif
                         break;
                     case VK_ESCAPE:
                         done_playing = 1;
-                        /* Increasing the tick so we can break out of the loop */
-                        increase_tick = 1;
                         break;
                 }
                 break;
@@ -124,7 +130,14 @@ int game_input() {
                 break;
         }
     }
-    return increase_tick;
+}
+
+/**
+ * Game logic goes in here
+ */
+void advance_simulation() {
+    /* Checking the turn list and letting the AI do its actions */
+    ++ticks;
 }
 
 /**
@@ -137,37 +150,22 @@ void play_game() {
 
     /* Game loop */
     while (!done_playing) {
+        /**
+         * Input 
+         * Handles all input for the player, done_playing and paused
+         * can get set in here eg. If the user wants to quit or 
+         * They are in a menu so the game shouldn't simulate turns
+         */
+        struct TurnNode *head = turn_list->data;
+        if (head->actor == NULL) game_input();
+
+        /* Simulation */
+        if (!paused) advance_simulation();
+
         /* Drawing */
         redraw_screen();
-
-        /**
-         * Game logic / turn system here
-         * First we should check the turn list to see who's turn it is
-         * If it's the turn of an actor then the actor does stuff
-         * If it's the players turn then we get some player input
-         * If it's no ones turn then we just increase the tick counter
-         */
-
-        struct TurnNode *tn = turn_list->data;
-        while (tn->tick == ticks) {
-            /* Player gets a turn */
-            if (tn->actor == NULL) {
-                while (!game_input()) {}
-
-            } else {
-                /* Let the actor do it's turn */
-                int tick = actor_ai(tn->actor);
-
-                /* Pop the head of the turn_list then supply it as the argument */
-                turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), tick);
-            }
-
-            /* Setting tn to be the top of the list */
-            tn = turn_list->data;
-        }
-
-        ++ticks;
     }
+
 
 
     /* Deinitialisation */

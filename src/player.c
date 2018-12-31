@@ -1,12 +1,10 @@
 #include <stdlib.h>
 #include "draw_utils.h"
+#include "defs.h"
 #include "map.h"
 #include "llist.h"
 #include "player.h"
 #include "turns.h"
-
-/* Player struct */
-struct Player *player;
 
 
 

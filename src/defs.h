@@ -60,17 +60,27 @@
 #define MAX_BUFSIZE 256
 
 /* Externs */
-extern struct Map *test_map;
-extern struct ListNode *message_list;
-extern struct ListNode *actor_list;
+extern enum ProgState program_state;
 extern struct Player *player;
+extern struct Map *test_map;
+extern struct ListNode *actor_list;
+extern struct ListNode *message_list;
+extern struct ListNode *turn_list;
+
+/**
+ * So that the program knows what to do with the input
+ * and knows which ui it should be displaying
+ */
+enum ProgState {
+    GAME,
+};
 
 /**
  * Custom String struct for convenience uses wchar_t instead of char
  * String should be null terminated or bad things will happen
  */
 struct String {
-    wchar_t const *str;
+    const wchar_t *str;
     unsigned char colour;
 };
 

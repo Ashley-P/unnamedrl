@@ -4,6 +4,6 @@
 #include "defs.h"
 
 /* Externs */
-struct String *create_string(wchar_t *str, unsigned char colour, ...);
+wchar_t *create_string(wchar_t *str, ...);
 void plot_line(int x0, int x1, int y0, int y1);
 #endif
