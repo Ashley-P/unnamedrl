@@ -20,5 +20,54 @@ TODO:
 - Map generation
     - Hub Overworld (random?)
     - Individual Maps (Definitely randomised)
-- Overall quest
+- Quest/Mission System
 - Destructible terrain? 
+- Debug Mode/Menu
+    - Logging
+    - Test Arena
+    - Spawning
+
+
+
+
+
+
+----- DEBUG MODE THOUGHTS -----
+Opens a file at game start that it logs everything from start to finish
+Has a command line along with various debug messages (which means I have to implement a parser)
+
+Something like this and goes at the top of the screen
+
++------------------------------------+
+|                                    |
+|                                    |
+|                                    |
+|debug message 2                     |
+|debug message 1                     |
++------------------------------------+
+|>_                                  |
++------------------------------------+
+
+Should be called from any menu?
+
+--- Commands ideas --- 
+Spawn actor/object
+Delete actor/object
+Get ID/address of actor/object under cursor
+Change vision modes (Visual of Djikstra maps or something)
+Raw editing of actors/objects?
+Move actors/objects/player
+
+--- Other ideas for the command line ---
+Autocomplete commands (never gonna do this)
+Clipboard
+
+
+--- Command structure ---
+>COMMAND ARGUMENTS...
+The first word in each line is the command and the rest of the words/numbers are arguments
+The word is checked on against a list and returns a message if it's not on there.
+If it is on the list, then the corresponding function is ran with it's arguments.
+Inside the function there is some error checking against the arguments. Might be able to emulate
+function overloading too with different kinds of arguments. (Should be easy considering you would know
+that if a function is called, you know what arguments it should be taking)
