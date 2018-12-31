@@ -137,6 +137,15 @@ void game_input() {
  */
 void advance_simulation() {
     /* Checking the turn list and letting the AI do its actions */
+    struct TurnNode *tn = (struct TurnNode *) turn_list->data;
+    int tick;
+
+    /* If it's the player's turn then return */
+    if (tn->actor == NULL) return;
+    else tick = actor_ai(tn->actor);
+
+    turn_list_update_tick(&turn_list, ll_pop_front(&turn_list), tick);
+
     ++ticks;
 }
 

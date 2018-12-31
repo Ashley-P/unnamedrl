@@ -67,6 +67,7 @@ void draw_actors(struct ListNode *node) {
 
 /**
  * Some "ai" that exists purely to see if the turn system works
+ * returns the amount of ticks the chosen action takes
  */
 int actor_ai(struct Actor *a) {
     /* Just send a message */
