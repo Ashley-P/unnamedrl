@@ -73,6 +73,7 @@ extern struct ListNode *turn_list;
  */
 enum ProgState {
     GAME,
+    DEBUG
 };
 
 /**

@@ -19,6 +19,7 @@ static int paused;
 long long ticks;
 enum ProgState program_state;
 
+
 /* Extern Constants */
 struct Player *player;
 struct Map *test_map;
@@ -26,6 +27,14 @@ struct ListNode *actor_list;
 struct ListNode *message_list;
 struct ListNode *turn_list;
 struct ListNode *obj_list; // NOT IMPLEMENTED
+
+
+/* Function Prototypes */
+void event_handler();
+void handle_keys(KEY_EVENT_RECORD kev);
+
+
+
 
 #ifdef GAME_DEBUG
 /**
@@ -67,72 +76,6 @@ void game_deinit() {
 }
 
 /**
- * Handles game input
- */
-void game_input() {
-    unsigned long ul_evread;
-    INPUT_RECORD ir_inpbuf[256];
-
-    ReadConsoleInput(h_stdin,
-                     ir_inpbuf,
-                     256,
-                     &ul_evread);
-
-    for(int i = 0; i < ul_evread; i++) {
-        switch (ir_inpbuf[i].EventType) {
-            case KEY_EVENT:
-                /** 
-                 * Ideally key events need to be split up depending on what kind of state
-                 * the ui is in (gameplay vs menus), but right now it's something basic
-                 */
-                ;
-                char key = ir_inpbuf[i].Event.KeyEvent.wVirtualKeyCode;
-                if (ir_inpbuf[i].Event.KeyEvent.bKeyDown == 0) break;
-
-                switch (key) {
-                    case VK_NUMPAD2:
-                        //increase_tick = player_move(&turn_list, player, test_map, 0, 1);
-                        player_move(&turn_list, player, test_map, 0, 1);
-                        break;
-                    case VK_NUMPAD4:
-                        player_move(&turn_list, player, test_map, -1, 0);
-                        break;
-                    case VK_NUMPAD6:
-                        player_move(&turn_list, player, test_map, 1, 0);
-                        break;
-                    case VK_NUMPAD8:
-                        player_move(&turn_list, player, test_map, 0, -1);
-                        break;
-                    case 0x41: // 'A'  Test button
-                        player->hp -= 1;
-                        #ifdef GAME_DEBUG
-                            for (int i = 0; i < 1000000; i++) add_message(&message_list, test_message());
-                            redraw_screen();
-                        #endif
-                        break;
-
-                    case 0x42: // 'B'  Test button
-                        #ifdef GAME_DEBUG
-                            ;
-                            struct String x = {create_string(L"TICK COUNT %d", ticks), 0x03};
-                            add_message(&message_list, x);
-                            redraw_screen();
-                        #endif
-                        break;
-                    case VK_ESCAPE:
-                        done_playing = 1;
-                        break;
-                }
-                break;
-
-            case MOUSE_EVENT: case WINDOW_BUFFER_SIZE_EVENT: case FOCUS_EVENT: case MENU_EVENT:
-                // Ignore these
-                break;
-        }
-    }
-}
-
-/**
  * Game logic goes in here
  */
 void advance_simulation() {
@@ -166,7 +109,7 @@ void play_game() {
          * They are in a menu so the game shouldn't simulate turns
          */
         struct TurnNode *head = turn_list->data;
-        if (head->actor == NULL) game_input();
+        if (head->actor == NULL) event_handler();
 
         /* Simulation */
         if (!paused) advance_simulation();
@@ -182,4 +125,59 @@ void play_game() {
 
     /* To check memory usage after deinit */
     getchar();
+}
+
+/**
+ * Handles events
+ */
+void event_handler() {
+    unsigned long ul_evread;
+    INPUT_RECORD ir_inpbuf[256];
+
+    ReadConsoleInput(h_stdin,
+                     ir_inpbuf,
+                     256,
+                     &ul_evread);
+
+    for(int i = 0; i < ul_evread; i++) {
+        switch (ir_inpbuf[i].EventType) {
+            case KEY_EVENT:
+                /* Pass the key event to handle_keys where it gets interpreted based on the program state */
+                handle_keys(ir_inpbuf[i].Event.KeyEvent);
+                break;
+
+            case MOUSE_EVENT: case WINDOW_BUFFER_SIZE_EVENT: case FOCUS_EVENT: case MENU_EVENT:
+                // Ignore these
+                break;
+        }
+    }
+}
+
+/**
+ * Handles the key events provided by event_handler
+ */
+void handle_keys(KEY_EVENT_RECORD kev) {
+    /* Immediate return if it's not a keydown */
+    if (!kev.bKeyDown) return;
+
+    /* state checking */
+    if (program_state == GAME) {
+        /* Making sure no important modifiers are on */
+        if (!(kev.dwControlKeyState & !(NUMLOCK_ON|SCROLLLOCK_ON))) {
+            switch (kev.wVirtualKeyCode) {
+                /* Movement */
+                case VK_NUMPAD2: player_move(&turn_list, player, test_map, 0,  1); break;
+                case VK_NUMPAD4: player_move(&turn_list, player, test_map, -1, 0); break;
+                case VK_NUMPAD6: player_move(&turn_list, player, test_map, 1,  0); break;
+                case VK_NUMPAD8: player_move(&turn_list, player, test_map, 0, -1); break;
+
+                /* Other */
+                case VK_ESCAPE: exit(0); break; // No cleanup needed TODO: Make this open a menu
+
+            }
+        }
+        // do stuff
+    } else if (program_state == DEBUG) {
+        // do stuff
+    }
 }
