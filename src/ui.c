@@ -21,6 +21,22 @@ void draw_stat_bar(const int x, const int y, const float len, const float curren
 }
 
 /**
+ * Draws a box using unicode characters
+ */
+void draw_border_box(const int x, const int y, const int width, const int height) {
+
+    draw_character_line(x            , y             , width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+    draw_character_line(x            , y + height - 1, width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+    draw_character_line(x            , y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
+    draw_character_line(x + width - 1, y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
+
+    draw_character(x            , y             , DOUBLE_DOWN_AND_RIGHT, 0x07); // Top Left
+    draw_character(x + width - 1, y             , DOUBLE_DOWN_AND_LEFT , 0x07); // Top Right 
+    draw_character(x            , y + height - 1, DOUBLE_UP_AND_RIGHT  , 0x07); // Bottom Left
+    draw_character(x + width - 1, y + height - 1, DOUBLE_UP_AND_LEFT   , 0x07); // Bottom Right 
+}
+
+/**
  * Draws the border for the UI splitting the screen up
  * Hardcoding values because I'm bad
  */
@@ -67,30 +83,36 @@ void draw_ui_game() {
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, message_list, HEIGHT_ONE_FIFTH - 2);
 }
 
-
-
 /**
- * Draws a box using unicode characters
+ * Draws the debug UI, which is drawn on top of the game UI
+ * Specifically it's drawn over the normal message system
  */
-void draw_border_box(const int x, const int y, const int width, const int height) {
+void draw_ui_debug() {
+    /* Clear the bottom fifth of the screen */
 
-    draw_character_line(x            , y             , width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
-    draw_character_line(x            , y + height - 1, width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
-    draw_character_line(x            , y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
-    draw_character_line(x + width - 1, y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
+    for (int i = HEIGHT_FOUR_FIFTH; i < SCREENHEIGHT; i++)
+        draw_character_line(0, i, SCREENWIDTH, HORIZONTAL, L' ', 0x07);
 
-    draw_character(x            , y             , DOUBLE_DOWN_AND_RIGHT, 0x07); // Top Left
-    draw_character(x + width - 1, y             , DOUBLE_DOWN_AND_LEFT , 0x07); // Top Right 
-    draw_character(x            , y + height - 1, DOUBLE_UP_AND_RIGHT  , 0x07); // Bottom Left
-    draw_character(x + width - 1, y + height - 1, DOUBLE_UP_AND_LEFT   , 0x07); // Bottom Right 
+    /* Redraw the box - This is somewhat inefficient but leads to nicer looking code */
+    draw_border_box(0, HEIGHT_FOUR_FIFTH, SCREENWIDTH, HEIGHT_ONE_FIFTH);
+    draw_character_line(1, SCREENHEIGHT - 3, SCREENWIDTH - 2, HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+    draw_character(1, SCREENHEIGHT - 2, L'>', 0x07);
+
+    /* Drawing the string that the user is typing along with a cursor */
 }
 
 /**
  * Controller function to draw the correct UI based on program_state
  */
 void draw_ui() {
-    if (program_state == GAME) draw_ui_game();
-    else {}
+    if (program_state == GAME) {
+        draw_ui_game();
+    } else if (program_state == DEBUG) {
+        /* Draw the normal game ui then the debug menu ontop */
+        draw_ui_game();
+        draw_ui_debug();
+
+    }
 }
 
 /**

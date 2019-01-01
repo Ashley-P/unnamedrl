@@ -162,22 +162,60 @@ void handle_keys(KEY_EVENT_RECORD kev) {
 
     /* state checking */
     if (program_state == GAME) {
-        /* Making sure no important modifiers are on */
-        if (!(kev.dwControlKeyState & !(NUMLOCK_ON|SCROLLLOCK_ON))) {
+        if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
+            switch (kev.wVirtualKeyCode) {
+                case 0x31: // '1' key
+                    program_state = DEBUG;
+                    add_message(&message_list, (struct String) {L"DEBUG MODE", 0x0C});
+                    paused = 1;
+                    break;
+
+                default:
+                    break;
+            }
+        } else if (!(kev.dwControlKeyState & !(NUMLOCK_ON|SCROLLLOCK_ON))) {
             switch (kev.wVirtualKeyCode) {
                 /* Movement */
-                case VK_NUMPAD2: player_move(&turn_list, player, test_map, 0,  1); break;
-                case VK_NUMPAD4: player_move(&turn_list, player, test_map, -1, 0); break;
-                case VK_NUMPAD6: player_move(&turn_list, player, test_map, 1,  0); break;
-                case VK_NUMPAD8: player_move(&turn_list, player, test_map, 0, -1); break;
+                case VK_NUMPAD2:
+                    player_move(&turn_list, player, test_map, 0,  1); break;
+                case VK_NUMPAD4:
+                    player_move(&turn_list, player, test_map, -1, 0); break;
+                case VK_NUMPAD6:
+                    player_move(&turn_list, player, test_map, 1,  0); break;
+                case VK_NUMPAD8:
+                    player_move(&turn_list, player, test_map, 0, -1); break;
 
                 /* Other */
-                case VK_ESCAPE: exit(0); break; // No cleanup needed TODO: Make this open a menu
+                case VK_ESCAPE:
+                    exit(0); break; // No cleanup needed TODO: Make this open a menu
+
+                default:
+                    break;
 
             }
         }
-        // do stuff
+
+
     } else if (program_state == DEBUG) {
-        // do stuff
+        if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
+            switch (kev.wVirtualKeyCode) {
+                case 0x31: // '1' key
+                    program_state = GAME;
+                    add_message(&message_list, (struct String) {L"NORMAL MODE", 0x0C});
+                    paused = 0;
+                    break;
+
+                default:
+                    break;
+            }
+        } else if (!(kev.dwControlKeyState & !(NUMLOCK_ON|SCROLLLOCK_ON))) {
+            switch (kev.wVirtualKeyCode) {
+                case VK_ESCAPE:
+                    exit(0); break; // No cleanup needed TODO: Make this open a menu
+
+                default:
+                    break;
+            }
+        }
     }
 }
