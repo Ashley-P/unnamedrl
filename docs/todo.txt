@@ -57,10 +57,12 @@ Get ID/address of actor/object under cursor
 Change vision modes (Visual of Djikstra maps or something)
 Raw editing of actors/objects?
 Move actors/objects/player
+Toggle FOV
 
 --- Other ideas for the command line ---
 Autocomplete commands (never gonna do this)
 Clipboard
+Command history
 
 
 --- Command structure ---
