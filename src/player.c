@@ -38,7 +38,7 @@ void player_deinit() {
 /**
  * Draws the player onto the screen
  */
-void draw_player(struct Player *p) {
+void draw_player(const struct Player *p) {
     draw_character(p->px + PLAY_SCREEN_OFFSET_X, p->py + PLAY_SCREEN_OFFSET_Y, p->ch, p->chcol);
 }
 

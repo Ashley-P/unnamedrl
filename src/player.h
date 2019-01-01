@@ -31,6 +31,7 @@ extern struct Player *player;
 
 void player_init();
 void player_deinit();
+void draw_player(const struct Player *p);
 int player_move(struct ListNode **turns, struct Player *player, struct Map *map, int dx, int dy);
 
 #endif

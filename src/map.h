@@ -29,7 +29,7 @@ struct Map {
 
 
 /* Externs */
-
+void draw_map(const struct Map *map);
 void map_init();
 void map_deinit();
 

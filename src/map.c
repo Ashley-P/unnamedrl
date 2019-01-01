@@ -53,7 +53,7 @@ struct Map *map_gen() {
  * Draws the map to the confines of the play screen
  * Should be replaced by a camera system later
  */
-void draw_map(struct Map *map) {
+void draw_map(const struct Map *map) {
     /* Drawing the premade temp map, this should be expanded later */
     int i, j;
     for (i = 0; i < map->x; i++) {

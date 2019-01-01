@@ -48,13 +48,13 @@ struct ListNode *actor_list_init() {
  * Draws actors to the screen, will probably be called by another function
  * called draw_actors in the future
  */
-void draw_actor(struct Actor *actor) {
+void draw_actor(const struct Actor *actor) {
     draw_character(actor->px + PLAY_SCREEN_OFFSET_X, actor->py + PLAY_SCREEN_OFFSET_Y,
             actor->ch, actor->chcol);
 }
 
 /* Iterates through a list of actors and draws their characters to the screen */
-void draw_actors(struct ListNode *node) {
+void draw_actors(const struct ListNode *node) {
     /* Draws the first actor in the list */
     draw_actor(node->data);
 

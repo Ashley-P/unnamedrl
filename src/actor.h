@@ -35,7 +35,8 @@ struct Actor {
 /* Externs */
 struct Actor *actor_init(int px, int py);
 struct ListNode *actor_list_init();
-void actor_list_deinit(struct ListNode **head);
+void draw_actor(const struct Actor *actor);
+void draw_actors(const struct ListNode *node);
 int actor_ai(struct Actor *a);
 
 #endif
