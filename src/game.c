@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "actor.h"
 #include "defs.h"
+#include "debug.h"
 #include "draw_utils.h"
 #include "game.h"
 #include "llist.h"
@@ -61,6 +62,7 @@ void game_init() {
 
     /* message_list doesn't need initialisation */
     actor_list = actor_list_init();
+    d_debug_init();
     map_init();
     player_init();
     turn_list = turn_list_init(actor_list);
@@ -71,6 +73,7 @@ void game_init() {
  */
 void game_deinit() {
     ll_deinit(&actor_list);
+    d_debug_deinit();
     map_deinit();
     message_list_deinit(&message_list);
     player_deinit();
@@ -205,7 +208,7 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                 case 0x31: // '1' key
                     program_state = GAME;
                     control_state = GAME;
-                    add_message(&message_list, (struct String) {L"NORMAL MODE", 0x0C});
+                    add_message(&message_list, (struct String) {L"GAME MODE", 0x0C});
                     paused = 0;
                     break;
 
@@ -214,6 +217,31 @@ void handle_keys(KEY_EVENT_RECORD kev) {
             }
         } else if (!(kev.dwControlKeyState & !(NUMLOCK_ON|SCROLLLOCK_ON))) {
             switch (kev.wVirtualKeyCode) {
+                /* GCC only */
+                case 0x30 ... 0x39: // Numbers [0-9]
+                case 0x41 ... 0x5A: // Letters [a-z]
+                case 0xBA ... 0xC0: // Other
+                case 0xDB ... 0xDF: // Other
+                case VK_SPACE:
+                case 0xE2:          // Backslash
+                    d_addchar(kev.uChar.UnicodeChar);
+                    break;
+
+                case VK_BACK:       // Backspace
+                    d_delchar();
+                    break;
+
+                case VK_RETURN:
+                    d_intepreter(d_debug.str);
+                    break;
+
+                /* Arrow Keys */
+                case VK_LEFT:
+                case VK_RIGHT:
+                case VK_UP:
+                case VK_DOWN:
+                    break;
+
                 case VK_ESCAPE:
                     exit(0); break; // No cleanup needed TODO: Make this open a menu
 

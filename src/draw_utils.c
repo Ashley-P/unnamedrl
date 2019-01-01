@@ -50,7 +50,8 @@ void draw_character_line(const int x, const int y, const int len, const int dire
  * If strings aren't null terminated then it's all over
  * Returns character's written
  */
-int draw_string(const wchar_t *str, const unsigned char colour, const int x, const int y, const int direction) {
+int draw_string(const int x, const int y, const int direction,
+        const wchar_t *str, const unsigned char colour) {
     int j = 0;
     if (direction == HORIZONTAL) {
         while (*(str + j) != L'\0') {

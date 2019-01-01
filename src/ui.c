@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "actor.h"
 #include "defs.h"
+#include "debug.h"
 #include "draw_utils.h"
 #include "llist.h"
 #include "map.h"
@@ -69,13 +70,13 @@ void draw_ui_game() {
 
     /* Health */
     wchar_t *hp = create_string(L"HP:     %d/%d", player->hp, MAX_HEALTH);
-    draw_string(hp, 0x0A, WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL);
+    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp, 0x0A);
     draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, player->hp, MAX_HEALTH, 0x0A);
     free(hp);
 
     /* Energy */
     wchar_t *energy = create_string(L"Energy: %d/%d", player->energy, MAX_ENERGY);
-    draw_string(energy, 0x0E, WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL);
+    draw_string(WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL, energy, 0x0E);
     draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, player->energy, MAX_ENERGY, 0x0E);
     free(energy);
 
@@ -98,7 +99,12 @@ void draw_ui_debug() {
     draw_character_line(1, SCREENHEIGHT - 3, SCREENWIDTH - 2, HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
     draw_character(1, SCREENHEIGHT - 2, L'>', 0x07);
 
+    /* Drawing debug messages */
+    draw_messages(2, HEIGHT_FOUR_FIFTH + 1, d_debug.messages, HEIGHT_ONE_FIFTH - 4);
+
     /* Drawing the string that the user is typing along with a cursor */
+    draw_string(1, SCREENHEIGHT - 2, HORIZONTAL, d_debug.str, 0x07);
+    draw_character(d_debug.curs_pos + 2, SCREENHEIGHT - 2, d_debug.curs_ch, 0x07);
 }
 
 /**

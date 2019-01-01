@@ -68,6 +68,8 @@ extern struct ListNode *actor_list;
 extern struct ListNode *message_list;
 extern struct ListNode *turn_list;
 
+extern struct d_Debug d_debug;
+
 /**
  * So that the program knows what to do with the input
  * and knows which ui it should be displaying
