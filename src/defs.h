@@ -61,6 +61,7 @@
 
 /* Externs */
 extern enum ProgState program_state;
+extern enum ProgState control_state;
 extern struct Player *player;
 extern struct Map *test_map;
 extern struct ListNode *actor_list;

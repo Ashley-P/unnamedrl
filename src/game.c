@@ -18,6 +18,7 @@ static int done_playing;
 static int paused;
 long long ticks;
 enum ProgState program_state;
+enum ProgState control_state;
 
 
 /* Extern Constants */
@@ -53,6 +54,7 @@ struct String test_message() {
  */
 void game_init() {
     program_state = GAME;
+    control_state = GAME;
     done_playing = 0;
     paused = 0;
     ticks = 0;
@@ -161,11 +163,12 @@ void handle_keys(KEY_EVENT_RECORD kev) {
     if (!kev.bKeyDown) return;
 
     /* state checking */
-    if (program_state == GAME) {
+    if (control_state == GAME) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
                 case 0x31: // '1' key
                     program_state = DEBUG;
+                    control_state = DEBUG;
                     add_message(&message_list, (struct String) {L"DEBUG MODE", 0x0C});
                     paused = 1;
                     break;
@@ -196,11 +199,12 @@ void handle_keys(KEY_EVENT_RECORD kev) {
         }
 
 
-    } else if (program_state == DEBUG) {
+    } else if (control_state == DEBUG) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
                 case 0x31: // '1' key
                     program_state = GAME;
+                    control_state = GAME;
                     add_message(&message_list, (struct String) {L"NORMAL MODE", 0x0C});
                     paused = 0;
                     break;
