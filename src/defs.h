@@ -54,6 +54,9 @@
 #define HORIZONTAL 1
 #define VERTICAL   2
 
+#define UP   1
+#define DOWN 2
+
 #define PLAY_SCREEN_OFFSET_X 1
 #define PLAY_SCREEN_OFFSET_Y 1
 
@@ -76,7 +79,8 @@ extern struct d_Debug d_debug;
  */
 enum ProgState {
     GAME,
-    DEBUG
+    DEBUG,
+    DEBUG_FULL, // Normal DEBUG mode but it takes up the entire screen with messages
 };
 
 /**

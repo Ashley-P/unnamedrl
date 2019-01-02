@@ -169,10 +169,15 @@ void handle_keys(KEY_EVENT_RECORD kev) {
     if (control_state == GAME) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
-                case 0x31: // '1' key
+                case 0x31:                  // '1' key - DEBUG MODE
                     program_state = DEBUG;
                     control_state = DEBUG;
-                    add_message(&message_list, (struct String) {L"DEBUG MODE", 0x0C});
+                    paused = 1;
+                    break;
+
+                case 0x32:                  // '2' key - DEBUG_FULL MODE
+                    program_state = DEBUG_FULL;
+                    control_state = DEBUG;
                     paused = 1;
                     break;
 
@@ -205,10 +210,17 @@ void handle_keys(KEY_EVENT_RECORD kev) {
     } else if (control_state == DEBUG) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
-                case 0x31: // '1' key
+                case 0x31:                  // '1' key - DEBUG MODE UI
+                    program_state = DEBUG;
+                    break;
+
+                case 0x32:                  // '2' key - DEBUG_FULL UI
+                    program_state = DEBUG_FULL;
+                    break;
+
+                case 0x41:                  // 'a' key - GAME MODE
                     program_state = GAME;
                     control_state = GAME;
-                    add_message(&message_list, (struct String) {L"GAME MODE", 0x0C});
                     paused = 0;
                     break;
 

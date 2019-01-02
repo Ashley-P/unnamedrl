@@ -36,7 +36,7 @@ enum d_TokenType {
  * Token struct for the lexer and parser to work with
  */
 struct d_Token {
-    wchar_t *name;
+    wchar_t *value;
     uint8_t type;
 };
 
@@ -44,9 +44,6 @@ struct d_Token {
 /* Function Prototypes */
 struct d_Token *d_lexer(const wchar_t *line);
 void d_parser(struct d_Token *tokens);
-
-
-
 
 
 
@@ -67,7 +64,7 @@ struct d_Token *d_tokens_init() {
     struct d_Token *tokens = (struct d_Token *)calloc(MAX_BUFSIZE, sizeof(struct d_Token));
 
     for (int i = 0; i < MAX_BUFSIZE; i++) {
-        (tokens + i)->name = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
+        (tokens + i)->value = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
         (tokens + i)->type = 0;
     }
 
@@ -76,7 +73,7 @@ struct d_Token *d_tokens_init() {
 
 void d_tokens_deinit(struct d_Token *tokens) {
     for (int i = 0; i < MAX_BUFSIZE; i++) {
-        free((tokens + i)->name);
+        free((tokens + i)->value);
     }
 
     free(tokens);
@@ -132,6 +129,8 @@ static inline unsigned char is_alpha(wchar_t ch) {
  * is pressed in DEBUG mode
  */
 void d_intepreter(wchar_t *line) {
+    DEBUG_MESSAGE(L"You've called the intepreter!", 0x07);
+
     // Call Lexer which returns token list
     struct d_Token *tokens = d_lexer(line);
 
@@ -140,7 +139,6 @@ void d_intepreter(wchar_t *line) {
 
     // Execute functions
 
-    DEBUG_MESSAGE(L"You've called the intepreter!", 0x07);
 
     // Cleanup
     d_reset_str();
@@ -158,17 +156,15 @@ static inline wchar_t d_scanner_peek(const wchar_t *line) {
 }
 
 /* quick defines to make everything look clean */
-#define T_NAME (tokens + tokens_read)->name
+#define T_NAME (tokens + tokens_read)->value
 #define T_TYPE (tokens + tokens_read)->type
 
 
 struct d_Token *d_lexer(const wchar_t *line) {
     struct d_Token *tokens = d_tokens_init();
     unsigned char tokens_read = 0;
-    unsigned char col = 0; /* So we can correctly construct the token name */
+    unsigned char col = 0; /* So we can correctly construct the token value */
     wchar_t ch = d_scanner_getch(line); /* Preread the first character */
-
-    DEBUG_MESSAGE(L"BEGINNING OF THE LEXER", 0X07);
 
     while (1) {
 
@@ -243,8 +239,6 @@ struct d_Token *d_lexer(const wchar_t *line) {
     /* In our "syntax" The first token is always of the command type */
     tokens->type = COMMAND;
 
-    DEBUG_MESSAGE(L"END OF THE LEXER", 0X07);
-
     return tokens;
 }
 
@@ -261,8 +255,8 @@ void d_parser(struct d_Token *tokens) {
     DEBUG_MESSAGE(L"BEGINNING OF THE PARSER", 0x07);
 
     for (int i = 0; i < MAX_BUFSIZE; i++) {
-        DEBUG_MESSAGE(create_string(L"Token Name : %ls, Token Type : %ls",
-                    (tokens+i)->name, d_token_type_finder((tokens+i)->type)), 0x07);
+        DEBUG_MESSAGE(create_string(L"Token Value : %ls, Token Type : %ls",
+                    (tokens+i)->value, d_token_type_finder((tokens+i)->type)), 0x07);
 
         if ((tokens+i)->type == D_EOL) break;
     }

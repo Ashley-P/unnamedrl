@@ -46,7 +46,7 @@ void add_message(struct ListNode **messages, struct String message) {
  * Draws messages from x, y to x, y + num_messages - 1
  * This assumes that the messages fit on one line (They should unless the windows borders are small)
  */
-void draw_messages(const int x, int y, const struct ListNode *messages, int num_messages) {
+void draw_messages(const int x, int y, const struct ListNode *messages, int num_messages, int direction) {
     /* Just return if there are no messages */
     if (messages == NULL) return;
 
@@ -56,7 +56,11 @@ void draw_messages(const int x, int y, const struct ListNode *messages, int num_
 
     while (num_messages > 0) {
         //draw_string(*((struct String *) message.data), x, y++, HORIZONTAL);
-        draw_string(x, y++, HORIZONTAL, str, colour);
+        if (direction == UP)
+            draw_string(x, y--, HORIZONTAL, str, colour);
+        else if (direction == DOWN)
+            draw_string(x, y++, HORIZONTAL, str, colour);
+
         if (message->next == NULL) break;
         else {
             /* Moving to the next message */

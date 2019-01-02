@@ -81,8 +81,12 @@ void draw_ui_game() {
     free(energy);
 
     /* Drawing Messages */
-    draw_messages(2, HEIGHT_FOUR_FIFTH + 1, message_list, HEIGHT_ONE_FIFTH - 2);
+    draw_messages(2, HEIGHT_FOUR_FIFTH + 1, message_list, HEIGHT_ONE_FIFTH - 2, DOWN);
 }
+
+
+
+
 
 /**
  * Draws the debug UI, which is drawn on top of the game UI
@@ -100,11 +104,36 @@ void draw_ui_debug() {
     draw_character(1, SCREENHEIGHT - 2, L'>', 0x07);
 
     /* Drawing debug messages */
-    draw_messages(2, HEIGHT_FOUR_FIFTH + 1, d_debug.messages, HEIGHT_ONE_FIFTH - 4);
+    draw_messages(2, SCREENHEIGHT - 4, d_debug.messages, HEIGHT_ONE_FIFTH - 4, UP);
 
     /* Drawing the string that the user is typing along with a cursor */
     draw_string(2, SCREENHEIGHT - 2, HORIZONTAL, d_debug.str, 0x07);
     draw_character(d_debug.curs_pos + 2, SCREENHEIGHT - 2, d_debug.curs_ch, 0x07);
+}
+
+
+
+
+
+/**
+ * Draws the full window version of the debug ui
+ */
+void draw_ui_debug_full() {
+    /* Draw the border for the screen */
+    draw_border_box(0, 0, SCREENWIDTH, SCREENHEIGHT);
+
+    /* Draw the box that the user types into */
+    draw_character_line(1, SCREENHEIGHT - 3, SCREENWIDTH - 2, HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+    draw_character(1, SCREENHEIGHT - 2, L'>', 0x07);
+
+    /* Drawing debug messages */
+    draw_messages(2, SCREENHEIGHT - 4, d_debug.messages, SCREENHEIGHT - 4, UP);
+
+    /* Drawing the string that the user is typing along with a cursor */
+    draw_string(2, SCREENHEIGHT - 2, HORIZONTAL, d_debug.str, 0x07);
+    draw_character(d_debug.curs_pos + 2, SCREENHEIGHT - 2, d_debug.curs_ch, 0x07);
+
+    draw_string((int) (SCREENWIDTH / 2) - 7, 0, HORIZONTAL, L"DEBUG_FULL MODE", 0x07);
 }
 
 /**
@@ -117,7 +146,8 @@ void draw_ui() {
         /* Draw the normal game ui then the debug menu ontop */
         draw_ui_game();
         draw_ui_debug();
-
+    } else if (program_state == DEBUG_FULL) {
+        draw_ui_debug_full();
     }
 }
 
