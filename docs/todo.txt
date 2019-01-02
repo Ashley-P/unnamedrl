@@ -51,18 +51,20 @@ Something like this and goes at the top of the screen
 Should be called from any menu?
 
 --- Commands ideas --- 
-Spawn actor/object
-Delete actor/object
-Get ID/address of actor/object under cursor
-Change vision modes (Visual of Djikstra maps or something)
-Raw editing of actors/objects?
-Move actors/objects/player
-Toggle FOV
+- Spawn actor/object
+- Delete actor/object
+- Get ID/address of actor/object under cursor
+- Change vision modes (Visual of Djikstra maps or something)
+- Raw editing of actors/objects?
+- Move actors/objects/player
+- Toggle FOV
+- Echo (more of a test command)
 
 --- Other ideas for the command line ---
-Autocomplete commands (never gonna do this)
-Clipboard
-Command history
+- Autocomplete commands (never gonna do this)
+- Clipboard
+- Command history
+- Scrolling the history
 
 
 --- Command structure ---

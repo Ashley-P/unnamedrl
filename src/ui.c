@@ -103,7 +103,7 @@ void draw_ui_debug() {
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, d_debug.messages, HEIGHT_ONE_FIFTH - 4);
 
     /* Drawing the string that the user is typing along with a cursor */
-    draw_string(1, SCREENHEIGHT - 2, HORIZONTAL, d_debug.str, 0x07);
+    draw_string(2, SCREENHEIGHT - 2, HORIZONTAL, d_debug.str, 0x07);
     draw_character(d_debug.curs_pos + 2, SCREENHEIGHT - 2, d_debug.curs_ch, 0x07);
 }
 

@@ -1,8 +1,12 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include "llist.h"
+#include <stdint.h>
 #include "defs.h"
+#include "llist.h"
+
+
+#define DEBUG_MESSAGE(x, y) add_message(&d_debug.messages, (struct String) {x, y})
 
 /**
  * A struct to hold onto everything relevant to the debug file
@@ -19,14 +23,15 @@ struct d_Debug {
     wchar_t *str;
 
     /* The position in the text that the scanner is at */
-    unsigned char scan_pos;
+    uint8_t scan_pos;
 
     /* Position the text_cursor is at */
-    unsigned char curs_pos;
+    uint8_t curs_pos;
 
     /* What character the text cursor displays */
     wchar_t curs_ch;
 };
+
 
 /* Externs */
 void d_debug_init();

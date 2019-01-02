@@ -15,6 +15,8 @@ wchar_t *create_string(wchar_t *str, ...) {
     wchar_t *new_str = (wchar_t *)malloc(sizeof(wchar_t) * MAX_BUFSIZE);
     vswprintf(new_str, str, args);
 
+    va_end(args);
+
     return new_str;
 }
 
