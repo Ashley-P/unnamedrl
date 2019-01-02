@@ -134,6 +134,12 @@ void d_intepreter(wchar_t *line) {
     // Call Lexer which returns token list
     struct d_Token *tokens = d_lexer(line);
 
+    /**
+     * If the first token type is INVALID then it's an error set by the lexer
+     * and the list can't be parsed
+     */
+    if (tokens->type == INVALID) goto cleanup;
+
     // Call Parser which takes token list
     d_parser(tokens);
 
@@ -141,6 +147,7 @@ void d_intepreter(wchar_t *line) {
 
 
     // Cleanup
+cleanup:
     d_reset_str();
     d_debug.scan_pos = 0;
     d_debug.curs_pos = 0;
@@ -192,21 +199,27 @@ struct d_Token *d_lexer(const wchar_t *line) {
 
             if (ch == L'\0' || ch == L' ')
                 T_TYPE = ARG_INT;
-            else
-                T_TYPE = INVALID;
+            else {
+                DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Expected [0-9], got \'%c\'",
+                            ++tokens_read, ch), 0x0C);
+                tokens->type = INVALID;
+                return tokens;
+            }
         }
 
         /* Strings */
-        /* FIXME: Token not being set properly */
         if (ch == L'"') {
 
             while(1) {
                 ch = d_scanner_getch(line);
-                if (ch == L'\0') {
-                    T_TYPE = INVALID;
-                    break;
+                if (ch == L'\0') {    // ERROR
+                    DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: End of line reached before "
+                                "closing quotes", ++tokens_read, ch), 0x0C);
+                    tokens->type = INVALID;
+                    return tokens;
                 } else if (ch == L'"') {
                     T_TYPE = ARG_STR;
+                    ch = d_scanner_getch(line);
                     break;
                 } else {
                     T_NAME[col++] = ch;
@@ -227,8 +240,10 @@ struct d_Token *d_lexer(const wchar_t *line) {
                 if (is_digit(ch) || is_alpha(ch))
                     T_NAME[col++] = ch;
                 else if (ch == L'"') { // Don't allow quotes in the middle
-                    T_TYPE = INVALID;
-                    break;
+                    DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Stray quote inside of argument",
+                                ++tokens_read, ch), 0x0C);
+                    tokens->type = INVALID;
+                    return tokens;
                 } else
                     break;
 
@@ -242,6 +257,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
     return tokens;
 }
 
+/* Just for testing */
 static inline wchar_t *d_token_type_finder(uint8_t type) {
     if (type == 1) return L"COMMAND";
     else if (type == 2) return L"ARG_STR";
