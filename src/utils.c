@@ -83,3 +83,19 @@ void plot_line(int x0, int y0, int x1, int y1) {
             plot_line_high(x0, y0, x1, y1);
     }
 }
+
+
+/**
+ * wchar_t string comparing
+ * Requires null-terminated strings
+ */
+int w_string_cmp(const wchar_t *a, const wchar_t *b) {
+    for (int i = 0;; i++) {
+        if (*(a + i) == '\0' && *(b + i) == '\0') {
+            return 1;
+        } else if (*(a + i) == *(b + i)) {
+            continue;
+        } else 
+            return 0;
+    }
+}

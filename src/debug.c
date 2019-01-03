@@ -5,7 +5,7 @@
  */
 
 #include "debug.h" // defs.h already included in here
-#include "message.h"
+#include "debug_commands.h"
 #include "utils.h"
 
 
@@ -13,37 +13,11 @@
 struct d_Debug d_debug;
 
 
-/* Data types */
-enum d_TokenType {
-    INVALID = 0,
-    COMMAND = 1 << 0,
-
-    /**
-     * Argument types
-     * ARG_STR is wrapped in double quotes
-     * ARG_INT has each ch == [0-9]
-     * ARG_STD is like ARG_STR but without the quotes
-     * D_EOL denotes the end of the line and the end of the list
-     */
-    ARG_STR = 1 << 1,
-    ARG_INT = 1 << 2,
-    ARG_STD = 1 << 3,
-
-    D_EOL   = 1 << 4, // Named like 
-};
-
-/**
- * Token struct for the lexer and parser to work with
- */
-struct d_Token {
-    wchar_t *value;
-    uint8_t type;
-};
 
 
 /* Function Prototypes */
 struct d_Token *d_lexer(const wchar_t *line);
-void d_parser(struct d_Token *tokens);
+void d_parser(const struct d_Token *tokens);
 
 
 
@@ -120,6 +94,40 @@ static inline unsigned char is_alpha(wchar_t ch) {
     else return 0;
 }
 
+/**
+ * Used to help provide error messages
+ */
+static inline wchar_t *d_token_type_finder(uint8_t type) {
+    if (type == 1) return L"COMMAND";
+    else if (type == 2) return L"ARG_STR";
+    else if (type == 4) return L"ARG_INT";
+    else if (type == 8) return L"ARG_STD";
+    else if (type == 16) return L"D_EOL";
+    else return L"INVALID";
+}
+
+static inline int d_token_counter(const struct d_Token *tokens) {
+    for (int i = 0; i < MAX_BUFSIZE; i++) {
+        if ((tokens + i)->type == D_EOL) {
+            return ++i;
+        } else
+            continue;
+    }
+
+    return 0; // Needed to stop compiler warnings
+}
+
+static inline int d_token_type_checker(const struct d_Token *tokens, uint8_t *expt) {
+    for (int i = 0; i < MAX_BUFSIZE; i++) {
+       if ((tokens + i)->type == D_EOL && *(expt + i) == D_EOL) return 1;
+       else if ((tokens + i)->type == D_EOL || *(expt + i) == D_EOL) return 0;
+       else if ((tokens + i)->type != *(expt + i)) return 0;
+       else continue;
+    }
+
+    return 0; // Needed to stop compiler warnings
+}
+
 
 
 
@@ -129,8 +137,6 @@ static inline unsigned char is_alpha(wchar_t ch) {
  * is pressed in DEBUG mode
  */
 void d_intepreter(wchar_t *line) {
-    DEBUG_MESSAGE(L"You've called the intepreter!", 0x07);
-
     // Call Lexer which returns token list
     struct d_Token *tokens = d_lexer(line);
 
@@ -184,14 +190,14 @@ struct d_Token *d_lexer(const wchar_t *line) {
         }
 
         /* Whitespace - Only spaces are supported */
-        if (ch == L' ') {
+        else if (ch == L' ') {
             tokens_read++;
             col = 0;
             ch = d_scanner_getch(line);
         }
 
         /* Integers - Conversions are done later also we just assume that no one misstypes anything */
-        if (is_digit(ch)) {
+        else if (is_digit(ch)) {
             T_NAME[col++] = ch;
 
             while(is_digit(ch = d_scanner_getch(line)))
@@ -208,7 +214,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
         }
 
         /* Strings */
-        if (ch == L'"') {
+        else if (ch == L'"') {
 
             while(1) {
                 ch = d_scanner_getch(line);
@@ -231,7 +237,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
          * Other identifiers - They have to start with a character [a-z][A-Z] 
          * or else it's considered an integer 
          */
-        if (is_alpha(ch)) {
+        else if (is_alpha(ch)) {
             T_NAME[col++] = ch;
             T_TYPE = ARG_STD;
 
@@ -249,6 +255,13 @@ struct d_Token *d_lexer(const wchar_t *line) {
 
             }
         }
+
+        /* Throw an error */
+        else {
+            DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Unknown character %lc found",
+                        ++tokens_read, ch), 0x0C);
+            tokens->type = INVALID;
+        }
     }
 
     /* In our "syntax" The first token is always of the command type */
@@ -257,25 +270,30 @@ struct d_Token *d_lexer(const wchar_t *line) {
     return tokens;
 }
 
-/* Just for testing */
-static inline wchar_t *d_token_type_finder(uint8_t type) {
-    if (type == 1) return L"COMMAND";
-    else if (type == 2) return L"ARG_STR";
-    else if (type == 4) return L"ARG_INT";
-    else if (type == 8) return L"ARG_STD";
-    else if (type == 16) return L"D_EOL";
-    else return L"INVALID";
-}
 
-void d_parser(struct d_Token *tokens) {
-    DEBUG_MESSAGE(L"BEGINNING OF THE PARSER", 0x07);
-
+void d_parser(const struct d_Token *tokens) {
+    /*
     for (int i = 0; i < MAX_BUFSIZE; i++) {
         DEBUG_MESSAGE(create_string(L"Token Value : %ls, Token Type : %ls",
                     (tokens+i)->value, d_token_type_finder((tokens+i)->type)), 0x07);
 
         if ((tokens+i)->type == D_EOL) break;
     }
+    */
 
-    DEBUG_MESSAGE(L"END OF THE PARSER", 0x07);
+    /* If the first token is an empty string then just return */
+    if (w_string_cmp(tokens->value, L"")) {
+        DEBUG_MESSAGE(L"", 0x07);
+        return;
+    }
+
+    /********* D_ECHO - ECHO *********/
+    if (w_string_cmp(tokens->value, d_commands[0])) {    // void d_echo(const struct d_Token *tokens);
+        /* echo doesn't really need any checking except for lexer stuff */
+        /* Do the function */
+        d_echo(tokens);
+    } else if (0) {
+    } else {
+        DEBUG_MESSAGE(create_string(L"Parser Error: \"%ls\" is not a recognized command", tokens->value), 0x0C);
+    }
 }
