@@ -20,14 +20,19 @@ struct d_Debug {
      */
     struct ListNode *messages;
 
+    /* Command history - only saves upto MAX_BUFSIZE commands */
+    wchar_t **com_his; // First command is empty so we can return to it
+    int com_pos;
+
     /* This is what the user types into */
     wchar_t *str;
 
     /* The position in the text that the scanner is at */
-    uint8_t scan_pos;
+    int scan_pos;
 
     /* Position the text_cursor is at */
-    uint8_t curs_pos;
+    int curs_pos_x;
+    int curs_pos_y; // For scrolling commands
 
     /* What character the text cursor displays */
     wchar_t curs_ch;
@@ -65,7 +70,7 @@ struct d_Token {
 /* Externs */
 void d_debug_init();
 void d_debug_deinit();
-void d_addchar(wchar_t ch);
+void d_addchar(const wchar_t ch);
 void d_delchar();
-void d_intepreter(wchar_t *line);
+void d_intepreter(const wchar_t *line);
 #endif

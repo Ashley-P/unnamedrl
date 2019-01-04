@@ -91,11 +91,43 @@ void plot_line(int x0, int y0, int x1, int y1) {
  */
 int w_string_cmp(const wchar_t *a, const wchar_t *b) {
     for (int i = 0;; i++) {
-        if (*(a + i) == '\0' && *(b + i) == '\0') {
+        if (*(a + i) == L'\0' && *(b + i) == L'\0') {
             return 1;
         } else if (*(a + i) == *(b + i)) {
             continue;
         } else 
             return 0;
     }
+}
+
+/**
+ * wchar_t string copying
+ * Requires null-terminated strings
+ * Undefined behaviour if src is larger than dest
+ */
+void w_string_cpy(const wchar_t *src, wchar_t *dest) {
+    // Strings could be larger than MAX_BUFSIZE so we just do an infinite loop
+    for (int i = 0;; i++) {
+        *(dest + i) = *(src + i);
+        if (*(src + i) == L'\0')
+            break;
+    }
+}
+
+/**
+ * wchar_t string length 
+ * Requires null-terminated strings
+ */
+int w_string_len(const wchar_t *str) {
+    int i = 0;
+    while (*(str + i) != L'\0') {
+        i++;
+    }
+
+    return i;
+}
+
+void reset_str(wchar_t *str) {
+    for (int i = 0; i < MAX_BUFSIZE; i++)
+        *(str + i) = L'\0';
 }

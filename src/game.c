@@ -166,6 +166,8 @@ void handle_keys(KEY_EVENT_RECORD kev) {
     if (!kev.bKeyDown) return;
 
     /* state checking */
+
+    /********* GAME *********/
     if (control_state == GAME) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
@@ -207,6 +209,7 @@ void handle_keys(KEY_EVENT_RECORD kev) {
         }
 
 
+    /********* DEBUG *********/
     } else if (control_state == DEBUG) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
@@ -236,22 +239,53 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                 case 0xDB ... 0xDF: // Other
                 case VK_SPACE:
                 case 0xE2:          // Backslash
+                    d_debug.curs_pos_y = 0;
                     d_addchar(kev.uChar.UnicodeChar);
                     break;
 
                 case VK_BACK:       // Backspace
+                    d_debug.curs_pos_y = 0;
                     d_delchar();
                     break;
 
                 case VK_RETURN:
                     d_intepreter(d_debug.str);
+                    d_debug.curs_pos_y = 0;
                     break;
 
                 /* Arrow Keys */
                 case VK_LEFT:
                 case VK_RIGHT:
                 case VK_UP:
+                    if (d_debug.curs_pos_y == MAX_BUFSIZE - 1) break;
+                    else if (w_string_cmp(*(d_debug.com_his + d_debug.curs_pos_y + 1 ), L""))
+                        break;
+                    else {
+                        d_debug.curs_pos_y++;
+                        reset_str(d_debug.str);
+
+                        // copy the command at curs_pos_y to the line
+                        w_string_cpy(*(d_debug.com_his + d_debug.curs_pos_y), d_debug.str);
+
+                        // Move curs_pos_x to the correct place
+                        d_debug.curs_pos_x = w_string_len(d_debug.str);
+                    }
+                    break;
                 case VK_DOWN:
+                    if (d_debug.curs_pos_y == 0) break;
+                    else if (d_debug.curs_pos_y - 1 == 0) {
+                        reset_str(d_debug.str);
+                        d_debug.curs_pos_x = 0;
+                    } else {
+                        d_debug.curs_pos_y--;
+                        reset_str(d_debug.str);
+
+                        // copy the command at curs_pos_y to the line
+                        w_string_cpy(*(d_debug.com_his + d_debug.curs_pos_y), d_debug.str);
+
+                        // Move curs_pos_x to the correct place
+                        d_debug.curs_pos_x = w_string_len(d_debug.str);
+                    }
                     break;
 
                 case VK_ESCAPE:

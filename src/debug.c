@@ -23,13 +23,22 @@ void d_parser(const struct d_Token *tokens);
 
 /* init function for debug, just sets up the globals really */
 void d_debug_init() {
-    d_debug.str      = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
-    d_debug.scan_pos = 0;
-    d_debug.curs_pos = 0;
-    d_debug.curs_ch  = L'_';
+    d_debug.com_his = (wchar_t **)calloc(MAX_BUFSIZE, sizeof(wchar_t *));
+    for (int i = 0; i < MAX_BUFSIZE; i++) 
+        *(d_debug.com_his + i) = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
+
+    d_debug.str        = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
+    d_debug.com_pos    = 1;
+    d_debug.scan_pos   = 0;
+    d_debug.curs_pos_x = 0;
+    d_debug.curs_pos_y = 0;
+    d_debug.curs_ch    = L'_';
 }
 
 void d_debug_deinit() {
+    for (int i = 0; i < MAX_BUFSIZE; i++) 
+        free(d_debug.com_his + i);
+    free(d_debug.com_his);
     free(d_debug.str);
     message_list_deinit(&d_debug.messages);
 }
@@ -59,18 +68,18 @@ void d_tokens_deinit(struct d_Token *tokens) {
  * Some functions to make the inputing to the string more streamlined
  * Right now they assume that the cursor is always at the end of the string
  */
-void d_addchar(wchar_t ch) {
-    if (d_debug.curs_pos == MAX_BUFSIZE - 1) return;
+void d_addchar(const wchar_t ch) {
+    if (d_debug.curs_pos_x == MAX_BUFSIZE - 1) return;
 
-    *(d_debug.str + d_debug.curs_pos) = ch;
-    ++d_debug.curs_pos;
+    *(d_debug.str + d_debug.curs_pos_x) = ch;
+    ++d_debug.curs_pos_x;
 }
 
 void d_delchar() {
-    if (d_debug.curs_pos == 0) return;
+    if (d_debug.curs_pos_x == 0) return;
     
-    *(d_debug.str + d_debug.curs_pos - 1) = L'\0';
-    --d_debug.curs_pos;
+    *(d_debug.str + d_debug.curs_pos_x - 1) = L'\0';
+    --d_debug.curs_pos_x;
 }
 
 
@@ -78,11 +87,6 @@ void d_delchar() {
 /**
  * Other quick helper functions go here 
  */
-static inline void d_reset_str() {
-    free(d_debug.str);
-    d_debug.str = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
-}
-
 static inline unsigned char d_is_digit(wchar_t ch) {
     if (ch >= L'0' && ch <= L'9') return 1;
     else return 0;
@@ -146,7 +150,15 @@ void d_print_tokens(struct d_Token *tokens, unsigned char colour) {
  * The intepreter which is called from inside of handle_keys when the enter
  * is pressed in DEBUG mode
  */
-void d_intepreter(wchar_t *line) {
+void d_intepreter(const wchar_t *line) {
+    // Add the line to the command history, doesn't matter if the command is legit or not
+    for (int j = MAX_BUFSIZE - 2; j > 0; j--) {
+        /* Moving the commands up the list */
+        w_string_cpy(*(d_debug.com_his + j), *(d_debug.com_his + j + 1));
+    }
+    w_string_cpy(line, *(d_debug.com_his + 1));
+
+
     // Call Lexer which returns token list
     struct d_Token *tokens = d_lexer(line);
 
@@ -164,9 +176,9 @@ void d_intepreter(wchar_t *line) {
 
     // Cleanup
 cleanup:
-    d_reset_str();
+    reset_str(d_debug.str);
     d_debug.scan_pos = 0;
-    d_debug.curs_pos = 0;
+    d_debug.curs_pos_x = 0;
     d_tokens_deinit(tokens);
 }
 
@@ -184,6 +196,7 @@ static inline wchar_t d_scanner_peek(const wchar_t *line) {
 
 
 struct d_Token *d_lexer(const wchar_t *line) {
+
     struct d_Token *tokens = d_tokens_init();
     unsigned char tokens_read = 0;
     unsigned char col = 0; /* So we can correctly construct the token value */
@@ -289,6 +302,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
             break;
     }
 
+
     return tokens;
 }
 
@@ -300,8 +314,8 @@ void d_parser(const struct d_Token *tokens) {
         return;
     }
 
-    /********* D_ECHO - ECHO *********/
-    if (w_string_cmp(tokens->value, d_commands[0])) {    // void d_echo(const struct d_Token *tokens);
+    /********* D_ECHO - void d_echo(const struct d_Token *tokens); *********/
+    if (w_string_cmp(tokens->value, d_commands[0])) {
         /* echo doesn't really need any checking except for lexer stuff */
         /* Do the function */
         d_echo(tokens);
