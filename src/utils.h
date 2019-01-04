@@ -10,4 +10,6 @@ int w_string_cmp(const wchar_t *a, const wchar_t *b);
 void w_string_cpy(const wchar_t *src, wchar_t *dest);
 int w_string_len(const wchar_t *str);
 void w_string_reset(wchar_t *str, size_t sz);
+void w_shift_chars_right(wchar_t *str, size_t sz, int shift_len, int shift_pos);
+void w_shift_chars_left(wchar_t *str, size_t sz, int shift_len, int shift_pos);
 #endif

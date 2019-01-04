@@ -131,3 +131,24 @@ void w_string_reset(wchar_t *str, size_t sz) {
     for (int i = 0; i < sz; i++)
         *(str + i) = L'\0';
 }
+
+void w_shift_chars_right(wchar_t *str, size_t sz, int shift_len, int shift_pos) {
+    for (int i = sz; i >= shift_pos; i--) {
+        if (i + shift_len >= sz) continue;
+        else *(str + i + shift_len) = *(str + i);
+    }
+    *(str + shift_pos) = L'\0';
+
+    // Null Terminate the string
+    *(str + sz - 1) = L'\0';
+}
+
+void w_shift_chars_left(wchar_t *str, size_t sz, int shift_len, int shift_pos) {
+    for (int i = shift_pos; i <= sz; i++) {
+        if (i + shift_len >= sz) continue;
+        //else *(str + i) = *(str + i + shift_len);
+        else *(str + i - shift_len) = *(str + i);
+    }
+
+    *(str + sz - 1) = L'\0';
+}

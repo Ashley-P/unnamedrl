@@ -65,26 +65,6 @@ void d_tokens_deinit(struct d_Token *tokens) {
 
 
 /**
- * Some functions to make the inputing to the string more streamlined
- * Right now they assume that the cursor is always at the end of the string
- */
-void d_addchar(const wchar_t ch) {
-    if (d_debug.curs_pos_x == MAX_BUFSIZE - 1) return;
-
-    *(d_debug.str + d_debug.curs_pos_x) = ch;
-    ++d_debug.curs_pos_x;
-}
-
-void d_delchar() {
-    if (d_debug.curs_pos_x == 0) return;
-    
-    *(d_debug.str + d_debug.curs_pos_x - 1) = L'\0';
-    --d_debug.curs_pos_x;
-}
-
-
-
-/**
  * Other quick helper functions go here 
  */
 static inline unsigned char d_is_digit(wchar_t ch) {

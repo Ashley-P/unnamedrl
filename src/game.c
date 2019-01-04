@@ -240,12 +240,20 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                 case VK_SPACE:
                 case 0xE2:          // Backslash
                     d_debug.curs_pos_y = 0;
-                    d_addchar(kev.uChar.UnicodeChar);
+                    if (d_debug.curs_pos_x == MAX_BUFSIZE - 1) break;
+
+                    w_shift_chars_right(d_debug.str, MAX_BUFSIZE, 1, d_debug.curs_pos_x);
+                    *(d_debug.str + d_debug.curs_pos_x) = kev.uChar.UnicodeChar;
+                    ++d_debug.curs_pos_x;
                     break;
 
                 case VK_BACK:       // Backspace
                     d_debug.curs_pos_y = 0;
-                    d_delchar();
+                    if (d_debug.curs_pos_x == 0) break;
+
+                    w_shift_chars_left(d_debug.str, MAX_BUFSIZE, 1, d_debug.curs_pos_x);
+                    --d_debug.curs_pos_x;
+                    //d_delchar();
                     break;
 
                 case VK_RETURN:
@@ -255,7 +263,16 @@ void handle_keys(KEY_EVENT_RECORD kev) {
 
                 /* Arrow Keys */
                 case VK_LEFT:
+                    if (d_debug.curs_pos_x == 0) break;
+
+                    d_debug.curs_pos_x--;
+                    break;
                 case VK_RIGHT:
+                    if (d_debug.curs_pos_x == MAX_BUFSIZE) break;
+                    else if (d_debug.curs_pos_x == w_string_len(d_debug.str)) break;
+
+                    d_debug.curs_pos_x++;
+                    break;
                 case VK_UP:
                     if (d_debug.curs_pos_y == MAX_BUFSIZE - 1) break;
                     else if (w_string_cmp(*(d_debug.com_his + d_debug.curs_pos_y + 1 ), L""))

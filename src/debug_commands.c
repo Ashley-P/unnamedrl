@@ -9,5 +9,5 @@ const wchar_t *d_commands[] = {L"echo"};
 void d_echo(const struct d_Token *tokens) {
     int i = 1;
     while ((tokens + i)->type != D_EOL)
-        DEBUG_MESSAGE(create_string(L"%ls", (tokens +i++)->value), 0x07);
+        DEBUG_MESSAGE(create_string(L"%ls", (tokens + i++)->value), 0x07);
 }
