@@ -198,7 +198,7 @@ void handle_keys(KEY_EVENT_RECORD kev) {
 
                 /* Other */
                 case VK_ESCAPE:
-                    exit(0); break; // No cleanup needed TODO: Make this open a menu
+                    exit(0); break; // No cleanup needed @TODO: Make this open a menu
 
                 default:
                     break;
@@ -255,7 +255,7 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                     break;
 
                 case VK_ESCAPE:
-                    exit(0); break; // No cleanup needed TODO: Make this open a menu
+                    exit(0); break; // No cleanup needed @TODO: Make this open a menu
 
                 default:
                     break;

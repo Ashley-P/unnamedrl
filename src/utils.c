@@ -24,7 +24,7 @@ wchar_t *create_string(wchar_t *str, ...) {
 /**
  * Bresenhams Line Algorithm
  * Made of three functions to plot the line in any direction instead of just one octant
- * TODO: Have it return a list or something so the values can be used instead of just drawing
+ * @TODO: Have it return a list or something so the values can be used instead of just drawing
  * characters to the screen
  */
 void plot_line_low(int x0, int y0, int x1, int y1) {

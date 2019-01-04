@@ -22,8 +22,8 @@ TODO:
     - Individual Maps (Definitely randomised)
 - Quest/Mission System
 - Destructible terrain? 
-- Debug Mode/Menu
-    - Logging
++ Debug Mode/Menu
+    * Logging
     - Test Arena
     - Spawning
 
@@ -58,12 +58,12 @@ Should be called from any menu?
 - Raw editing of actors/objects?
 - Move actors/objects/player
 - Toggle FOV
-- Echo (more of a test command)
++ Echo (more of a test command)
 
 --- Other ideas for the command line ---
 - Autocomplete commands (never gonna do this)
 - Clipboard
-- Command history
+* Command history
 - Scrolling the history
 
 
