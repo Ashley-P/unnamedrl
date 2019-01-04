@@ -83,12 +83,12 @@ static inline void d_reset_str() {
     d_debug.str = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
 }
 
-static inline unsigned char is_digit(wchar_t ch) {
+static inline unsigned char d_is_digit(wchar_t ch) {
     if (ch >= L'0' && ch <= L'9') return 1;
     else return 0;
 }
 
-static inline unsigned char is_alpha(wchar_t ch) {
+static inline unsigned char d_is_alpha(wchar_t ch) {
     if (ch >= L'a' && ch <= L'z') return 1;
     else if (ch >= L'A' && ch <= L'Z') return 1;
     else return 0;
@@ -126,6 +126,16 @@ static inline int d_token_type_checker(const struct d_Token *tokens, uint8_t *ex
     }
 
     return 0; // Needed to stop compiler warnings
+}
+
+
+void d_print_tokens(struct d_Token *tokens, unsigned char colour) {
+    for (int i = 0; i < MAX_BUFSIZE; i++) {
+        DEBUG_MESSAGE(create_string(L"Token Value : %ls, Token Type : %ls",
+                    (tokens+i)->value, d_token_type_finder((tokens+i)->type)), colour);
+
+        if ((tokens+i)->type == D_EOL) break;
+    }
 }
 
 
@@ -197,10 +207,10 @@ struct d_Token *d_lexer(const wchar_t *line) {
         }
 
         /* Integers - Conversions are done later also we just assume that no one misstypes anything */
-        else if (is_digit(ch)) {
+        else if (d_is_digit(ch)) {
             T_NAME[col++] = ch;
 
-            while(is_digit(ch = d_scanner_getch(line)))
+            while(d_is_digit(ch = d_scanner_getch(line)))
                 T_NAME[col++] = ch;
 
             if (ch == L'\0' || ch == L' ')
@@ -237,13 +247,13 @@ struct d_Token *d_lexer(const wchar_t *line) {
          * Other identifiers - They have to start with a character [a-z][A-Z] 
          * or else it's considered an integer 
          */
-        else if (is_alpha(ch)) {
+        else if (d_is_alpha(ch)) {
             T_NAME[col++] = ch;
             T_TYPE = ARG_STD;
 
             while(1) {
                 ch = d_scanner_getch(line);
-                if (is_digit(ch) || is_alpha(ch))
+                if (d_is_digit(ch) || d_is_alpha(ch))
                     T_NAME[col++] = ch;
                 else if (ch == L'"') { // Don't allow quotes in the middle
                     DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Stray quote inside of argument",
@@ -267,20 +277,22 @@ struct d_Token *d_lexer(const wchar_t *line) {
     /* In our "syntax" The first token is always of the command type */
     tokens->type = COMMAND;
 
+    
+    for (int i = 0; i < MAX_BUFSIZE; i++) {
+        if ((tokens + i)->type == INVALID) {
+            DEBUG_MESSAGE(L"Lexer error invalid tokens found:", 0x0C);
+            d_print_tokens(tokens, 0x0C);
+            tokens->type = INVALID;
+            break;
+        } else if ((tokens + i)->type == D_EOL)
+            break;
+    }
+
     return tokens;
 }
 
 
 void d_parser(const struct d_Token *tokens) {
-    /*
-    for (int i = 0; i < MAX_BUFSIZE; i++) {
-        DEBUG_MESSAGE(create_string(L"Token Value : %ls, Token Type : %ls",
-                    (tokens+i)->value, d_token_type_finder((tokens+i)->type)), 0x07);
-
-        if ((tokens+i)->type == D_EOL) break;
-    }
-    */
-
     /* If the first token is an empty string then just return */
     if (w_string_cmp(tokens->value, L"")) {
         DEBUG_MESSAGE(L"", 0x07);
