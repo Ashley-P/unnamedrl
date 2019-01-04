@@ -176,7 +176,7 @@ void d_intepreter(const wchar_t *line) {
 
     // Cleanup
 cleanup:
-    reset_str(d_debug.str);
+    w_string_reset(d_debug.str, MAX_BUFSIZE);
     d_debug.scan_pos = 0;
     d_debug.curs_pos_x = 0;
     d_tokens_deinit(tokens);

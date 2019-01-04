@@ -127,7 +127,7 @@ int w_string_len(const wchar_t *str) {
     return i;
 }
 
-void reset_str(wchar_t *str) {
-    for (int i = 0; i < MAX_BUFSIZE; i++)
+void w_string_reset(wchar_t *str, size_t sz) {
+    for (int i = 0; i < sz; i++)
         *(str + i) = L'\0';
 }

@@ -262,7 +262,7 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                         break;
                     else {
                         d_debug.curs_pos_y++;
-                        reset_str(d_debug.str);
+                        w_string_reset(d_debug.str, MAX_BUFSIZE);
 
                         // copy the command at curs_pos_y to the line
                         w_string_cpy(*(d_debug.com_his + d_debug.curs_pos_y), d_debug.str);
@@ -274,11 +274,12 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                 case VK_DOWN:
                     if (d_debug.curs_pos_y == 0) break;
                     else if (d_debug.curs_pos_y - 1 == 0) {
-                        reset_str(d_debug.str);
+                        w_string_reset(d_debug.str, MAX_BUFSIZE);
+                        d_debug.curs_pos_y--;
                         d_debug.curs_pos_x = 0;
                     } else {
                         d_debug.curs_pos_y--;
-                        reset_str(d_debug.str);
+                        w_string_reset(d_debug.str, MAX_BUFSIZE);
 
                         // copy the command at curs_pos_y to the line
                         w_string_cpy(*(d_debug.com_his + d_debug.curs_pos_y), d_debug.str);
