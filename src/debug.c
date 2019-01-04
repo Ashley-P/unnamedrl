@@ -268,9 +268,10 @@ struct d_Token *d_lexer(const wchar_t *line) {
 
         /* Throw an error */
         else {
-            DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Unknown character %lc found",
+            DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Unknown character \'%c\' found",
                         ++tokens_read, ch), 0x0C);
             tokens->type = INVALID;
+            return tokens;
         }
     }
 
