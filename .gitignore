@@ -9,3 +9,6 @@ src/obj/*.o
 
 # Error Loggings
 error.log
+
+# Powershell scripts
+*.ps1
