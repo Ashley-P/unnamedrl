@@ -13,6 +13,8 @@
 /* Globals */
 struct d_Debug d_debug;
 
+const static wchar_t *d_symbol_list = L"!$%^&*()-_=+[{]};:'@#~,<.>/?\\|";
+
 
 
 
@@ -238,10 +240,11 @@ struct d_Token *d_lexer(const wchar_t *line) {
         }
 
         /**
-         * Other identifiers - They have to start with a character [a-z][A-Z] 
+         * Other identifiers - They have to start with a character [a-z][A-Z]
+         * Or any symbols in the symbol list 
          * or else it's considered an integer 
          */
-        else if (d_is_alpha(ch)) {
+        else if (d_is_alpha(ch) || ch == L'_') {
             T_NAME[col++] = ch;
             T_TYPE = ARG_STD;
 
@@ -289,13 +292,14 @@ struct d_Token *d_lexer(const wchar_t *line) {
 
 
 void d_parser(const struct d_Token *tokens) {
+    d_print_tokens(tokens, 0x0A);
+
     /* If the first token is an empty string then just return */
     if (w_string_cmp(tokens->value, L"")) {
         DEBUG_MESSAGE(L"", 0x07);
         return;
     }
 
-    //d_print_tokens(tokens, 0x0A);
 
 
     /********* D_ECHO - void d_echo(const struct d_Token *tokens); *********/
@@ -303,6 +307,21 @@ void d_parser(const struct d_Token *tokens) {
         /* echo doesn't really need any checking except for lexer stuff */
         /* Do the function */
         d_echo(tokens);
+
+
+
+    /********* D_SET_VARS - void d_set_vars(const struct d_Token *tokens); *********/
+    } else if (w_string_cmp(tokens->value, d_commands[1])) {
+        d_set_vars(tokens);
+        
+
+
+    /********* D_CLS - void d_cls(const struct d_Token *tokens); *********/
+    } else if (w_string_cmp(tokens->value, d_commands[2])) {
+        d_cls(tokens);
+
+
+
     } else if (0) {
     } else {
         DEBUG_MESSAGE(create_string(L"Parser Error: \"%ls\" is not a recognized command", tokens->value), 0x0C);

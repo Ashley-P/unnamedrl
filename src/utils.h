@@ -12,4 +12,5 @@ int w_string_len(const wchar_t *str);
 void w_string_reset(wchar_t *str, size_t sz);
 void w_shift_chars_right(wchar_t *str, size_t sz, int shift_len, int shift_pos);
 void w_shift_chars_left(wchar_t *str, size_t sz, int shift_len, int shift_pos);
+int w_ch_in_str(const wchar_t ch, const wchar_t *str);
 #endif

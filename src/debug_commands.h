@@ -5,5 +5,7 @@
 extern const wchar_t *d_commands[];
 
 void d_echo(const struct d_Token *tokens);
+void d_set_vars(const struct d_Token *tokens);
+void d_cls(const struct d_Token *tokens);
 
 #endif

@@ -152,3 +152,12 @@ void w_shift_chars_left(wchar_t *str, size_t sz, int shift_len, int shift_pos) {
 
     *(str + sz - 1) = L'\0';
 }
+
+int w_ch_in_str(const wchar_t ch, const wchar_t *str) {
+    for (int i = 0;; i++) {
+        if (*(str + i) == L'\0') return 0;
+        else if (ch == *(str + i)) return 1;
+        else continue;
+    }
+
+}
