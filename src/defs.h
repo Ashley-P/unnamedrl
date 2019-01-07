@@ -62,7 +62,7 @@
 
 #define MAX_BUFSIZE 256
 
-/* Externs */
+#if 0
 extern enum ProgState program_state;
 extern enum ProgState control_state;
 extern struct Player *player;
@@ -71,6 +71,9 @@ extern struct ListNode *actor_list;
 extern struct ListNode *message_list;
 extern struct ListNode *turn_list;
 
+#endif
+
+/* Externs */
 extern struct d_Debug d_debug;
 
 /**
@@ -81,6 +84,22 @@ enum ProgState {
     GAME,
     DEBUG,
     DEBUG_FULL, // Normal DEBUG mode but it takes up the entire screen with messages
+};
+
+extern struct Globals globals;
+
+struct Globals {
+    int done_playing;
+    int paused;
+    long long ticks;
+    enum ProgState program_state;
+    enum ProgState control_state;
+
+    struct Player *player;
+    struct Map *test_map;
+    struct ListNode *actor_list;
+    struct ListNode *message_list;
+    struct ListNode *turn_list;
 };
 
 /**

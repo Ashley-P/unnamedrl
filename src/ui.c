@@ -61,27 +61,27 @@ void draw_ui_game() {
                     HEIGHT_FOUR_FIFTH);
 
     /* Drawing stuff on the play_screen actors, objects etc */
-    draw_map(test_map);
-    draw_player(player);
-    draw_actors(actor_list);
+    draw_map(globals.test_map);
+    draw_player(globals.player);
+    draw_actors(globals.actor_list);
 
     /* Drawing Stats */
     /* TODO: Make it so the colour the stat gets drawn in changes with it's value */
 
     /* Health */
-    wchar_t *hp = create_string(L"HP:     %d/%d", player->hp, MAX_HEALTH);
+    wchar_t *hp = create_string(L"HP:     %d/%d", (globals.player)->hp, MAX_HEALTH);
     draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp, 0x0A);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, player->hp, MAX_HEALTH, 0x0A);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, (globals.player)->hp, MAX_HEALTH, 0x0A);
     free(hp);
 
     /* Energy */
-    wchar_t *energy = create_string(L"Energy: %d/%d", player->energy, MAX_ENERGY);
+    wchar_t *energy = create_string(L"Energy: %d/%d", (globals.player)->energy, MAX_ENERGY);
     draw_string(WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL, energy, 0x0E);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, player->energy, MAX_ENERGY, 0x0E);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, (globals.player)->energy, MAX_ENERGY, 0x0E);
     free(energy);
 
     /* Drawing Messages */
-    draw_messages(2, HEIGHT_FOUR_FIFTH + 1, message_list, HEIGHT_ONE_FIFTH - 2, DOWN);
+    draw_messages(2, HEIGHT_FOUR_FIFTH + 1, globals.message_list, HEIGHT_ONE_FIFTH - 2, DOWN);
 }
 
 
@@ -145,16 +145,16 @@ void draw_ui_debug_full() {
 }
 
 /**
- * Controller function to draw the correct UI based on program_state
+ * Controller function to draw the correct UI based on globals.program_state
  */
 void draw_ui() {
-    if (program_state == GAME) {
+    if (globals.program_state == GAME) {
         draw_ui_game();
-    } else if (program_state == DEBUG) {
+    } else if (globals.program_state == DEBUG) {
         /* Draw the normal game ui then the debug menu ontop */
         draw_ui_game();
         draw_ui_debug();
-    } else if (program_state == DEBUG_FULL) {
+    } else if (globals.program_state == DEBUG_FULL) {
         draw_ui_debug_full();
     }
 }

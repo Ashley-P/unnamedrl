@@ -2,6 +2,7 @@
  * This file handles debug mode (except for input handling)
  * Importantly this contains the intepreter for the commands in debug mode
  * all functions and datatypes prefixed d_ to prevent namespace pollution
+ * @TODO : Add logging all debug messages to a debug.log file and all error messages to an error.log file
  */
 
 #include "debug.h" // defs.h already included in here
@@ -113,7 +114,7 @@ static inline int d_token_type_checker(const struct d_Token *tokens, uint8_t *ex
 }
 
 
-void d_print_tokens(struct d_Token *tokens, unsigned char colour) {
+void d_print_tokens(const struct d_Token *tokens, unsigned char colour) {
     for (int i = 0; i < MAX_BUFSIZE; i++) {
         DEBUG_MESSAGE(create_string(L"Token Value : %ls, Token Type : %ls",
                     (tokens+i)->value, d_token_type_finder((tokens+i)->type)), colour);
@@ -293,6 +294,9 @@ void d_parser(const struct d_Token *tokens) {
         DEBUG_MESSAGE(L"", 0x07);
         return;
     }
+
+    //d_print_tokens(tokens, 0x0A);
+
 
     /********* D_ECHO - void d_echo(const struct d_Token *tokens); *********/
     if (w_string_cmp(tokens->value, d_commands[0])) {

@@ -32,11 +32,36 @@ TODO:
 
 
 
+----- ITEMS/ENTITIES/OBJECTS -----
+Required reading
+http://roguebasin.roguelikedevelopment.org/index.php?title=Info_Files
+http://roguebasin.roguelikedevelopment.org/index.php?title=Info_File_Variant_-_Compile-to-Code
+
+Stuff like items need to be put in a seperate text file
+
+Syntax ideas:
+# for comments
+Remember to check newlines
+object type := MONSTER, ITEM (Maybe expand this or have a sub type for the item)
+All keywords are in ALL CAPS
+
+
+
+
+
+
+
+
+
+
 ----- DEBUG MODE THOUGHTS -----
 Opens a file at game start that it logs everything from start to finish
 Has a command line along with various debug messages (which means I have to implement a parser)
 
 Something like this and goes at the top of the screen
+
+
+Idea from Johnny :- Have the error file compress when it gets to a certain size and start a new one
 
 +------------------------------------+
 |                                    |

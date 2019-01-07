@@ -13,26 +13,26 @@
  */
 void player_init() {
     /**/
-    player = (struct Player *)malloc(sizeof(struct Player));
+    globals.player = (struct Player *)malloc(sizeof(struct Player));
 
     /* Setting up position */
-    player->px = 1;
-    player->py = 1;
+    (globals.player)->px = 1;
+    (globals.player)->py = 1;
 
     /* Setting the character to show */
-    player->ch    = L'@';
-    player->chcol = 0x07;
+    (globals.player)->ch    = L'@';
+    (globals.player)->chcol = 0x07;
 
     /* Giving the player stats */
-    player->hp     = MAX_HEALTH;
-    player->energy = MAX_ENERGY;
+    (globals.player)->hp     = MAX_HEALTH;
+    (globals.player)->energy = MAX_ENERGY;
 }
 
 /**
  * Frees up memory used by player_init()
  */
 void player_deinit() {
-    free(player);
+    free(globals.player);
 }
 
 /**

@@ -54,6 +54,8 @@ enum d_TokenType {
     ARG_INT = 1 << 2,
     ARG_STD = 1 << 3,
 
+    ARG_ANY = ARG_STR | ARG_INT | ARG_STD,
+
     D_EOL   = 1 << 4, // Named like 
 };
 

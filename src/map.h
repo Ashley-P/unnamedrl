@@ -2,18 +2,20 @@
 #define MAP_H
 
 
+#if 0
 /* Enum for the tile_type */
 enum TileType {
     NONE,
     FLOOR,
-    WALL
 };
+#endif
 
 /* Stores some basic information about each map tile */
 struct MapTile {
-    enum TileType tile_type;
     wchar_t glyph;
     char is_passable;
+    // NOT IMPLEMENTED YET @TODO: Implement
+    // struct Object *objs[MAX_BUFSIZE];
 };
 
 /**

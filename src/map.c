@@ -32,7 +32,6 @@ struct Map *map_gen() {
     int i, j;
     /* Getting all the tiles to be walls */
     for (i = 0; i < ptr->len; i++) {
-        ((ptr->map) + i)->tile_type   = WALL;
         ((ptr->map) + i)->glyph       = L'#';
         ((ptr->map) + i)->is_passable = 0;
     }
@@ -40,7 +39,6 @@ struct Map *map_gen() {
     /* Hollowing out a room */
     for (i = 1; i < ptr->x - 1; i++) {
         for (j = 1; j < ptr->y - 1; j++) {
-            ((ptr->map) + i + (j * ptr->x))->tile_type   = FLOOR;
             ((ptr->map) + i + (j * ptr->x))->glyph       = L'.';
             ((ptr->map) + i + (j * ptr->x))->is_passable = 1;
         }
@@ -69,13 +67,13 @@ void draw_map(const struct Map *map) {
  * Right now just generates the test map
  */
 void map_init() {
-    test_map = map_gen();
+    globals.test_map = map_gen();
 }
 
 /**
  * freeing up memory taken by map_init()
  */
 void map_deinit() {
-    free(test_map->map);
-    free(test_map);
+    free((globals.test_map)->map);
+    free(globals.test_map);
 }
