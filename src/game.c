@@ -245,9 +245,9 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                 case VK_SPACE:
                 case 0xE2:          // Backslash
                     d_debug.curs_pos_y = 0;
-                    if (d_debug.curs_pos_x == MAX_BUFSIZE - 1) break;
+                    if (d_debug.curs_pos_x == MAX_BUFSIZE_SMALL - 1) break;
 
-                    w_shift_chars_right(d_debug.str, MAX_BUFSIZE, 1, d_debug.curs_pos_x);
+                    w_shift_chars_right(d_debug.str, MAX_BUFSIZE_SMALL, 1, d_debug.curs_pos_x);
                     *(d_debug.str + d_debug.curs_pos_x) = kev.uChar.UnicodeChar;
                     ++d_debug.curs_pos_x;
                     break;
@@ -256,7 +256,7 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                     d_debug.curs_pos_y = 0;
                     if (d_debug.curs_pos_x == 0) break;
 
-                    w_shift_chars_left(d_debug.str, MAX_BUFSIZE, 1, d_debug.curs_pos_x);
+                    w_shift_chars_left(d_debug.str, MAX_BUFSIZE_SMALL, 1, d_debug.curs_pos_x);
                     --d_debug.curs_pos_x;
                     break;
 
@@ -272,18 +272,18 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                     d_debug.curs_pos_x--;
                     break;
                 case VK_RIGHT:
-                    if (d_debug.curs_pos_x == MAX_BUFSIZE) break;
+                    if (d_debug.curs_pos_x == MAX_BUFSIZE_SMALL) break;
                     else if (d_debug.curs_pos_x == w_string_len(d_debug.str)) break;
 
                     d_debug.curs_pos_x++;
                     break;
                 case VK_UP:
-                    if (d_debug.curs_pos_y == MAX_BUFSIZE - 1) break;
+                    if (d_debug.curs_pos_y == MAX_BUFSIZE_SMALL - 1) break;
                     else if (w_string_cmp(*(d_debug.com_his + d_debug.curs_pos_y + 1 ), L""))
                         break;
                     else {
                         d_debug.curs_pos_y++;
-                        w_string_reset(d_debug.str, MAX_BUFSIZE);
+                        w_string_reset(d_debug.str, MAX_BUFSIZE_SMALL);
 
                         // copy the command at curs_pos_y to the line
                         w_string_cpy(*(d_debug.com_his + d_debug.curs_pos_y), d_debug.str);
@@ -295,12 +295,12 @@ void handle_keys(KEY_EVENT_RECORD kev) {
                 case VK_DOWN:
                     if (d_debug.curs_pos_y == 0) break;
                     else if (d_debug.curs_pos_y - 1 == 0) {
-                        w_string_reset(d_debug.str, MAX_BUFSIZE);
+                        w_string_reset(d_debug.str, MAX_BUFSIZE_SMALL);
                         d_debug.curs_pos_y--;
                         d_debug.curs_pos_x = 0;
                     } else {
                         d_debug.curs_pos_y--;
-                        w_string_reset(d_debug.str, MAX_BUFSIZE);
+                        w_string_reset(d_debug.str, MAX_BUFSIZE_SMALL);
 
                         // copy the command at curs_pos_y to the line
                         w_string_cpy(*(d_debug.com_his + d_debug.curs_pos_y), d_debug.str);

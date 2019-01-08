@@ -60,7 +60,10 @@
 #define PLAY_SCREEN_OFFSET_X 1
 #define PLAY_SCREEN_OFFSET_Y 1
 
-#define MAX_BUFSIZE 256
+#define MAX_BUFSIZE_SMALL 256
+#define MAX_BUFSIZE_MED   1024 
+#define MAX_BUFSIZE_LARGE 2048
+#define MAX_BUFSIZE_SUPER 100000
 
 #if 0
 extern enum ProgState program_state;
@@ -73,8 +76,6 @@ extern struct ListNode *turn_list;
 
 #endif
 
-/* Externs */
-extern struct d_Debug d_debug;
 
 /**
  * So that the program knows what to do with the input
@@ -86,6 +87,8 @@ enum ProgState {
     DEBUG_FULL, // Normal DEBUG mode but it takes up the entire screen with messages
 };
 
+/* Externs */
+extern struct d_Debug d_debug;
 extern struct Globals globals;
 
 struct Globals {

@@ -6,13 +6,13 @@
 
 
 /**
- * Creates and returns a string of size MAX_BUFSIZE (defined in defs.h)
+ * Creates and returns a string of size MAX_BUFSIZE_SMALL (defined in defs.h)
  * takes a variable argument list 
  */
 wchar_t *create_string(wchar_t *str, ...) {
     va_list args;
     va_start(args, str);
-    wchar_t *new_str = (wchar_t *)malloc(sizeof(wchar_t) * MAX_BUFSIZE);
+    wchar_t *new_str = (wchar_t *)malloc(sizeof(wchar_t) * MAX_BUFSIZE_SMALL);
     vswprintf(new_str, str, args);
 
     va_end(args);

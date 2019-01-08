@@ -26,11 +26,11 @@ void d_parser(const struct d_Token *tokens);
 
 /* init function for debug, just sets up the globals really */
 void d_debug_init() {
-    d_debug.com_his = (wchar_t **)calloc(MAX_BUFSIZE, sizeof(wchar_t *));
-    for (int i = 0; i < MAX_BUFSIZE; i++) 
-        *(d_debug.com_his + i) = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
+    d_debug.com_his = (wchar_t **)calloc(MAX_BUFSIZE_SMALL, sizeof(wchar_t *));
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) 
+        *(d_debug.com_his + i) = (wchar_t *)calloc(MAX_BUFSIZE_SMALL, sizeof(wchar_t));
 
-    d_debug.str        = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
+    d_debug.str        = (wchar_t *)calloc(MAX_BUFSIZE_SMALL, sizeof(wchar_t));
     d_debug.com_pos    = 1;
     d_debug.scan_pos   = 0;
     d_debug.curs_pos_x = 0;
@@ -39,7 +39,7 @@ void d_debug_init() {
 }
 
 void d_debug_deinit() {
-    for (int i = 0; i < MAX_BUFSIZE; i++) 
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) 
         free(d_debug.com_his + i);
     free(d_debug.com_his);
     free(d_debug.str);
@@ -47,10 +47,10 @@ void d_debug_deinit() {
 }
 
 struct d_Token *d_tokens_init() {
-    struct d_Token *tokens = (struct d_Token *)calloc(MAX_BUFSIZE, sizeof(struct d_Token));
+    struct d_Token *tokens = (struct d_Token *)calloc(MAX_BUFSIZE_SMALL, sizeof(struct d_Token));
 
-    for (int i = 0; i < MAX_BUFSIZE; i++) {
-        (tokens + i)->value = (wchar_t *)calloc(MAX_BUFSIZE, sizeof(wchar_t));
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
+        (tokens + i)->value = (wchar_t *)calloc(MAX_BUFSIZE_SMALL, sizeof(wchar_t));
         (tokens + i)->type = 0;
     }
 
@@ -58,7 +58,7 @@ struct d_Token *d_tokens_init() {
 }
 
 void d_tokens_deinit(struct d_Token *tokens) {
-    for (int i = 0; i < MAX_BUFSIZE; i++) {
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
         free((tokens + i)->value);
     }
 
@@ -94,7 +94,7 @@ static inline wchar_t *d_token_type_finder(uint8_t type) {
 }
 
 static inline int d_token_counter(const struct d_Token *tokens) {
-    for (int i = 0; i < MAX_BUFSIZE; i++) {
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
         if ((tokens + i)->type == D_EOL) {
             return ++i;
         } else
@@ -105,7 +105,7 @@ static inline int d_token_counter(const struct d_Token *tokens) {
 }
 
 static inline int d_token_type_checker(const struct d_Token *tokens, uint8_t *expt) {
-    for (int i = 0; i < MAX_BUFSIZE; i++) {
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
        if ((tokens + i)->type == D_EOL && *(expt + i) == D_EOL) return 1;
        else if ((tokens + i)->type == D_EOL || *(expt + i) == D_EOL) return 0;
        else if ((tokens + i)->type != *(expt + i)) return 0;
@@ -117,7 +117,7 @@ static inline int d_token_type_checker(const struct d_Token *tokens, uint8_t *ex
 
 
 void d_print_tokens(const struct d_Token *tokens, unsigned char colour) {
-    for (int i = 0; i < MAX_BUFSIZE; i++) {
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
         DEBUG_MESSAGE(create_string(L"Token Value : %ls, Token Type : %ls",
                     (tokens+i)->value, d_token_type_finder((tokens+i)->type)), colour);
 
@@ -135,7 +135,7 @@ void d_print_tokens(const struct d_Token *tokens, unsigned char colour) {
  */
 void d_intepreter(const wchar_t *line) {
     // Add the line to the command history, doesn't matter if the command is legit or not
-    for (int j = MAX_BUFSIZE - 2; j > 0; j--) {
+    for (int j = MAX_BUFSIZE_SMALL - 2; j > 0; j--) {
         /* Moving the commands up the list */
         w_string_cpy(*(d_debug.com_his + j), *(d_debug.com_his + j + 1));
     }
@@ -159,7 +159,7 @@ void d_intepreter(const wchar_t *line) {
 
     // Cleanup
 cleanup:
-    w_string_reset(d_debug.str, MAX_BUFSIZE);
+    w_string_reset(d_debug.str, MAX_BUFSIZE_SMALL);
     d_debug.scan_pos = 0;
     d_debug.curs_pos_x = 0;
     d_tokens_deinit(tokens);
@@ -276,7 +276,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
     tokens->type = COMMAND;
 
     
-    for (int i = 0; i < MAX_BUFSIZE; i++) {
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
         if ((tokens + i)->type == INVALID) {
             DEBUG_MESSAGE(L"Lexer error invalid tokens found:", 0x0C);
             d_print_tokens(tokens, 0x0C);
