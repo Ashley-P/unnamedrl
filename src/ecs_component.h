@@ -7,6 +7,7 @@
 /* Extern Functions */
 void init_component_managers();
 void deinit_component_managers();
+void delete_components(entity_id uid);
 
 /* Extern Variables */
 //extern struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];

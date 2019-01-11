@@ -1,3 +1,3 @@
-#ifndef E_SYSTEM_H
-#define E_SYSTEM_H
+#ifndef ECS_SYSTEM_H
+#define ECS_SYSTEM_H
 #endif

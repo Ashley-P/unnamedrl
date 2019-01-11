@@ -33,8 +33,18 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
 void init_component_managers() {
     cm_render = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
     cm_turn   = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+
+    // Making sure that all the pointers are NULL so we can check them without segfaulting */
+    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
+        *(cm_render + i) = NULL;
+        *(cm_turn + i)   = NULL;
+        for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
+            component_list[i][j] = NULL;
+        }
+    }
 }
 
+/* @FIXME : Don't think this frees up the memory properly */
 void deinit_component_managers() {
     free(cm_render);
     free(cm_turn);
@@ -72,6 +82,7 @@ void create_component(const entity_id uid, enum ComponentType type, ...) {
 
     struct ComponentContainer *a = malloc(sizeof(struct ComponentContainer));
     a->owner = uid;
+    a->type  = type;
 
     a; // = specific_constructor();
 
@@ -109,52 +120,37 @@ void delete_component(const entity_id uid, enum ComponentType type) {
     // We need the address and also to free it later
     struct ComponentContainer *component = get_component(uid, type);
 
+    // Early return if the entity doesn't have the component 
+    if (!component) return;
+
     // Removing the component from component_list
     struct ComponentContainer **list = &component_list[uid][0];
-    struct ComponentContainer **pos; // So for moving the component at the end
 
-    // Iterate through the array and set the component to NULL
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
-        if((*(list + i))->type == type) {
+        if (*(list + i) == component)
             *(list + i) = NULL;
-            pos = (list + i);
-        }
     }
 
-    // Iterating backwards through the array then moving the first component found to pos
-    for (int i = MAX_BUFSIZE_SMALL; i > 0; i--) {
-        if (*(list + i)) {
-            *pos = *(list + i);
-            *(list + i) = NULL;
-        }
-    }
-
-    // Resetting pos for safety?
-    pos = NULL;
-
-    // Getting the correct array
+    // Removing the component from the manager
     struct ComponentContainer **manager = get_component_manager(type);
 
-    // Iterating through the array until we find the array with the correct address
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
-        if (*(manager + i) == component) {
+        if (*(manager + i) == component)
             *(manager + i) = NULL;
-            pos = manager + i;
-        }
     }
+}
 
+/**
+ * Deletes all the components for a given entity
+ */
+void delete_components(entity_id uid) {
+    // Traverse the components for the type and call delete_component
+    struct ComponentContainer **list = &component_list[uid][0];
 
-    // Iterating in reverse
-    for (int i = MAX_BUFSIZE_SUPER; i > 0; i--) {
-        if (*(manager + i)) {
-            *pos = *(manager + i);
-            *(manager + i) = NULL;
-        }
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
+        if (*(list + i) == NULL) continue;
+        else delete_component(uid, (*(list + i))->type);
     }
-
-    // Finally freeing the memory
-    free(component->c);
-    free(component);
 }
 
 
