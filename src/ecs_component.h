@@ -1,25 +1,47 @@
-#ifndef COMPONENT_H
-#define COMPONENT_H
+#ifndef ECS_COMPONENT_H
+#define ECS_COMPONENT_H
+
+#include "defs.h"
+
 
 enum ComponentType {
     RENDER,
+    TURN,
 }; 
 
-/* For storing a list of components for an entity */
+/* Holds a component, used so we can have a list of an entities components */
 struct ComponentContainer {
+    entity_id owner;
+
     enum ComponentType type;
     void *c;
 };
 
-/* Holds a list of all of a specific component type */
-struct ComponentManager {
-    enum ComponentType type;
-    void **c;
-};
+/********* Component definitions go here *********/
+/**
+ * All component structs are prefixed with C_ 
+ * to prevent me from writing Component all the time 
+ */
 
-struct RenderComponent {
+/* Required for the entity to be displayed on the screen */
+struct C_Render {
+    entity_id owner;
+
     wchar_t ch;
     unsigned char col;
 };
 
+/* Required for the entity to be managed by the S_Turns system */
+struct C_Turn {
+    entity_id owner;
+
+    int ticks;
+};
+
+/* Extern Functions */
+void init_component_managers();
+void deinit_component_managers();
+
+/* Extern Variables */
+//extern struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
 #endif
