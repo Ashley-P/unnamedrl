@@ -10,7 +10,7 @@ obj = $(patsubst src/%.c,src/obj/%.o,$(src))
 all: checkdirs game
 
 game: $(obj)
-	$(CC) -o rl.exe $^ $(CFLAGS) 
+	$(CC) -o .\bin\rl.exe $^ $(CFLAGS) 
 
 src/obj/%.o: src/%.c
 	$(CC) -c $< -o $@ $(CLFAGS)
@@ -19,7 +19,8 @@ checkdirs: $(BUILD_DIR)
 
 $(BUILD_DIR):
 	@mkdir $@
+	@mkdir  .\bin\ 
 
 clean:
 	del /q $(BUILD_DIR)
-	del rl.exe
+	del .\bin\rl.exe
