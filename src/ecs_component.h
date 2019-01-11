@@ -3,6 +3,15 @@
 
 #include "defs.h"
 
+/* Usually externs go at the bottom but that's where the component types will go in this file */
+/* Extern Functions */
+void init_component_managers();
+void deinit_component_managers();
+
+/* Extern Variables */
+//extern struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
+//extern struct ComponentContainer **cm_render;
+//extern struct ComponentContainer **cm_turn;
 
 enum ComponentType {
     RENDER,
@@ -38,10 +47,4 @@ struct C_Turn {
     int ticks;
 };
 
-/* Extern Functions */
-void init_component_managers();
-void deinit_component_managers();
-
-/* Extern Variables */
-//extern struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
 #endif

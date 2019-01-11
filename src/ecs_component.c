@@ -69,7 +69,11 @@ struct ComponentContainer **get_component_manager(enum ComponentType type) {
 /* Creates a component and adds to an entity */
 void create_component(const entity_id uid, enum ComponentType type, ...) {
     // Call the constructor for the component
-    struct ComponentContainer *a; // = specific_constructor();
+
+    struct ComponentContainer *a = malloc(sizeof(struct ComponentContainer));
+    a->owner = uid;
+
+    a; // = specific_constructor();
 
     // Add it to component_list
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
