@@ -84,7 +84,7 @@ static inline unsigned char d_is_alpha(wchar_t ch) {
 /**
  * Used to help provide error messages
  */
-static inline wchar_t *d_token_type_finder(uint8_t type) {
+static inline wchar_t *d_token_type_finder(enum d_TokenType type) {
     if (type == 1) return L"COMMAND";
     else if (type == 2) return L"ARG_STR";
     else if (type == 4) return L"ARG_INT";
@@ -104,7 +104,7 @@ static inline int d_token_counter(const struct d_Token *tokens) {
     return 0; // Needed to stop compiler warnings
 }
 
-static inline int d_token_type_checker(const struct d_Token *tokens, uint8_t *expt) {
+static inline int d_token_type_checker(const struct d_Token *tokens, enum d_TokenType *expt) {
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
        if ((tokens + i)->type == D_EOL && *(expt + i) == D_EOL) return 1;
        else if ((tokens + i)->type == D_EOL || *(expt + i) == D_EOL) return 0;
@@ -319,6 +319,12 @@ void d_parser(const struct d_Token *tokens) {
     /********* D_CLS - void d_cls(const struct d_Token *tokens); *********/
     } else if (w_string_cmp(tokens->value, d_commands[2])) {
         d_cls(tokens);
+
+
+
+    /********* D_PRINT_COMMANDS - void d_print_commands(const struct d_Token *tokens); *********/
+    } else if (w_string_cmp(tokens->value, d_commands[3])) {
+        d_print_commands(tokens);
 
 
 

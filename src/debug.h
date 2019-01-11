@@ -56,7 +56,9 @@ enum d_TokenType {
 
     ARG_ANY = ARG_STR | ARG_INT | ARG_STD,
 
-    D_EOL   = 1 << 4, // Named like 
+    KEYWORD = 1 << 4,
+
+    D_EOL   = 1 << 5, // Named like 
 };
 
 /**
@@ -64,7 +66,7 @@ enum d_TokenType {
  */
 struct d_Token {
     wchar_t *value;
-    uint8_t type;
+    enum d_TokenType type;
 };
 
 
@@ -75,4 +77,5 @@ void d_debug_deinit();
 void d_addchar(const wchar_t ch);
 void d_delchar();
 void d_intepreter(const wchar_t *line);
+
 #endif

@@ -6,6 +6,7 @@
 const wchar_t *d_commands[] = {L"echo",
                                L"set_vars",
                                L"cls",
+                               L"commands", // d_print_commands
                                 };
 
 
@@ -27,5 +28,9 @@ void d_set_vars(const struct d_Token *tokens) {
 }
 
 void d_cls(const struct d_Token *tokens) {
+    d_not_implemented(tokens);
+}
+
+void d_print_commands(const struct d_Token *tokens) {
     d_not_implemented(tokens);
 }

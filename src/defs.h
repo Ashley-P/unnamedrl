@@ -77,6 +77,9 @@ extern struct ListNode *turn_list;
 #endif
 
 
+/* Typedefs */
+typedef long entity_id;
+
 /**
  * So that the program knows what to do with the input
  * and knows which ui it should be displaying
