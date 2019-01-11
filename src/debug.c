@@ -36,6 +36,7 @@ void d_debug_init() {
     d_debug.curs_pos_x = 0;
     d_debug.curs_pos_y = 0;
     d_debug.curs_ch    = L'_';
+    d_debug.flags      = 0;
 }
 
 void d_debug_deinit() {
@@ -43,7 +44,9 @@ void d_debug_deinit() {
         free(d_debug.com_his + i);
     free(d_debug.com_his);
     free(d_debug.str);
-    message_list_deinit(&d_debug.messages);
+    message_list_deinit(&d_debug.debug_messages);
+    message_list_deinit(&d_debug.error_messages);
+    message_list_deinit(&d_debug.display_messages);
 }
 
 struct d_Token *d_tokens_init() {
@@ -85,12 +88,15 @@ static inline unsigned char d_is_alpha(wchar_t ch) {
  * Used to help provide error messages
  */
 static inline wchar_t *d_token_type_finder(enum d_TokenType type) {
-    if (type == 1) return L"COMMAND";
-    else if (type == 2) return L"ARG_STR";
-    else if (type == 4) return L"ARG_INT";
-    else if (type == 8) return L"ARG_STD";
-    else if (type == 16) return L"D_EOL";
-    else return L"INVALID";
+    switch (type) {
+        case INVALID: return L"INVALID";
+        case COMMAND: return L"COMMAND";
+        case ARG_STR: return L"ARG_STR";
+        case ARG_INT: return L"ARG_INT";
+        case ARG_STD: return L"ARG_STD";
+        case D_EOL:   return L"D_EOL";
+        default:      return L"INVALID";
+    }
 }
 
 static inline int d_token_counter(const struct d_Token *tokens) {
@@ -292,7 +298,8 @@ struct d_Token *d_lexer(const wchar_t *line) {
 
 
 void d_parser(const struct d_Token *tokens) {
-    d_print_tokens(tokens, 0x0A);
+    if (d_debug.flags & 1 << 7)
+        d_print_tokens(tokens, 0x0A);
 
     /* If the first token is an empty string then just return */
     if (w_string_cmp(tokens->value, L"")) {
@@ -316,15 +323,37 @@ void d_parser(const struct d_Token *tokens) {
         
 
 
-    /********* D_CLS - void d_cls(const struct d_Token *tokens); *********/
+    /********* D_CLS - void d_cls(); *********/
     } else if (w_string_cmp(tokens->value, d_commands[2])) {
-        d_cls(tokens);
+        if (d_token_counter(tokens) != 2) {
+            DEBUG_MESSAGE(create_string(L"Parser Error: \"cls\" expects 0 arguments, got %d",
+                        d_token_counter(tokens) - 2), 0x0C);
+            return;
+        } 
+        d_cls();
 
 
 
     /********* D_PRINT_COMMANDS - void d_print_commands(const struct d_Token *tokens); *********/
     } else if (w_string_cmp(tokens->value, d_commands[3])) {
+        if (d_token_counter(tokens) != 2) {
+            DEBUG_MESSAGE(create_string(L"Parser Error: \"commands\" expects 0 arguments, got %d",
+                        d_token_counter(tokens) - 2), 0x0C);
+            return;
+        } 
         d_print_commands(tokens);
+
+
+
+    /********* D_TOGGLE_TOKEN_PRINTING - void d_toggle_token_printing(int a) *********/
+    } else if (w_string_cmp(tokens->value, d_commands[4])) {
+        if (d_token_counter(tokens) != 3) {
+            DEBUG_MESSAGE(create_string(L"Parser Error: \"toggle_token_printing\" expects 1 argument, got %d",
+                        d_token_counter(tokens) - 2), 0x0C);
+            return;
+        } 
+        d_toggle_token_printing(w_str_to_int((tokens + 1)->value));
+
 
 
 

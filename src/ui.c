@@ -104,7 +104,7 @@ void draw_ui_debug() {
     draw_character(1, SCREENHEIGHT - 2, L'>', 0x07);
 
     /* Drawing debug messages */
-    draw_messages(2, SCREENHEIGHT - 4, d_debug.messages, HEIGHT_ONE_FIFTH - 4, UP);
+    draw_messages(2, SCREENHEIGHT - 4, d_debug.display_messages, HEIGHT_ONE_FIFTH - 4, UP);
 
     /* Drawing the string that the user is typing along with a cursor */
     draw_string(2, SCREENHEIGHT - 2, HORIZONTAL, d_debug.str, 0x07);
@@ -131,7 +131,7 @@ void draw_ui_debug_full() {
     draw_character(1, SCREENHEIGHT - 2, L'>', 0x07);
 
     /* Drawing debug messages */
-    draw_messages(2, SCREENHEIGHT - 4, d_debug.messages, SCREENHEIGHT - 4, UP);
+    draw_messages(2, SCREENHEIGHT - 4, d_debug.display_messages, SCREENHEIGHT - 4, UP);
 
     /* Drawing the string that the user is typing along with a cursor */
     draw_string(2, SCREENHEIGHT - 2, HORIZONTAL, d_debug.str, 0x07);

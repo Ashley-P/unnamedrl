@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <wchar.h>
+#include "debug.h"
 #include "draw_utils.h"
 #include "utils.h" // defs.h is included in here
 
@@ -85,6 +86,14 @@ void plot_line(int x0, int y0, int x1, int y1) {
 }
 
 
+int power(int base, unsigned int expt) {
+    int result = 1;
+    for (int i = 0; i < expt; i++) {
+        result *= base;
+    }
+    return base;
+}
+
 /**
  * wchar_t string comparing
  * Requires null-terminated strings
@@ -160,4 +169,30 @@ int w_ch_in_str(const wchar_t ch, const wchar_t *str) {
         else continue;
     }
 
+}
+
+int w_str_to_int(const wchar_t *str) {
+    int len = w_string_len(str);
+    int a = 0;
+    for (int i = 0; i < len; i++) {
+        switch (*(str + i)) {
+            case L'1': a += 1; break;
+            case L'2': a += 2; break;
+            case L'3': a += 3; break;
+            case L'4': a += 4; break;
+            case L'5': a += 5; break;
+            case L'6': a += 6; break;
+            case L'7': a += 7; break;
+            case L'8': a += 8; break;
+            case L'9': a += 9; break;
+            case L'0': a += 0; break;
+            default: ERROR_MESSAGE(create_string(L"Error in w_str_to_int: Expected [0-9], got %lc",
+                                 *(str + i)), 0x0C);
+                     break;
+        }
+
+        a *= 10;
+    }
+    a /= 10;
+    return a;
 }

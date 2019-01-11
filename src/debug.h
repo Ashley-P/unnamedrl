@@ -7,7 +7,11 @@
 #include "message.h" // Needed for the macro expansion
 
 
-#define DEBUG_MESSAGE(x, y) add_message(&d_debug.messages, (struct String) {x, y})
+#define DEBUG_MESSAGE(x, y) add_message(&d_debug.debug_messages, (struct String) {x, y}); \
+                            add_message(&d_debug.display_messages, (struct String) {x, y});
+
+#define ERROR_MESSAGE(x, y) add_message(&d_debug.error_messages, (struct String) {x, y}); \
+                            add_message(&d_debug.display_messages, (struct String) {x, y});
 
 /**
  * A struct to hold onto everything relevant to the debug file
@@ -18,7 +22,9 @@ struct d_Debug {
      * Utilising the message system already present
      * This should get put into a file in later revisions
      */
-    struct ListNode *messages;
+    struct ListNode *debug_messages;
+    struct ListNode *error_messages;
+    struct ListNode *display_messages;
 
     /* Command history - only saves upto MAX_BUFSIZE commands */
     wchar_t **com_his; // First command is empty so we can return to it
@@ -36,6 +42,9 @@ struct d_Debug {
 
     /* What character the text cursor displays */
     wchar_t curs_ch;
+
+    /* Bit field - Left to right */
+    uint8_t flags;   // toggle token printing in the parser
 };
 
 /* Data types */
