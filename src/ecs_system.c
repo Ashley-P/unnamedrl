@@ -1,6 +1,6 @@
 /**
- * File for handling systems, game input amongst other things happen here
- * Systems get called when events in the game happen
+ * File for the systems code
+ * A system is something that works on a full list of components
  */
 
 #include "defs.h"
@@ -17,6 +17,7 @@ void deinit_systems() {
  * Renders entities on the play screen
  * @TODO : Implement a camera system
  * @TODO : Implement a more efficient way of doing this
+ * @TODO : Implement FOV properly
  */
 void s_render() {
     // Scrolling through the entity ids
