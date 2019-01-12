@@ -171,6 +171,15 @@ void delete_components(entity_id uid) {
 /**
  * A bunch of constructors for the component types
  */
+void construct_c_position(const entity_id uid, const int x, const int y) {
+    struct C_Position *component = malloc(sizeof(struct C_Position));
+    component->owner = uid;
+    component->x     = x;
+    component->y     = y;
+
+    create_component(uid, POSITION, (void *) component);
+}
+
 void construct_c_render(const entity_id uid, const wchar_t ch, const unsigned char col) {
     struct C_Render *component = malloc(sizeof(struct C_Render));
     component->owner = uid;
@@ -186,13 +195,4 @@ void construct_c_turn(const entity_id uid, const int ticks) {
     component->ticks = ticks;
 
     create_component(uid, TURN, (void *) component);
-}
-
-void construct_c_position(const entity_id uid, const int x, const int y) {
-    struct C_Position *component = malloc(sizeof(struct C_Position));
-    component->owner = uid;
-    component->x     = x;
-    component->y     = y;
-
-    create_component(uid, POSITION, (void *) component);
 }

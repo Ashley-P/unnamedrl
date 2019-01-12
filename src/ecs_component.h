@@ -33,16 +33,25 @@ void delete_component(entity_id uid, enum ComponentType type);
 void delete_components(entity_id uid);
 
 /* Extern functions but it's the constructors */
+void construct_c_position(const entity_id uid, const int x, const int y);
 void construct_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
 void construct_c_turn(const entity_id uid, const int ticks);
-void construct_c_position(const entity_id uid, const int x, const int y);
 
 
 /********* Component definitions go here *********/
 /**
  * All component structs are prefixed with C_ 
  * to prevent me from writing Component all the time 
+ * Also they're placed in alphabetical order
  */
+
+
+struct C_Position {
+    entity_id owner;
+
+    int x;
+    int y;
+};
 
 /* Required for the entity to be displayed on the screen */
 struct C_Render {
@@ -57,13 +66,6 @@ struct C_Turn {
     entity_id owner;
 
     int ticks;
-};
-
-struct C_Position {
-    entity_id owner;
-
-    int x;
-    int y;
 };
 
 #endif
