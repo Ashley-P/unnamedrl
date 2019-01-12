@@ -5,6 +5,7 @@
 #include "debug.h"
 #include "draw_utils.h"
 #include "ecs_component.h"
+#include "ecs_entity.h"
 #include "game.h"
 #include "llist.h"
 #include "main.h"
@@ -66,14 +67,17 @@ void game_init() {
     globals.paused = 0;
     globals.ticks = 0;
 
-    init_component_managers();
-
     /* message_list doesn't need initialisation */
     globals.actor_list = actor_list_init();
     d_debug_init();
     map_init();
     player_init();
     globals.turn_list = turn_list_init(globals.actor_list);
+
+    init_entity_manager();
+    init_component_managers();
+
+    test_entities();
 }
 
 /**
@@ -88,6 +92,7 @@ void game_deinit() {
     ll_deinit(&(globals.turn_list));
 
     deinit_component_managers();
+    deinit_entity_manager();
 }
 
 /**

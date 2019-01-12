@@ -39,6 +39,10 @@ entity_id gen_uid() {
     return i++;
 }
 
+int check_uid(entity_id uid) {
+    if (*(entities + uid)) return 1;
+    else return 0;
+}
 
 /* Creates a basic entity struct */
 entity_id create_entity() {
@@ -46,7 +50,7 @@ entity_id create_entity() {
 
     // If the entity id is already taken then we send an error and return;
     // @TODO : Make this an error message
-    if (get_entity(uid)) {
+    if (!check_uid(uid)) {
         DEBUG_MESSAGE(create_string(L"Could not create entity. Reason : Entity id %d already exists", uid),
                 0x0C);
         return -1;
@@ -61,4 +65,16 @@ void delete_entity(entity_id uid) {
     delete_components(uid);
     free(*(entities + uid));
     *(entities + uid) = NULL;
+}
+
+
+/* @TODO @FIXME Hard coding some entities to check if this works */
+void test_entities() {
+    entity_id a = create_entity();
+    construct_c_render(a, L'X', 0x07);
+    construct_c_position(a, 8, 8);
+
+    entity_id b = create_entity();
+    construct_c_render(b, L'C', 0x07);
+    construct_c_position(b, 7, 7);
 }

@@ -3,11 +3,6 @@
 
 #include "defs.h"
 
-/* Usually externs go at the bottom but that's where the component types will go in this file */
-/* Extern Functions */
-void init_component_managers();
-void deinit_component_managers();
-void delete_components(entity_id uid);
 
 /* Extern Variables */
 //extern struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
@@ -17,6 +12,7 @@ void delete_components(entity_id uid);
 enum ComponentType {
     RENDER,
     TURN,
+    POSITION,
 }; 
 
 /* Holds a component, used so we can have a list of an entities components */
@@ -26,6 +22,21 @@ struct ComponentContainer {
     enum ComponentType type;
     void *c;
 };
+
+/* Extern Functions */
+void init_component_managers();
+void deinit_component_managers();
+struct ComponentContainer *get_component(const entity_id uid, enum ComponentType type);
+struct ComponentContainer **get_component_manager(enum ComponentType type);
+//void create_component(const entity_id uid, enum ComponentType type, void *comp); // shouldn't be called
+void delete_component(entity_id uid, enum ComponentType type);
+void delete_components(entity_id uid);
+
+/* Extern functions but it's the constructors */
+void construct_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
+void construct_c_turn(const entity_id uid, const int ticks);
+void construct_c_position(const entity_id uid, const int x, const int y);
+
 
 /********* Component definitions go here *********/
 /**
@@ -46,6 +57,13 @@ struct C_Turn {
     entity_id owner;
 
     int ticks;
+};
+
+struct C_Position {
+    entity_id owner;
+
+    int x;
+    int y;
 };
 
 #endif

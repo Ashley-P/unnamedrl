@@ -4,6 +4,7 @@
 #include "defs.h"
 #include "debug.h"
 #include "draw_utils.h"
+#include "ecs_system.h"
 #include "llist.h"
 #include "map.h"
 #include "main.h"
@@ -64,6 +65,7 @@ void draw_ui_game() {
     draw_map(globals.test_map);
     draw_player(globals.player);
     draw_actors(globals.actor_list);
+    s_render();
 
     /* Drawing Stats */
     /* TODO: Make it so the colour the stat gets drawn in changes with it's value */

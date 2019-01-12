@@ -8,7 +8,7 @@ const wchar_t *d_commands[] = {L"echo",
                                L"set_vars",
                                L"cls",
                                L"commands", // d_print_commands
-                               L"toggle_token_printing",
+                               L"toggle_tokens",
                                L"", // Exists so d_print_commands works
                                 };
 
