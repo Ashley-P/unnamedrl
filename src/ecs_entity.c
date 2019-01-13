@@ -71,10 +71,10 @@ void delete_entity(entity_id uid) {
 /* @TODO @FIXME Hard coding some entities to check if this works */
 void test_entities() {
     entity_id a = create_entity();
-    construct_c_render(a, L'X', 0x07);
-    construct_c_position(a, 8, 8);
+    create_c_render(a, L'X', 0x07);
+    create_c_position(a, 8, 8);
 
     entity_id b = create_entity();
-    construct_c_render(b, L'C', 0x07);
-    construct_c_position(b, 7, 7);
+    create_c_render(b, L'C', 0x07);
+    create_c_position(b, 7, 7);
 }

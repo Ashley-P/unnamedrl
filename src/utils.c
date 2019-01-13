@@ -94,6 +94,7 @@ int power(int base, unsigned int expt) {
     return base;
 }
 
+/********* String utility functions *********/
 /**
  * wchar_t string comparing
  * Requires null-terminated strings

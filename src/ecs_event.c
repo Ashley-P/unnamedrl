@@ -8,5 +8,35 @@
  * act upon
  */ 
 
-void create_event() {}
+#include "ecs_event.h"
+#include "defs.h"
+#include "debug.h"
+#include "llist.h"
+
+
+/* Queue */
+struct ListNode *events;
+
+void create_event(enum EventType type, entity_id *uids) {
+    struct Event *a = malloc(sizeof(struct Event));
+
+    /**
+     * No need for specific constructors since the dispatcher knows what to do with the events
+     * Just copy the list of uids into the event
+     * Also assumes that we aren't just copying garbage from the provided list
+     */
+    for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
+        (a->uids)[i] = uids[i];
+    }
+
+
+    // Add it to the queue
+    ll_push_front(&events, a);
+}
+
+void delete_event(struct Event *event) {
+    free(event);
+}
+
+/* Takes the events from the queue and does them */
 void event_dispatcher() {}

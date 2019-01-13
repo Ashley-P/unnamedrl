@@ -16,17 +16,21 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
  *
  */
 
+struct ComponentContainer **cm_aicon;
+struct ComponentContainer **cm_playercon;
+struct ComponentContainer **cm_position;
 struct ComponentContainer **cm_render;
 struct ComponentContainer **cm_turn;
-struct ComponentContainer **cm_position;
 
 // Function to reverse the enum into a string for error messages 
 static inline wchar_t *component_type_finder(enum ComponentType type) {
     switch (type) {
-        case RENDER:   return L"RENDER";
-        case TURN:     return L"TURN";
-        case POSITION: return L"POSITION";
-        default:       return L"INVALID TYPE SUPPLIED";
+        case AICON:     return L"AICON";
+        case PLAYERCON: return L"PLAYERCON";
+        case POSITION:  return L"POSITION";
+        case RENDER:    return L"RENDER";
+        case TURN:      return L"TURN";
+        default:        return L"INVALID TYPE SUPPLIED";
     }
 }
 
@@ -34,15 +38,19 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
  * an init function that initialises all the component managers
  */
 void init_component_managers() {
-    cm_render   = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_turn     = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_position = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_aicon     = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_playercon = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_position  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_render    = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_turn      = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
 
     // Making sure that all the pointers are NULL so we can check them without segfaulting */
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
-        *(cm_render + i)   = NULL;
-        *(cm_turn + i)     = NULL;
-        *(cm_position + i) = NULL;
+        *(cm_aicon + i)     = NULL;
+        *(cm_playercon + i) = NULL;
+        *(cm_position + i)  = NULL;
+        *(cm_render + i)    = NULL;
+        *(cm_turn + i)      = NULL;
         for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
             component_list[i][j] = NULL;
         }
@@ -51,9 +59,11 @@ void init_component_managers() {
 
 /* @FIXME : Don't think this frees up the memory properly */
 void deinit_component_managers() {
+    free(cm_aicon);
+    free(cm_playercon);
+    free(cm_position);
     free(cm_render);
     free(cm_turn);
-    free(cm_position);
 }
 
 /**
@@ -81,10 +91,12 @@ struct ComponentContainer *get_component(const entity_id uid, enum ComponentType
 
 struct ComponentContainer **get_component_manager(enum ComponentType type) {
     switch (type) {
-        case RENDER:   return cm_render;
-        case TURN:     return cm_turn;
-        case POSITION: return cm_position;
-        default:       return NULL;
+        case AICON:     return cm_aicon;
+        case PLAYERCON: return cm_playercon;
+        case POSITION:  return cm_position;
+        case RENDER:    return cm_render;
+        case TURN:      return cm_turn;
+        default:        return NULL;
     }
 }
 
@@ -171,7 +183,17 @@ void delete_components(entity_id uid) {
 /**
  * A bunch of constructors for the component types
  */
-void construct_c_position(const entity_id uid, const int x, const int y) {
+void create_c_aicon(const entity_id uid) {
+    struct C_AICon *component = malloc(sizeof(struct C_AICon));
+    create_component(uid, TURN, (void *) component);
+}
+
+void create_c_playercon(const entity_id uid) {
+    struct C_PlayerCon *component = malloc(sizeof(struct C_PlayerCon));
+    create_component(uid, TURN, (void *) component);
+}
+
+void create_c_position(const entity_id uid, const int x, const int y) {
     struct C_Position *component = malloc(sizeof(struct C_Position));
     component->owner = uid;
     component->x     = x;
@@ -180,7 +202,7 @@ void construct_c_position(const entity_id uid, const int x, const int y) {
     create_component(uid, POSITION, (void *) component);
 }
 
-void construct_c_render(const entity_id uid, const wchar_t ch, const unsigned char col) {
+void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col) {
     struct C_Render *component = malloc(sizeof(struct C_Render));
     component->owner = uid;
     component->ch    = ch;
@@ -189,7 +211,7 @@ void construct_c_render(const entity_id uid, const wchar_t ch, const unsigned ch
     create_component(uid, RENDER, (void *) component);
 }
 
-void construct_c_turn(const entity_id uid, const int ticks) {
+void create_c_turn(const entity_id uid, const int ticks) {
     struct C_Turn *component = malloc(sizeof(struct C_Turn));
     component->owner = uid;
     component->ticks = ticks;

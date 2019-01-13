@@ -4,11 +4,19 @@
 #include "ecs_entity.h"
 
 enum EventType {
+    ET_TICK,
 };
 
 struct Event {
-    enum EventType;
-    entity_id ids[MAX_BUFSIZE_SMALL];
+    enum EventType type;
+
+    /**
+      * Can only affect MAX_BUFSIZE_MINI uids at most or all of them
+      * @NOTE : This can be upgraded but don't forget to change create_event
+      * since the event can call up component managers
+      */ 
+    entity_id uids[MAX_BUFSIZE_MINI];
 };
+
 
 #endif
