@@ -4,8 +4,8 @@
 #include "ecs_entity.h"
 
 enum EventType {
-    ET_TICK,
-    ET_MOVEMENT,
+    E_TICK,
+    E_MOVEMENT,
 };
 
 struct Event {

@@ -45,8 +45,8 @@ void create_event(enum EventType type, const entity_id *uids) {
 /* Used so we can start the game by doing a tick event, which progresses the game */
 void init_events() {
     events = NULL;
-    create_event(ET_TICK, NULL);
-    create_event(ET_MOVEMENT, NULL);
+    create_event(E_TICK, NULL);
+    create_event(E_MOVEMENT, NULL);
 }
 
 void deinit_events() {
@@ -60,19 +60,21 @@ void delete_event(struct Event *event) {
 
 /* Takes the events from the queue and does them */
 void event_dispatcher() {
-    struct Event *e = (struct Event *) (ll_pop_front(&events))->data;
+    // Required so we can free the memory properly
+    struct ListNode *node = ll_pop_front(&events);
+    struct Event *e = node->data;
     switch (e->type) {
-        case ET_TICK:
+        case E_TICK:
             // Call s_turn
             s_tick();
 
             // another tick event get's created or else the game stops
-            create_event(ET_TICK, NULL);
+            create_event(E_TICK, NULL);
             break;
-        case ET_MOVEMENT:
+        case E_MOVEMENT:
             s_movement();
 
-            create_event(ET_MOVEMENT, NULL);
+            create_event(E_MOVEMENT, NULL);
             break;
         default:
             ERROR_MESSAGE(create_string(L"Error in event_dispatcher: Unknown EventType %d",
@@ -80,5 +82,6 @@ void event_dispatcher() {
             break;
     }
     // Delete the event when we're done with it
-    delete_event(e);
+    free(e);
+    free(node);
 }
