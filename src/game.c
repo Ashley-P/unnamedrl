@@ -179,6 +179,10 @@ void handle_keys(KEY_EVENT_RECORD kev, entity_id uid) {
                     lock_s_tick();
                     break;
 
+                // Delete messages test button
+                case 0x33:                  // '3' key - DEBUG_FULL MODE
+                    message_list_deinit(&(globals.message_list));
+                    break;
                 default:
                     break;
             }

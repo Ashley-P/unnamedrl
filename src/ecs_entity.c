@@ -98,6 +98,8 @@ void test_entities() {
     create_c_tick(b, 1, 100);
     create_c_aicon(b);
 
+    //delete_entity(b);
+
     // Player
     entity_id c = create_entity();
     create_c_render(c, L'@', 0x07);

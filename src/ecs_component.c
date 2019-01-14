@@ -195,8 +195,10 @@ void delete_component(const entity_id uid, enum ComponentType type) {
     struct ComponentContainer **list = &component_list[uid][0];
 
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
-        if (*(list + i) == component)
+        if (*(list + i) == component) {
             *(list + i) = NULL;
+            break;
+        }
     }
 
     // Removing the component from the manager
@@ -208,8 +210,11 @@ void delete_component(const entity_id uid, enum ComponentType type) {
             // Move the component at the end to this position
             *(manager->containers) = *(manager->containers + manager->size - 1);
             *(manager->containers + manager->size - 1) = NULL;
+            break;
         }
     }
+
+    manager->size--;
 }
 
 /**

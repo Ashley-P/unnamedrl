@@ -94,26 +94,21 @@ void s_movement() {
 /*
  * Renders entities on the play screen
  * @TODO : Implement a camera system
- * @TODO : Implement a more efficient way of doing this
  * @TODO : Implement FOV properly
  * @TODO : Implement a Z-Buffer so actors get drawn on top of items
  */
 void s_render() {
-    // @TODO @FIXME : Update when you have lots of entities
-    // Scrolling through the entity ids
-    for (int i = 0; i < entity_count; i++) {
-        if (!check_uid(i)) continue;
-        struct ComponentContainer *r = get_component(i, RENDER);
-        struct ComponentContainer *p = get_component(i, POSITION);
+    struct ComponentManager *r = get_component_manager(RENDER);
+    for (int i = 0; i < r->size; i++) {
+        // Check if the entity that own's this component has a POSITION component
+        struct ComponentContainer *p = get_component((*(r->containers + i))->owner, POSITION);
 
-        // Checking that both pointers aren't NULL
-        if (r == NULL || p == NULL) return;
+        if (!p) continue;
 
-        // Casting the voids to the right type
-        struct C_Render   *c_r = (struct C_Render *) r->c;
-        struct C_Position *c_p = (struct C_Position *) p->c;
+        struct C_Position *pos = p->c;
+        struct C_Render *ren   = (*(r->containers + i))->c;
 
-        draw_character(c_p->x + PLAY_SCREEN_OFFSET_X, c_p->y + PLAY_SCREEN_OFFSET_Y, c_r->ch, c_r->col);
+        draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
     }
 }
 
@@ -137,7 +132,7 @@ void s_tick() {
     // Get the manager for the tick component
     struct ComponentManager *t = get_component_manager(TICK);
 
-    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
+    for (int i = 0; i < t->size; i++) {
         // Check if the component exists
         struct C_Tick *c = NULL;
         if (*(t->containers + i))
@@ -153,7 +148,8 @@ void s_tick() {
 
             // If the uid has an AICON component then call s_ai on it
             if (get_component(uid, AICON)) {
-                s_ai(uid);
+                while(c->ticks == 0)
+                    s_ai(uid);
 
                 // If the uid has a PLAYERCON component, then we handle key events
             } else if (get_component(uid, PLAYERCON)) {
