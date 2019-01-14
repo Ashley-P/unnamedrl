@@ -35,7 +35,8 @@ void delete_component(entity_id uid, enum ComponentType type);
 void delete_components(entity_id uid);
 
 /* Extern functions but it's the constructors */
-void create_c_playercontrollable(const entity_id uid);
+void create_c_aicon(const entity_id uid);
+void create_c_playercon(const entity_id uid);
 void create_c_position(const entity_id uid, const int x, const int y);
 void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
 void create_c_tick(const entity_id uid, const int ticks);

@@ -1,8 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-extern long long ticks;
+#include "ecs_component.h"
+
 void play_game();
-void event_handler();
+void event_handler(struct C_Tick *t);
 
 #endif

@@ -2,6 +2,7 @@
 #define DEFS_H
 
 #include <stdlib.h>
+#include <wchar.h>
 
 #define GAME_DEBUG 1
 
@@ -100,14 +101,12 @@ struct Globals {
     int done_playing;
     int paused;
     long long ticks;
+    int s_tick_lock;
     enum ProgState program_state;
     enum ProgState control_state;
 
-    struct Player *player;
     struct Map *test_map;
-    struct ListNode *actor_list;
     struct ListNode *message_list;
-    struct ListNode *turn_list;
 };
 
 /**

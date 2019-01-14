@@ -1,6 +1,5 @@
 #include <math.h>
 #include <stdio.h>
-#include "actor.h"
 #include "defs.h"
 #include "debug.h"
 #include "draw_utils.h"
@@ -63,24 +62,24 @@ void draw_ui_game() {
 
     /* Drawing stuff on the play_screen actors, objects etc */
     draw_map(globals.test_map);
-    draw_player(globals.player);
-    draw_actors(globals.actor_list);
     s_render();
 
     /* Drawing Stats */
     /* TODO: Make it so the colour the stat gets drawn in changes with it's value */
 
-    /* Health */
-    wchar_t *hp = create_string(L"HP:     %d/%d", (globals.player)->hp, MAX_HEALTH);
-    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp, 0x0A);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, (globals.player)->hp, MAX_HEALTH, 0x0A);
-    free(hp);
+    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, L"Player Stats", 0x0A);
+    draw_string(WIDTH_FOUR_FIFTH + 2, 3, HORIZONTAL, L"Coming Soon", 0x0A);
+    ///* Health */
+    //wchar_t *hp = create_string(L"HP:     %d/%d", (globals.player)->hp, MAX_HEALTH);
+    //draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp, 0x0A);
+    //draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, (globals.player)->hp, MAX_HEALTH, 0x0A);
+    //free(hp);
 
-    /* Energy */
-    wchar_t *energy = create_string(L"Energy: %d/%d", (globals.player)->energy, MAX_ENERGY);
-    draw_string(WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL, energy, 0x0E);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, (globals.player)->energy, MAX_ENERGY, 0x0E);
-    free(energy);
+    ///* Energy */
+    //wchar_t *energy = create_string(L"Energy: %d/%d", (globals.player)->energy, MAX_ENERGY);
+    //draw_string(WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL, energy, 0x0E);
+    //draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, (globals.player)->energy, MAX_ENERGY, 0x0E);
+    //free(energy);
 
     /* Drawing Messages */
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, globals.message_list, HEIGHT_ONE_FIFTH - 2, DOWN);

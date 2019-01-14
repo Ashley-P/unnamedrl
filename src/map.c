@@ -4,8 +4,9 @@
  */
 
 #include <stdlib.h>
-#include "map.h"
+#include "defs.h"
 #include "draw_utils.h"
+#include "map.h"
 
 /* defines just for basic testing so I don't have to write constants everwhere */
 #define BASIC_ROOM_X 10

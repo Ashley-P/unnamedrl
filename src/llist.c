@@ -38,6 +38,13 @@ void ll_push_back(struct ListNode **head, void *data) {
 
     /* Checking the "next" pointer to see if it's the end of the list */
     struct ListNode *check_node = *head;
+
+    // If check_node is NULL then the list is empty and we just add it to the front
+    if (!check_node) {
+        *head = new_node;
+        return;
+    }
+
     while(check_node->next != NULL)
         check_node = check_node->next;
 

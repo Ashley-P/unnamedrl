@@ -73,13 +73,25 @@ void delete_entity(entity_id uid) {
 
 /* @TODO @FIXME Hard coding some entities to check if this works */
 void test_entities() {
+    // AI
     entity_id a = create_entity();
     create_c_render(a, L'X', 0x07);
     create_c_position(a, 8, 8);
     create_c_tick(a, 1);
+    create_c_aicon(a);
 
+    // AI
     entity_id b = create_entity();
     create_c_render(b, L'C', 0x07);
     create_c_position(b, 7, 7);
     create_c_tick(b, 1);
+    create_c_aicon(b);
+
+    // Player
+    entity_id c = create_entity();
+    create_c_render(c, L'@', 0x07);
+    create_c_position(c, 2, 2);
+    create_c_tick(c, 1);
+    create_c_playercon(c);
+
 }

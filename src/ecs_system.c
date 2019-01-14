@@ -10,6 +10,7 @@
 #include "ecs_entity.h"
 #include "game.h"
 #include "message.h"
+#include "ui.h"
 #include "utils.h"
 
 /* Important constants go here */
@@ -52,6 +53,7 @@ void s_ai(const entity_id uid) {
 void s_render() {
     // Scrolling through the entity ids
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
+        if (!check_uid(i)) continue;
         struct ComponentContainer *r = get_component(i, RENDER);
         struct ComponentContainer *p = get_component(i, POSITION);
 
@@ -72,41 +74,54 @@ void s_render() {
  * tick counter is 0
  * Currently we have player controllables and actors
  * actors get s_ai called for them and the player get's to do their input.
- * The turn progression can also be locked, but it's imperative to unlock the
- * turn system or else the player won't be able to do actions. Including navigating menus
- * The turn system shouldn't be locked if the player is navigating menus
+ * The turn progression can also be locked
  */
+void lock_s_tick() {
+    globals.s_tick_lock++;
+}
+
+void unlock_s_tick() {
+    globals.s_tick_lock--;
+}
+
 void s_tick() {
     // Get the manager for the tick component
     struct ComponentContainer **t = get_component_manager(TICK);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         // Check if the component exists
-        struct C_Tick *c = (*(t + i))->c;
-        if (c) {
+        struct C_Tick *c = NULL;
+        if (*(t + i))
+            c = (*(t + i))->c;
+        else
+            continue;
+
             // Check that the tick count is at 0
-            if (c->ticks == 0) {
+        if (c->ticks == 0) {
 
-                // Get the UID of it's owner
-                entity_id uid = (*(t + i))->owner;
+            // Get the UID of it's owner
+            entity_id uid = (*(t + i))->owner;
 
-                // If the uid has an AICON component then call s_ai on it
-                if (get_component(uid, AICON)) {
-                    while (c->ticks == 0)
-                        s_ai(uid);
+            // If the uid has an AICON component then call s_ai on it
+            if (get_component(uid, AICON)) {
+                while (c->ticks == 0)
+                    s_ai(uid);
 
                 // If the uid has a PLAYERCON component, then we handle key events
-                } else if (get_component(uid, PLAYERCON)) {
-                    while (c->ticks == 0)
-                        event_handler();
+            } else if (get_component(uid, PLAYERCON)) {
+                while (c->ticks == 0  || globals.s_tick_lock != 0) {
+                    event_handler(c);
+                    redraw_screen();
+                }
 
                 // Other stuff should go down here but right now we send an error message
-                } else {
-                    ERROR_MESSAGE(create_string(L"Error in s_tick: Entity uid %d, has TICK Component "
-                                "but no AICON or PLAYERCON component", uid), 0x0C);
-                }
+            } else {
+                ERROR_MESSAGE(create_string(L"Error in s_tick: Entity uid %d, has TICK Component "
+                            "but no AICON or PLAYERCON component", uid), 0x0C);
             }
         }
+        // At the end we go through the ticks and lower them all by 1
+        c->ticks -= 1;
     }
-}
 
+}

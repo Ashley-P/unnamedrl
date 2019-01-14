@@ -18,5 +18,8 @@ struct Event {
     entity_id uids[MAX_BUFSIZE_MINI];
 };
 
+/* Extern functions */
+void init_events();
+void event_dispatcher();
 
 #endif

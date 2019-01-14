@@ -80,8 +80,9 @@ struct ComponentContainer *get_component(const entity_id uid, enum ComponentType
 
     // Iterate through the list and return the component
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
-        if((*(list + i))->type == type)
-            return *(list + i);
+        if (*(list + i))
+            if ((*(list + i))->type == type)
+                return *(list + i);
     }
 
     // If the for loop ends without returning then the component type is not attached to the entity

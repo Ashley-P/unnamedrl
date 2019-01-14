@@ -21,6 +21,7 @@ struct ListNode *events;
 
 void create_event(enum EventType type, const entity_id *uids) {
     struct Event *a = malloc(sizeof(struct Event));
+    a->type = type;
 
     /**
      * No need for specific constructors since the dispatcher knows what to do with the events
@@ -43,6 +44,7 @@ void create_event(enum EventType type, const entity_id *uids) {
 
 /* Used so we can start the game by doing a tick event, which progresses the game */
 void init_events() {
+    events = NULL;
     create_event(ET_TICK, NULL);
 }
 
@@ -57,7 +59,7 @@ void delete_event(struct Event *event) {
 
 /* Takes the events from the queue and does them */
 void event_dispatcher() {
-    struct Event *e = (struct Event *) ll_pop_front(&events);
+    struct Event *e = (struct Event *) (ll_pop_front(&events))->data;
     switch (e->type) {
         case ET_TICK:
             // Call s_turn
