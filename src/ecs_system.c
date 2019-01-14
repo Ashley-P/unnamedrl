@@ -151,7 +151,7 @@ void s_tick() {
                 while(c->ticks == 0)
                     s_ai(uid);
 
-                // If the uid has a PLAYERCON component, then we handle key events
+            // If the uid has a PLAYERCON component, then we handle key events
             } else if (get_component(uid, PLAYERCON)) {
                 lock_s_tick();
                 do {
@@ -159,7 +159,7 @@ void s_tick() {
                     redraw_screen();
                 } while (globals.s_tick_lock != 0);
 
-                // Other stuff should go down here but right now we send an error message
+            // Other stuff should go down here but right now we send an error message
             } else {
                 ERROR_MESSAGE(create_string(L"Error in s_tick: Entity uid %d, has TICK Component "
                             "but no AICON or PLAYERCON component", uid), 0x0C);

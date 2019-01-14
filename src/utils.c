@@ -13,7 +13,7 @@
 wchar_t *create_string(wchar_t *str, ...) {
     va_list args;
     va_start(args, str);
-    wchar_t *new_str = (wchar_t *)malloc(sizeof(wchar_t) * MAX_BUFSIZE_SMALL);
+    wchar_t *new_str = (wchar_t *)malloc(sizeof(wchar_t) * MAX_BUFSIZE_MINI);
     vswprintf(new_str, str, args);
 
     va_end(args);

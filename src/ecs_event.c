@@ -79,4 +79,6 @@ void event_dispatcher() {
                         e->type), 0x0C);
             break;
     }
+    // Delete the event when we're done with it
+    delete_event(e);
 }

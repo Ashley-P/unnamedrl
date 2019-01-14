@@ -6,12 +6,18 @@
 #include "llist.h"
 #include "message.h" // Needed for the macro expansion
 
+#if 1
+#define DEBUG_MESSAGE(x, y) ;
+#define ERROR_MESSAGE(x, y) ;
+#endif
 
+#if 0
 #define DEBUG_MESSAGE(x, y) add_message(&d_debug.debug_messages, (struct String) {x, y}); \
                             add_message(&d_debug.display_messages, (struct String) {x, y});
 
 #define ERROR_MESSAGE(x, y) add_message(&d_debug.error_messages, (struct String) {x, y}); \
                             add_message(&d_debug.display_messages, (struct String) {x, y});
+#endif
 
 /**
  * A struct to hold onto everything relevant to the debug file
