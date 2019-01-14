@@ -3,6 +3,7 @@
  */
 
 #include <stdlib.h>
+#include "defs.h"
 #include "debug.h"
 #include "ecs_component.h"
 #include "ecs_entity.h"
@@ -17,6 +18,7 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
  */
 
 struct ComponentContainer **cm_aicon;
+struct ComponentContainer **cm_movement;
 struct ComponentContainer **cm_playercon;
 struct ComponentContainer **cm_position;
 struct ComponentContainer **cm_render;
@@ -26,6 +28,7 @@ struct ComponentContainer **cm_tick;
 static inline wchar_t *component_type_finder(enum ComponentType type) {
     switch (type) {
         case AICON:     return L"AICON";
+        case MOVEMENT:  return L"MOVEMENT";
         case PLAYERCON: return L"PLAYERCON";
         case POSITION:  return L"POSITION";
         case RENDER:    return L"RENDER";
@@ -39,6 +42,7 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
  */
 void init_component_managers() {
     cm_aicon     = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_movement  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
     cm_playercon = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
     cm_position  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
     cm_render    = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
@@ -47,6 +51,7 @@ void init_component_managers() {
     // Making sure that all the pointers are NULL so we can check them without segfaulting */
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         *(cm_aicon + i)     = NULL;
+        *(cm_movement + i)  = NULL;
         *(cm_playercon + i) = NULL;
         *(cm_position + i)  = NULL;
         *(cm_render + i)    = NULL;
@@ -60,6 +65,7 @@ void init_component_managers() {
 /* @FIXME : Don't think this frees up the memory properly */
 void deinit_component_managers() {
     free(cm_aicon);
+    free(cm_movement);
     free(cm_playercon);
     free(cm_position);
     free(cm_render);
@@ -93,6 +99,7 @@ struct ComponentContainer *get_component(const entity_id uid, enum ComponentType
 struct ComponentContainer **get_component_manager(enum ComponentType type) {
     switch (type) {
         case AICON:     return cm_aicon;
+        case MOVEMENT:  return cm_movement;
         case PLAYERCON: return cm_playercon;
         case POSITION:  return cm_position;
         case RENDER:    return cm_render;
@@ -189,8 +196,17 @@ void create_c_aicon(const entity_id uid) {
     create_component(uid, AICON, (void *) component);
 }
 
+void create_c_movement(const entity_id uid) {
+    struct C_Movement *component = malloc(sizeof(struct C_Movement));
+    component->x = 0;
+    component->y = 0;
+
+    create_component(uid, MOVEMENT, (void *) component);
+}
+
 void create_c_playercon(const entity_id uid) {
     struct C_PlayerCon *component = malloc(sizeof(struct C_PlayerCon));
+    globals.player_id = uid;
     create_component(uid, PLAYERCON, (void *) component);
 }
 
@@ -212,10 +228,11 @@ void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char 
     create_component(uid, RENDER, (void *) component);
 }
 
-void create_c_tick(const entity_id uid, const int ticks) {
+void create_c_tick(const entity_id uid, const int ticks, const int speed) {
     struct C_Tick *component = malloc(sizeof(struct C_Tick));
     component->owner = uid;
     component->ticks = ticks;
+    component->speed = speed;
 
     create_component(uid, TICK, (void *) component);
 }

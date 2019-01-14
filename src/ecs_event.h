@@ -5,6 +5,7 @@
 
 enum EventType {
     ET_TICK,
+    ET_MOVEMENT,
 };
 
 struct Event {

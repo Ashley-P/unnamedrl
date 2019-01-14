@@ -43,6 +43,54 @@ void s_ai(const entity_id uid) {
     ((struct C_Tick *) t->c)->ticks = 100;
 }
 
+/**
+ * Handles movement for each unit with a C_Movement and C_Position struct
+ * Also checks collision
+ */
+void s_movement() {
+    struct ComponentContainer **manager = get_component_manager(MOVEMENT);
+
+    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
+        if (*(manager + i)) {
+            entity_id uid = (*(manager + i))->owner;
+            struct C_Movement *move = (*(manager + i))->c;
+            // Early return if both vars in move are 0
+            if (move->x == 0 && move->y == 0) return;
+
+            struct C_Position *pos  = (get_component(uid, POSITION))->c;
+            struct C_Tick *tick     = (get_component(uid, TICK))->c;
+            if (!pos) {
+                ERROR_MESSAGE(create_string(L"Error in s_movement: Entity uid %d Has a movement "
+                            "component but not a position component", uid), 0x0C);
+                continue;
+            }
+
+            /**
+             * Normally we'd do some collision detection but the other components aren't set up yet
+             * So instead we just make sure the the position isn't a negative number
+             * Assuming that movement is 100 ticks
+             */
+            int has_moved = 0;
+            if (pos->x + move->x >= 0) {
+                pos->x += move->x;
+                has_moved = 1;
+            }
+
+            if (pos->y + move->y >= 0) {
+                pos->y += move->y;
+                has_moved = 1;
+            }
+
+            if (has_moved) {
+                tick->ticks = 100 * (tick->speed / 100);
+            }
+
+            move->x = 0;
+            move->y = 0;
+        }
+    }
+}
+
 /*
  * Renders entities on the play screen
  * @TODO : Implement a camera system
@@ -104,15 +152,15 @@ void s_tick() {
 
             // If the uid has an AICON component then call s_ai on it
             if (get_component(uid, AICON)) {
-                while (c->ticks == 0)
-                    s_ai(uid);
+                s_ai(uid);
 
                 // If the uid has a PLAYERCON component, then we handle key events
             } else if (get_component(uid, PLAYERCON)) {
-                while (c->ticks == 0  || globals.s_tick_lock != 0) {
+                lock_s_tick();
+                do {
                     event_handler(uid);
                     redraw_screen();
-                }
+                } while (globals.s_tick_lock != 0);
 
                 // Other stuff should go down here but right now we send an error message
             } else {

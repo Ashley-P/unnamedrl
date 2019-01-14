@@ -64,6 +64,7 @@ void game_init() {
     globals.done_playing = 0;
     globals.ticks = 0;
     globals.s_tick_lock = 0;
+    globals.player_id = 0;
 
     /* message_list doesn't need initialisation */
     d_debug_init();
@@ -145,6 +146,13 @@ void event_handler(entity_id uid) {
     }
 }
 
+/* Some small functions to help keep handle_keys a bit cleaner */
+void set_player_movement(int x, int y) {
+    struct C_Movement *move = (get_component(globals.player_id, MOVEMENT))->c;
+    move->x = x;
+    move->y = y;
+}
+
 /**
  * Handles the key events provided by event_handler
  */
@@ -178,15 +186,24 @@ void handle_keys(KEY_EVENT_RECORD kev, entity_id uid) {
             switch (kev.wVirtualKeyCode) {
                 /* Movement */
                 case VK_NUMPAD2:
+                    set_player_movement(0, 1);
+                    GAME_MESSAGE(L"Player Turn", 0x07);
+                    unlock_s_tick();
+                    break;
                 case VK_NUMPAD4:
+                    set_player_movement(-1, 0);
+                    GAME_MESSAGE(L"Player Turn", 0x07);
+                    unlock_s_tick();
+                    break;
                 case VK_NUMPAD6:
+                    set_player_movement(1, 0);
+                    GAME_MESSAGE(L"Player Turn", 0x07);
+                    unlock_s_tick();
+                    break;
                 case VK_NUMPAD8:
-                    GAME_MESSAGE(create_string(L"Player entity takes a turn, Key = %d",
-                                kev.wVirtualKeyCode), 0x07);
-                    // Get the component and assign to it directly
-                    struct ComponentContainer *c = get_component(uid, TICK);
-                    struct C_Tick *t = (struct C_Tick *) c->c;
-                    t->ticks = 100;
+                    set_player_movement(0, -1);
+                    GAME_MESSAGE(L"Player Turn", 0x07);
+                    unlock_s_tick();
                     break;
 
                 /* Other */

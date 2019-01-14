@@ -11,6 +11,7 @@
 
 enum ComponentType {
     AICON,          // AI controllable
+    MOVEMENT,
     PLAYERCON,      // Player controllable
     POSITION,
     RENDER,
@@ -36,10 +37,11 @@ void delete_components(entity_id uid);
 
 /* Extern functions but it's the constructors */
 void create_c_aicon(const entity_id uid);
+void create_c_movement(const entity_id uid);
 void create_c_playercon(const entity_id uid);
 void create_c_position(const entity_id uid, const int x, const int y);
 void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
-void create_c_tick(const entity_id uid, const int ticks);
+void create_c_tick(const entity_id uid, const int ticks, const int speed);
 
 
 /********* Component definitions go here *********/
@@ -54,6 +56,11 @@ void create_c_tick(const entity_id uid, const int ticks);
  * But now the presence of the empty struct just assumes that the entity can make decisions
  */
 struct C_AICon {
+};
+
+struct C_Movement {
+    int x;
+    int y;
 };
 
 struct C_PlayerCon {
@@ -79,6 +86,7 @@ struct C_Tick {
     entity_id owner;
 
     int ticks;
+    int speed;
 };
 
 

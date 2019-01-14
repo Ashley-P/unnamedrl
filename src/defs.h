@@ -107,6 +107,8 @@ struct Globals {
 
     struct Map *test_map;
     struct ListNode *message_list;
+
+    entity_id player_id;
 };
 
 /**

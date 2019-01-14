@@ -46,6 +46,7 @@ void create_event(enum EventType type, const entity_id *uids) {
 void init_events() {
     events = NULL;
     create_event(ET_TICK, NULL);
+    create_event(ET_MOVEMENT, NULL);
 }
 
 void deinit_events() {
@@ -67,6 +68,11 @@ void event_dispatcher() {
 
             // another tick event get's created or else the game stops
             create_event(ET_TICK, NULL);
+            break;
+        case ET_MOVEMENT:
+            s_movement();
+
+            create_event(ET_MOVEMENT, NULL);
             break;
         default:
             ERROR_MESSAGE(create_string(L"Error in event_dispatcher: Unknown EventType %d",
