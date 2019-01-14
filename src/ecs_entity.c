@@ -10,6 +10,7 @@
 
 /* Lookup table that stores the entities */
 struct Entity **entities;
+size_t entity_count;
 
 struct Entity *get_entity(entity_id uid) {
     return *(entities + uid);
@@ -21,6 +22,8 @@ void init_entity_manager() {
     // Setting everything to NULL
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++)
         *(entities + i) = NULL;
+    
+    entity_count = 0;
 }
 
 void deinit_entity_manager() {
@@ -39,8 +42,14 @@ void init_entity_from_file() {
 
 /* @TODO : Implement some wraparound to re-use entity IDs that have been deleted */
 entity_id gen_uid() {
-    static entity_id i = 0;
-    return i++;
+    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
+        if (check_uid(i) == 1) continue;
+        else return i;
+    }
+    // If we get this far then we've used too many uids
+    ERROR_MESSAGE(create_string(L"Error in gen_uid: Too many entities created (Max = %d)",
+                MAX_BUFSIZE_SUPER), 0x0C);
+    return -1;
 }
 
 int check_uid(entity_id uid) {
@@ -60,6 +69,7 @@ entity_id create_entity() {
     }
 
     *(entities + uid) = malloc(sizeof(struct Entity));
+    entity_count++;
     return uid;
 }
 
@@ -68,6 +78,7 @@ void delete_entity(entity_id uid) {
     delete_components(uid);
     free(*(entities + uid));
     *(entities + uid) = NULL;
+    entity_count--;
 }
 
 

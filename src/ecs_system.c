@@ -48,12 +48,12 @@ void s_ai(const entity_id uid) {
  * Also checks collision
  */
 void s_movement() {
-    struct ComponentContainer **manager = get_component_manager(MOVEMENT);
+    struct ComponentManager *manager = get_component_manager(MOVEMENT);
 
-    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
-        if (*(manager + i)) {
-            entity_id uid = (*(manager + i))->owner;
-            struct C_Movement *move = (*(manager + i))->c;
+    for (int i = 0; i < manager->size; i++) {
+        if (*(manager->containers + i)) {
+            entity_id uid = (*(manager->containers + i))->owner;
+            struct C_Movement *move = (*(manager->containers + i))->c;
             // Early return if both vars in move are 0
             if (move->x == 0 && move->y == 0) return;
 
@@ -99,8 +99,9 @@ void s_movement() {
  * @TODO : Implement a Z-Buffer so actors get drawn on top of items
  */
 void s_render() {
+    // @TODO @FIXME : Update when you have lots of entities
     // Scrolling through the entity ids
-    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
+    for (int i = 0; i < entity_count; i++) {
         if (!check_uid(i)) continue;
         struct ComponentContainer *r = get_component(i, RENDER);
         struct ComponentContainer *p = get_component(i, POSITION);
@@ -134,13 +135,13 @@ void unlock_s_tick() {
 
 void s_tick() {
     // Get the manager for the tick component
-    struct ComponentContainer **t = get_component_manager(TICK);
+    struct ComponentManager *t = get_component_manager(TICK);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         // Check if the component exists
         struct C_Tick *c = NULL;
-        if (*(t + i))
-            c = (*(t + i))->c;
+        if (*(t->containers + i))
+            c = (*(t->containers + i))->c;
         else
             continue;
 
@@ -148,7 +149,7 @@ void s_tick() {
         if (c->ticks == 0) {
 
             // Get the UID of it's owner
-            entity_id uid = (*(t + i))->owner;
+            entity_id uid = (*(t->containers + i))->owner;
 
             // If the uid has an AICON component then call s_ai on it
             if (get_component(uid, AICON)) {

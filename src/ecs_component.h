@@ -26,11 +26,18 @@ struct ComponentContainer {
     void *c;
 };
 
+struct ComponentManager {
+    enum ComponentType type;
+    size_t size;
+
+    struct ComponentContainer **containers;
+};
+
 /* Extern Functions */
 void init_component_managers();
 void deinit_component_managers();
 struct ComponentContainer *get_component(const entity_id uid, enum ComponentType type);
-struct ComponentContainer **get_component_manager(enum ComponentType type);
+struct ComponentManager *get_component_manager(enum ComponentType type);
 //void create_component(const entity_id uid, enum ComponentType type, void *comp); // shouldn't be called
 void delete_component(entity_id uid, enum ComponentType type);
 void delete_components(entity_id uid);

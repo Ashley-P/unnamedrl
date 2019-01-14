@@ -17,12 +17,13 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
  *
  */
 
-struct ComponentContainer **cm_aicon;
-struct ComponentContainer **cm_movement;
-struct ComponentContainer **cm_playercon;
-struct ComponentContainer **cm_position;
-struct ComponentContainer **cm_render;
-struct ComponentContainer **cm_tick;
+struct ComponentManager *cm_aicon;
+struct ComponentManager *cm_movement;
+struct ComponentManager *cm_playercon;
+struct ComponentManager *cm_position;
+struct ComponentManager *cm_render;
+struct ComponentManager *cm_tick;
+
 
 // Function to reverse the enum into a string for error messages 
 static inline wchar_t *component_type_finder(enum ComponentType type) {
@@ -41,21 +42,42 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
  * an init function that initialises all the component managers
  */
 void init_component_managers() {
-    cm_aicon     = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_movement  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_playercon = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_position  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_render    = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_tick      = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_aicon     = malloc(sizeof(struct ComponentManager));
+    cm_movement  = malloc(sizeof(struct ComponentManager));
+    cm_playercon = malloc(sizeof(struct ComponentManager));
+    cm_position  = malloc(sizeof(struct ComponentManager));
+    cm_render    = malloc(sizeof(struct ComponentManager));
+    cm_tick      = malloc(sizeof(struct ComponentManager));
+
+    cm_aicon->type     = AICON;
+    cm_movement->type  = MOVEMENT;
+    cm_playercon->type = PLAYERCON;
+    cm_position->type  = POSITION;
+    cm_render->type    = RENDER;
+    cm_tick->type      = TICK;
+
+    cm_aicon->size     = 0;
+    cm_movement->size  = 0;
+    cm_playercon->size = 0;
+    cm_position->size  = 0;
+    cm_render->size    = 0;
+    cm_tick->size      = 0;
+
+    cm_aicon->containers     = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_movement->containers  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_playercon->containers = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_position->containers  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_render->containers    = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_tick->containers      = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
 
     // Making sure that all the pointers are NULL so we can check them without segfaulting */
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
-        *(cm_aicon + i)     = NULL;
-        *(cm_movement + i)  = NULL;
-        *(cm_playercon + i) = NULL;
-        *(cm_position + i)  = NULL;
-        *(cm_render + i)    = NULL;
-        *(cm_tick + i)      = NULL;
+        *(cm_aicon->containers + i)     = NULL;
+        *(cm_movement->containers + i)  = NULL;
+        *(cm_playercon->containers + i) = NULL;
+        *(cm_position->containers + i)  = NULL;
+        *(cm_render->containers + i)    = NULL;
+        *(cm_tick->containers + i)      = NULL;
         for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
             component_list[i][j] = NULL;
         }
@@ -64,6 +86,22 @@ void init_component_managers() {
 
 /* @FIXME : Don't think this frees up the memory properly */
 void deinit_component_managers() {
+    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
+        free(cm_aicon->containers + i);
+        free(cm_movement->containers + i);
+        free(cm_playercon->containers + i);
+        free(cm_position->containers + i);
+        free(cm_render->containers + i);
+        free(cm_tick->containers + i);
+    }
+
+    free(cm_aicon->containers);
+    free(cm_movement->containers);
+    free(cm_playercon->containers);
+    free(cm_position->containers);
+    free(cm_render->containers);
+    free(cm_tick->containers);
+
     free(cm_aicon);
     free(cm_movement);
     free(cm_playercon);
@@ -96,7 +134,7 @@ struct ComponentContainer *get_component(const entity_id uid, enum ComponentType
 }
 
 
-struct ComponentContainer **get_component_manager(enum ComponentType type) {
+struct ComponentManager *get_component_manager(enum ComponentType type) {
     switch (type) {
         case AICON:     return cm_aicon;
         case MOVEMENT:  return cm_movement;
@@ -130,20 +168,16 @@ void create_component(const entity_id uid, enum ComponentType type, void *comp) 
             continue;
     }
 
-    struct ComponentContainer **manager = get_component_manager(type);
+    struct ComponentManager *manager = get_component_manager(type);
 
-    // Add it to the specific component type array
-    for (int j = 0; j < MAX_BUFSIZE_SUPER; j++) {
-        if (!*(manager + j)) {
-            *(manager + j) = a;
-            return; // Early return so we don't hit the debug message
-        } else
-            continue;
+    // Jump to the size and add it with a check first
+    if (manager->size == MAX_BUFSIZE_SUPER) {
+        ERROR_MESSAGE(create_string(L"Unable to add component type %ls. "
+                    "Reason : Too many components of that type", component_type_finder(type)), 0x0C);
+    } else {
+       *(manager->containers + manager->size) = a;
+       manager->size++;
     }
-
-    // If we reach here without returning early after then there is probably no space in the list 
-    ERROR_MESSAGE(create_string(L"Unable to add component type %ls. "
-                "Reason : Too many components for uid %d", component_type_finder(type), uid), 0x0C);
 }
 
 /**
@@ -166,11 +200,15 @@ void delete_component(const entity_id uid, enum ComponentType type) {
     }
 
     // Removing the component from the manager
-    struct ComponentContainer **manager = get_component_manager(type);
+    struct ComponentManager *manager = get_component_manager(type);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
-        if (*(manager + i) == component)
-            *(manager + i) = NULL;
+        if (*(manager->containers + i) == component) {
+            *(manager->containers + i) = NULL;
+            // Move the component at the end to this position
+            *(manager->containers) = *(manager->containers + manager->size - 1);
+            *(manager->containers + manager->size - 1) = NULL;
+        }
     }
 }
 

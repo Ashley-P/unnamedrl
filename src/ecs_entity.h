@@ -7,6 +7,8 @@ struct Entity {
     entity_id uid; // Unique ID
 };
 
+extern size_t entity_count;
+
 /* Externs */
 struct Entity *get_entity(entity_id uid);
 void init_entity_manager();
