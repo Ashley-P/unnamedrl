@@ -37,8 +37,8 @@ struct Globals globals;
 
 
 /* Function Prototypes */
-void event_handler(struct C_Tick *t);
-void handle_keys(KEY_EVENT_RECORD kev, struct C_Tick *t);
+//void event_handler(entity_id uid);
+void handle_keys(KEY_EVENT_RECORD kev, entity_id uid);
 
 
 
@@ -122,7 +122,7 @@ void play_game() {
  * Handles events from Windows
  * Not to be confused with event_dispatcher which handles in game events
  */
-void event_handler(struct C_Tick *t) {
+void event_handler(entity_id uid) {
     unsigned long ul_evread;
     INPUT_RECORD ir_inpbuf[256];
 
@@ -135,7 +135,7 @@ void event_handler(struct C_Tick *t) {
         switch (ir_inpbuf[i].EventType) {
             case KEY_EVENT:
                 /* Pass the key event to handle_keys where it gets interpreted based on the program state */
-                handle_keys(ir_inpbuf[i].Event.KeyEvent, t);
+                handle_keys(ir_inpbuf[i].Event.KeyEvent, uid);
                 return;
 
             case MOUSE_EVENT: case WINDOW_BUFFER_SIZE_EVENT: case FOCUS_EVENT: case MENU_EVENT:
@@ -148,7 +148,7 @@ void event_handler(struct C_Tick *t) {
 /**
  * Handles the key events provided by event_handler
  */
-void handle_keys(KEY_EVENT_RECORD kev, struct C_Tick *t) {
+void handle_keys(KEY_EVENT_RECORD kev, entity_id uid) {
     /* Immediate return if it's not a keydown */
     if (!kev.bKeyDown) return;
 
@@ -183,6 +183,9 @@ void handle_keys(KEY_EVENT_RECORD kev, struct C_Tick *t) {
                 case VK_NUMPAD8:
                     GAME_MESSAGE(create_string(L"Player entity takes a turn, Key = %d",
                                 kev.wVirtualKeyCode), 0x07);
+                    // Get the component and assign to it directly
+                    struct ComponentContainer *c = get_component(uid, TICK);
+                    struct C_Tick *t = (struct C_Tick *) c->c;
                     t->ticks = 100;
                     break;
 

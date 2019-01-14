@@ -4,6 +4,6 @@
 #include "ecs_component.h"
 
 void play_game();
-void event_handler(struct C_Tick *t);
+void event_handler(entity_id uid);
 
 #endif

@@ -110,7 +110,7 @@ void s_tick() {
                 // If the uid has a PLAYERCON component, then we handle key events
             } else if (get_component(uid, PLAYERCON)) {
                 while (c->ticks == 0  || globals.s_tick_lock != 0) {
-                    event_handler(c);
+                    event_handler(uid);
                     redraw_screen();
                 }
 
