@@ -20,7 +20,7 @@ struct ComponentContainer **cm_aicon;
 struct ComponentContainer **cm_playercon;
 struct ComponentContainer **cm_position;
 struct ComponentContainer **cm_render;
-struct ComponentContainer **cm_turn;
+struct ComponentContainer **cm_tick;
 
 // Function to reverse the enum into a string for error messages 
 static inline wchar_t *component_type_finder(enum ComponentType type) {
@@ -29,7 +29,7 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
         case PLAYERCON: return L"PLAYERCON";
         case POSITION:  return L"POSITION";
         case RENDER:    return L"RENDER";
-        case TURN:      return L"TURN";
+        case TICK:      return L"TICK";
         default:        return L"INVALID TYPE SUPPLIED";
     }
 }
@@ -42,7 +42,7 @@ void init_component_managers() {
     cm_playercon = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
     cm_position  = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
     cm_render    = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
-    cm_turn      = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+    cm_tick      = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
 
     // Making sure that all the pointers are NULL so we can check them without segfaulting */
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
@@ -50,7 +50,7 @@ void init_component_managers() {
         *(cm_playercon + i) = NULL;
         *(cm_position + i)  = NULL;
         *(cm_render + i)    = NULL;
-        *(cm_turn + i)      = NULL;
+        *(cm_tick + i)      = NULL;
         for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
             component_list[i][j] = NULL;
         }
@@ -63,7 +63,7 @@ void deinit_component_managers() {
     free(cm_playercon);
     free(cm_position);
     free(cm_render);
-    free(cm_turn);
+    free(cm_tick);
 }
 
 /**
@@ -95,7 +95,7 @@ struct ComponentContainer **get_component_manager(enum ComponentType type) {
         case PLAYERCON: return cm_playercon;
         case POSITION:  return cm_position;
         case RENDER:    return cm_render;
-        case TURN:      return cm_turn;
+        case TICK:      return cm_tick;
         default:        return NULL;
     }
 }
@@ -125,7 +125,7 @@ void create_component(const entity_id uid, enum ComponentType type, void *comp) 
     struct ComponentContainer **manager = get_component_manager(type);
 
     // Add it to the specific component type array
-    for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
+    for (int j = 0; j < MAX_BUFSIZE_SUPER; j++) {
         if (!*(manager + j)) {
             *(manager + j) = a;
             return; // Early return so we don't hit the debug message
@@ -139,8 +139,8 @@ void create_component(const entity_id uid, enum ComponentType type, void *comp) 
 }
 
 /**
- *  Deletes a component from an entity
- *  Also places the component at the end of the list in it's place
+ * Deletes a component from an entity
+ * @TODO : Place the component at the end of both lists in the deleted components place
  */
 void delete_component(const entity_id uid, enum ComponentType type) {
     // We need the address and also to free it later
@@ -185,12 +185,12 @@ void delete_components(entity_id uid) {
  */
 void create_c_aicon(const entity_id uid) {
     struct C_AICon *component = malloc(sizeof(struct C_AICon));
-    create_component(uid, TURN, (void *) component);
+    create_component(uid, AICON, (void *) component);
 }
 
 void create_c_playercon(const entity_id uid) {
     struct C_PlayerCon *component = malloc(sizeof(struct C_PlayerCon));
-    create_component(uid, TURN, (void *) component);
+    create_component(uid, PLAYERCON, (void *) component);
 }
 
 void create_c_position(const entity_id uid, const int x, const int y) {
@@ -211,10 +211,10 @@ void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char 
     create_component(uid, RENDER, (void *) component);
 }
 
-void create_c_turn(const entity_id uid, const int ticks) {
-    struct C_Turn *component = malloc(sizeof(struct C_Turn));
+void create_c_tick(const entity_id uid, const int ticks) {
+    struct C_Tick *component = malloc(sizeof(struct C_Tick));
     component->owner = uid;
     component->ticks = ticks;
 
-    create_component(uid, TURN, (void *) component);
+    create_component(uid, TICK, (void *) component);
 }

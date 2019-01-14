@@ -17,6 +17,10 @@ struct Entity *get_entity(entity_id uid) {
 
 void init_entity_manager() {
     entities = malloc(sizeof(struct Entity *) * MAX_BUFSIZE_SUPER);
+
+    // Setting everything to NULL
+    for (int i = 0; i < MAX_BUFSIZE_SUPER; i++)
+        *(entities + i) = NULL;
 }
 
 void deinit_entity_manager() {
@@ -49,9 +53,8 @@ entity_id create_entity() {
     entity_id uid = gen_uid();
 
     // If the entity id is already taken then we send an error and return;
-    // @TODO : Make this an error message
-    if (!check_uid(uid)) {
-        DEBUG_MESSAGE(create_string(L"Could not create entity. Reason : Entity id %d already exists", uid),
+    if (check_uid(uid)) {
+        ERROR_MESSAGE(create_string(L"Could not create entity. Reason : Entity id %d already exists", uid),
                 0x0C);
         return -1;
     }
@@ -73,8 +76,10 @@ void test_entities() {
     entity_id a = create_entity();
     create_c_render(a, L'X', 0x07);
     create_c_position(a, 8, 8);
+    create_c_tick(a, 1);
 
     entity_id b = create_entity();
     create_c_render(b, L'C', 0x07);
     create_c_position(b, 7, 7);
+    create_c_tick(b, 1);
 }

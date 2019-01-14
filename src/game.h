@@ -3,5 +3,6 @@
 
 extern long long ticks;
 void play_game();
+void event_handler();
 
 #endif

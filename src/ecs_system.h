@@ -7,5 +7,6 @@ struct S_TurnSys {
 
 /* Extern Functions */
 void s_render();
+void s_tick();
 
 #endif

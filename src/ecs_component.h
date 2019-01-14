@@ -14,7 +14,7 @@ enum ComponentType {
     PLAYERCON,      // Player controllable
     POSITION,
     RENDER,
-    TURN,
+    TICK,
 }; 
 
 /* Holds a component, used so we can have a list of an entities components */
@@ -38,7 +38,7 @@ void delete_components(entity_id uid);
 void create_c_playercontrollable(const entity_id uid);
 void create_c_position(const entity_id uid, const int x, const int y);
 void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
-void create_c_turn(const entity_id uid, const int ticks);
+void create_c_tick(const entity_id uid, const int ticks);
 
 
 /********* Component definitions go here *********/
@@ -74,7 +74,7 @@ struct C_Render {
 };
 
 /* Required for the entity to be managed by the S_Turns system */
-struct C_Turn {
+struct C_Tick {
     entity_id owner;
 
     int ticks;
