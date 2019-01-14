@@ -4,10 +4,7 @@
 #include "defs.h"
 
 /* To make message posting more concise */
-#define GAME_MESSAGE(x, y) ;
-#if 0
 #define GAME_MESSAGE(x, y) add_message(&globals.message_list, (struct String) {x, y})
-#endif
 
 /* Externs */
 void message_list_deinit(struct ListNode **head);
