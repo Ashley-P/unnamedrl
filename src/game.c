@@ -182,16 +182,15 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                 /* Movement */
                 case VK_NUMPAD2:
                     return move_entity(globals.player_id, 0, 1);
-                    break;
                 case VK_NUMPAD4:
                     return move_entity(globals.player_id, -1, 0);
-                    break;
                 case VK_NUMPAD6:
                     return move_entity(globals.player_id, 1, 0);
-                    break;
                 case VK_NUMPAD8:
                     return move_entity(globals.player_id, 0, -1);
-                    break;
+
+                case VK_NUMPAD5:
+                    return wait_entity(globals.player_id);
 
                 /* Other */
                 case VK_ESCAPE:

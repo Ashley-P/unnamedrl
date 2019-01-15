@@ -10,6 +10,7 @@ int power(int base, unsigned int expt);
 
 /* String utility functions */
 int w_string_cmp(const wchar_t *a, const wchar_t *b);
+int w_string_cmp2(const wchar_t *a, const wchar_t *b, const size_t sz);
 void w_string_cpy(const wchar_t *src, wchar_t *dest);
 int w_string_len(const wchar_t *str);
 void w_string_reset(wchar_t *str, size_t sz);

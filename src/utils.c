@@ -110,6 +110,20 @@ int w_string_cmp(const wchar_t *a, const wchar_t *b) {
     }
 }
 
+/* Same as above except it compares to a size */
+int w_string_cmp2(const wchar_t *a, const wchar_t *b, const size_t sz) {
+    for (int i = 0; i < sz ; i++) {
+        if (*(a + i) == L'\0' && *(b + i) == L'\0') {
+            return 1;
+        } else if (*(a + i) == *(b + i)) {
+            continue;
+        } else 
+            return 0;
+    }
+
+    return 1;
+}
+
 /**
  * wchar_t string copying
  * Requires null-terminated strings

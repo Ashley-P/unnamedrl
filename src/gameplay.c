@@ -10,6 +10,7 @@
 #include "message.h"
 #include "utils.h"
 
+
 /**
  * Moves an entity, returns the energy cost
  * @TODO @FIXME : Fix this when the map get's implemented
@@ -48,4 +49,13 @@ int move_entity(entity_id uid, int x, int y) {
 
     // Diagonal movement is the same as orthoganal right now
     return 100;
+}
+
+/* Let's an entity spend 10 energy to wait a bit */
+int wait_entity(entity_id uid) {
+    if (uid == globals.player_id) {
+        GAME_MESSAGE(L"You wait", 0x07);
+    }
+
+    return 10;
 }
