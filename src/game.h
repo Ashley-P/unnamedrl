@@ -4,6 +4,6 @@
 #include "ecs_component.h"
 
 void play_game();
-void event_handler(entity_id uid);
+int event_handler();
 
 #endif

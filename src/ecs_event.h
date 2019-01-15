@@ -4,8 +4,7 @@
 #include "ecs_entity.h"
 
 enum EventType {
-    E_TICK,
-    E_MOVEMENT,
+    E_INVALID, // Needed because we can't have an empty enum
 };
 
 struct Event {

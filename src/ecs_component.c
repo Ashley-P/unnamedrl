@@ -18,22 +18,22 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
  */
 
 struct ComponentManager *cm_aicon;
+struct ComponentManager *cm_energy;
 struct ComponentManager *cm_movement;
 struct ComponentManager *cm_playercon;
 struct ComponentManager *cm_position;
 struct ComponentManager *cm_render;
-struct ComponentManager *cm_tick;
 
 
 // Function to reverse the enum into a string for error messages 
 static inline wchar_t *component_type_finder(enum ComponentType type) {
     switch (type) {
         case AICON:     return L"AICON";
+        case ENERGY:    return L"ENERGY";
         case MOVEMENT:  return L"MOVEMENT";
         case PLAYERCON: return L"PLAYERCON";
         case POSITION:  return L"POSITION";
         case RENDER:    return L"RENDER";
-        case TICK:      return L"TICK";
         default:        return L"INVALID TYPE SUPPLIED";
     }
 }
@@ -52,11 +52,11 @@ void init_component_manager(struct ComponentManager **manager, enum ComponentTyp
  */
 void init_component_managers() {
     init_component_manager(&cm_aicon     , AICON);
+    init_component_manager(&cm_energy    , AICON);
     init_component_manager(&cm_movement  , MOVEMENT);
     init_component_manager(&cm_playercon , PLAYERCON);
     init_component_manager(&cm_position  , POSITION);
     init_component_manager(&cm_render    , RENDER);
-    init_component_manager(&cm_tick      , TICK);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
@@ -74,11 +74,11 @@ void deinit_component_manager(struct ComponentManager *manager) {
 }
 void deinit_component_managers() {
     deinit_component_manager(cm_aicon);
+    deinit_component_manager(cm_energy);
     deinit_component_manager(cm_movement);
     deinit_component_manager(cm_playercon);
     deinit_component_manager(cm_position);
     deinit_component_manager(cm_render);
-    deinit_component_manager(cm_tick);
 }
 
 /**
@@ -108,11 +108,11 @@ struct ComponentContainer *get_component(const entity_id uid, enum ComponentType
 struct ComponentManager *get_component_manager(enum ComponentType type) {
     switch (type) {
         case AICON:     return cm_aicon;
+        case ENERGY:    return cm_energy;
         case MOVEMENT:  return cm_movement;
         case PLAYERCON: return cm_playercon;
         case POSITION:  return cm_position;
         case RENDER:    return cm_render;
-        case TICK:      return cm_tick;
         default:        return NULL;
     }
 }
@@ -207,20 +207,32 @@ void delete_components(entity_id uid) {
  */
 void create_c_aicon(const entity_id uid) {
     struct C_AICon *component = malloc(sizeof(struct C_AICon));
+    component->state = AI_TEST;
+
     create_component(uid, AICON, (void *) component);
 }
 
-void create_c_movement(const entity_id uid) {
+void create_c_energy(const entity_id uid, const int e_gain) {
+    struct C_Energy *component = malloc(sizeof(struct C_Energy));
+    component->owner  = uid;
+    component->energy = 0;
+    component->e_gain = e_gain;
+
+    create_component(uid, ENERGY, (void *) component);
+}
+
+void create_c_movement(const entity_id uid, const uint8_t flags) {
     struct C_Movement *component = malloc(sizeof(struct C_Movement));
-    component->x = 0;
-    component->y = 0;
+    component->flags = flags;
 
     create_component(uid, MOVEMENT, (void *) component);
 }
 
+// We assume that this get's called once
 void create_c_playercon(const entity_id uid) {
     struct C_PlayerCon *component = malloc(sizeof(struct C_PlayerCon));
     globals.player_id = uid;
+
     create_component(uid, PLAYERCON, (void *) component);
 }
 
@@ -240,13 +252,4 @@ void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char 
     component->col   = col;
 
     create_component(uid, RENDER, (void *) component);
-}
-
-void create_c_tick(const entity_id uid, const int ticks, const int speed) {
-    struct C_Tick *component = malloc(sizeof(struct C_Tick));
-    component->owner = uid;
-    component->ticks = ticks;
-    component->speed = speed;
-
-    create_component(uid, TICK, (void *) component);
 }

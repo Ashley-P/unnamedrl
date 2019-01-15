@@ -1,21 +1,23 @@
 #ifndef ECS_COMPONENT_H
 #define ECS_COMPONENT_H
 
+#include <stdint.h>
 #include "defs.h"
 
 
-/* Extern Variables */
-//extern struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
-//extern struct ComponentContainer **cm_render;
-//extern struct ComponentContainer **cm_turn;
+enum AI_STATE {
+    AI_INVALID,
+    AI_DECIDING, // This is where the ai get's to choose what it want's to do next
+    AI_TEST,     // Test value before I implement it properly
+};
 
 enum ComponentType {
     AICON,          // AI controllable
+    ENERGY,
     MOVEMENT,
     PLAYERCON,      // Player controllable
     POSITION,
     RENDER,
-    TICK,
 }; 
 
 /* Holds a component, used so we can have a list of an entities components */
@@ -44,11 +46,11 @@ void delete_components(entity_id uid);
 
 /* Extern functions but it's the constructors */
 void create_c_aicon(const entity_id uid);
-void create_c_movement(const entity_id uid);
+void create_c_energy(const entity_id uid, const int e_gain);
+void create_c_movement(const entity_id uid, const uint8_t flags);
 void create_c_playercon(const entity_id uid);
 void create_c_position(const entity_id uid, const int x, const int y);
 void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
-void create_c_tick(const entity_id uid, const int ticks, const int speed);
 
 
 /********* Component definitions go here *********/
@@ -63,11 +65,36 @@ void create_c_tick(const entity_id uid, const int ticks, const int speed);
  * But now the presence of the empty struct just assumes that the entity can make decisions
  */
 struct C_AICon {
+    enum AI_STATE state;
 };
 
+/* Required for the entity to be managed by the S_Turns system */
+struct C_Energy {
+    entity_id owner;
+
+    /**
+     * Actions are checked against the energy variable, if the actor has enough energy
+     * then it can do the action, else it waits.
+     */ 
+    int energy;
+    int e_gain; // How much energy is gained per tick
+};
+
+
 struct C_Movement {
-    int x;
-    int y;
+    /** 
+     * Flags for movement capabilities from MSB to LSB
+     * 
+     * Whether the entity can move right now
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     */
+    uint8_t flags;
 };
 
 struct C_PlayerCon {
@@ -88,13 +115,6 @@ struct C_Render {
     unsigned char col;
 };
 
-/* Required for the entity to be managed by the S_Turns system */
-struct C_Tick {
-    entity_id owner;
-
-    int ticks;
-    int speed;
-};
 
 
 #endif

@@ -8,6 +8,7 @@
 #include "ecs_event.h"
 #include "ecs_system.h"
 #include "game.h"
+#include "gameplay.h"
 #include "llist.h"
 #include "main.h"
 #include "map.h"
@@ -37,8 +38,7 @@ struct Globals globals;
 
 
 /* Function Prototypes */
-//void event_handler(entity_id uid);
-void handle_keys(KEY_EVENT_RECORD kev, entity_id uid);
+int handle_keys(KEY_EVENT_RECORD kev);
 
 
 
@@ -99,11 +99,7 @@ void play_game() {
 
     /* Game loop */
     while (!globals.done_playing) {
-        /*
-        if (globals.s_tick_lock == 0)
-            event_handler(NULL);
-        else
-            */
+        s_tick();
         event_dispatcher();
 
         /* Drawing */
@@ -122,8 +118,9 @@ void play_game() {
 /**
  * Handles events from Windows
  * Not to be confused with event_dispatcher which handles in game events
+ * we assume that globals.player_id is what we want to control
  */
-void event_handler(entity_id uid) {
+int event_handler() {
     unsigned long ul_evread;
     INPUT_RECORD ir_inpbuf[256];
 
@@ -136,29 +133,23 @@ void event_handler(entity_id uid) {
         switch (ir_inpbuf[i].EventType) {
             case KEY_EVENT:
                 /* Pass the key event to handle_keys where it gets interpreted based on the program state */
-                handle_keys(ir_inpbuf[i].Event.KeyEvent, uid);
-                return;
+                return handle_keys(ir_inpbuf[i].Event.KeyEvent);
 
             case MOUSE_EVENT: case WINDOW_BUFFER_SIZE_EVENT: case FOCUS_EVENT: case MENU_EVENT:
                 // Ignore these
                 break;
         }
     }
-}
 
-/* Some small functions to help keep handle_keys a bit cleaner */
-void set_player_movement(int x, int y) {
-    struct C_Movement *move = (get_component(globals.player_id, MOVEMENT))->c;
-    move->x = x;
-    move->y = y;
+    return 0;
 }
 
 /**
  * Handles the key events provided by event_handler
  */
-void handle_keys(KEY_EVENT_RECORD kev, entity_id uid) {
+int handle_keys(KEY_EVENT_RECORD kev) {
     /* Immediate return if it's not a keydown */
-    if (!kev.bKeyDown) return;
+    if (!kev.bKeyDown) return 0;
 
 
     /* state checking */
@@ -190,24 +181,16 @@ void handle_keys(KEY_EVENT_RECORD kev, entity_id uid) {
             switch (kev.wVirtualKeyCode) {
                 /* Movement */
                 case VK_NUMPAD2:
-                    set_player_movement(0, 1);
-                    GAME_MESSAGE(L"Player Turn", 0x07);
-                    unlock_s_tick();
+                    return move_entity(globals.player_id, 0, 1);
                     break;
                 case VK_NUMPAD4:
-                    set_player_movement(-1, 0);
-                    GAME_MESSAGE(L"Player Turn", 0x07);
-                    unlock_s_tick();
+                    return move_entity(globals.player_id, -1, 0);
                     break;
                 case VK_NUMPAD6:
-                    set_player_movement(1, 0);
-                    GAME_MESSAGE(L"Player Turn", 0x07);
-                    unlock_s_tick();
+                    return move_entity(globals.player_id, 1, 0);
                     break;
                 case VK_NUMPAD8:
-                    set_player_movement(0, -1);
-                    GAME_MESSAGE(L"Player Turn", 0x07);
-                    unlock_s_tick();
+                    return move_entity(globals.player_id, 0, -1);
                     break;
 
                 /* Other */
@@ -325,4 +308,6 @@ void handle_keys(KEY_EVENT_RECORD kev, entity_id uid) {
             }
         }
     }
+
+    return 0;
 }

@@ -88,14 +88,14 @@ void test_entities() {
     entity_id a = create_entity();
     create_c_render(a, L'X', 0x07);
     create_c_position(a, 8, 8);
-    create_c_tick(a, 1, 100);
+    create_c_energy(a, 1);
     create_c_aicon(a);
 
     // AI
     entity_id b = create_entity();
     create_c_render(b, L'C', 0x07);
     create_c_position(b, 7, 7);
-    create_c_tick(b, 1, 100);
+    create_c_energy(b, 1);
     create_c_aicon(b);
 
     //delete_entity(b);
@@ -104,8 +104,8 @@ void test_entities() {
     entity_id c = create_entity();
     create_c_render(c, L'@', 0x07);
     create_c_position(c, 2, 2);
-    create_c_tick(c, 1, 100);
-    create_c_movement(c);
+    create_c_energy(c, 1);
+    create_c_movement(c, 1 << 7);
     create_c_playercon(c);
 
 }
