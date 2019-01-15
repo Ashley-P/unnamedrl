@@ -13,7 +13,7 @@
 /* Globals */
 struct d_Debug d_debug;
 
-const static wchar_t *d_symbol_list = L"!$%^&*()-_=+[{]};:'@#~,<.>/?\\|";
+//const static wchar_t *d_symbol_list = L"!$%^&*()-_=+[{]};:'@#~,<.>/?\\|";
 
 
 
@@ -140,6 +140,12 @@ void d_print_tokens(const struct d_Token *tokens, unsigned char colour) {
  * is pressed in DEBUG mode
  */
 void d_intepreter(const wchar_t *line) {
+    // If the line is empty just jump to cleanup
+    if (w_string_cmp(line, L"")) {
+        DEBUG_MESSAGE(L"", 0x07);
+        return;
+    }
+
     // Add the line to the command history, doesn't matter if the command is legit or not
     for (int j = MAX_BUFSIZE_SMALL - 2; j > 0; j--) {
         /* Moving the commands up the list */
@@ -159,9 +165,6 @@ void d_intepreter(const wchar_t *line) {
 
     // Call Parser which takes token list
     d_parser(tokens);
-
-    // Execute functions
-
 
     // Cleanup
 cleanup:
