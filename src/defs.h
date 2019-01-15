@@ -2,6 +2,7 @@
 #define DEFS_H
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <wchar.h>
 
 #define GAME_DEBUG 1
@@ -109,6 +110,9 @@ struct Globals {
     struct ListNode *message_list;
 
     entity_id player_id;
+
+    uint64_t xorshift_seed;
+    uint64_t xorshift_state;
 };
 
 /**

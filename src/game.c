@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include <time.h>
 #include "defs.h"
 #include "debug.h"
 #include "draw_utils.h"
@@ -13,6 +14,7 @@
 #include "main.h"
 #include "map.h"
 #include "message.h"
+#include "rng.h"
 #include "ui.h"
 #include "utils.h"
 
@@ -65,6 +67,11 @@ void game_init() {
     globals.ticks = 0;
     globals.s_tick_lock = 0;
     globals.player_id = 0;
+
+    /* Setting up RNG */
+    int t = time(NULL);
+    globals.xorshift_seed  = t;
+    globals.xorshift_state = t;
 
     /* message_list doesn't need initialisation */
     d_debug_init();
