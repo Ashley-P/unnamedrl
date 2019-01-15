@@ -74,7 +74,7 @@ void game_init() {
     globals.xorshift_state = t;
 
     for (int i = 0; i < 30; i++) {
-        DEBUG_MESSAGE(create_string(L"rng test %d", bounded_rng(0, 10)), 0x05);
+        DEBUG_MESSAGE(create_string(L"rng test %d", bounded_rng(0, 2)), 0x05);
     }
 
     /* message_list doesn't need initialisation */

@@ -46,7 +46,7 @@ void add_message(struct ListNode **messages, struct String message) {
         struct String *check_str = check->data;
         // If the message is empty then we just add it to the list, this is for the debug mode
 
-        if (message.str == L'\0') {
+        if (w_string_len(message.str) == 0) {
             struct String *m = (struct String *)malloc(sizeof(struct String));
             *m = message;
             ll_push_front(messages, m);
