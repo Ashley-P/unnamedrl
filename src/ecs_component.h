@@ -14,6 +14,7 @@ enum AI_STATE {
 enum ComponentType {
     AICON,          // AI controllable
     ENERGY,
+    HEALTH,
     MOVEMENT,
     PLAYERCON,      // Player controllable
     POSITION,
@@ -47,6 +48,7 @@ void delete_components(entity_id uid);
 /* Extern functions but it's the constructors */
 void create_c_aicon(const entity_id uid);
 void create_c_energy(const entity_id uid, const int e_gain);
+void create_c_health(const entity_id uid, const int health, const int max_health);
 void create_c_movement(const entity_id uid, const uint8_t flags);
 void create_c_playercon(const entity_id uid);
 void create_c_position(const entity_id uid, const int x, const int y);
@@ -80,6 +82,10 @@ struct C_Energy {
     int e_gain; // How much energy is gained per tick
 };
 
+struct C_Health {
+    int h;
+    int max;
+};
 
 struct C_Movement {
     /** 

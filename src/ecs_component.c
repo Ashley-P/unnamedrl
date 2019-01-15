@@ -19,6 +19,7 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
 
 struct ComponentManager *cm_aicon;
 struct ComponentManager *cm_energy;
+struct ComponentManager *cm_health;
 struct ComponentManager *cm_movement;
 struct ComponentManager *cm_playercon;
 struct ComponentManager *cm_position;
@@ -30,6 +31,7 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
     switch (type) {
         case AICON:     return L"AICON";
         case ENERGY:    return L"ENERGY";
+        case HEALTH:    return L"HEALTH";
         case MOVEMENT:  return L"MOVEMENT";
         case PLAYERCON: return L"PLAYERCON";
         case POSITION:  return L"POSITION";
@@ -52,7 +54,8 @@ void init_component_manager(struct ComponentManager **manager, enum ComponentTyp
  */
 void init_component_managers() {
     init_component_manager(&cm_aicon     , AICON);
-    init_component_manager(&cm_energy    , AICON);
+    init_component_manager(&cm_energy    , ENERGY);
+    init_component_manager(&cm_health    , HEALTH);
     init_component_manager(&cm_movement  , MOVEMENT);
     init_component_manager(&cm_playercon , PLAYERCON);
     init_component_manager(&cm_position  , POSITION);
@@ -75,6 +78,7 @@ void deinit_component_manager(struct ComponentManager *manager) {
 void deinit_component_managers() {
     deinit_component_manager(cm_aicon);
     deinit_component_manager(cm_energy);
+    deinit_component_manager(cm_health);
     deinit_component_manager(cm_movement);
     deinit_component_manager(cm_playercon);
     deinit_component_manager(cm_position);
@@ -109,6 +113,7 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
     switch (type) {
         case AICON:     return cm_aicon;
         case ENERGY:    return cm_energy;
+        case HEALTH:    return cm_health;
         case MOVEMENT:  return cm_movement;
         case PLAYERCON: return cm_playercon;
         case POSITION:  return cm_position;
@@ -219,6 +224,14 @@ void create_c_energy(const entity_id uid, const int e_gain) {
     component->e_gain = e_gain;
 
     create_component(uid, ENERGY, (void *) component);
+}
+
+void create_c_health(const entity_id uid, const int health, const int max_health) {
+    struct C_Health *component = malloc(sizeof(struct C_Health));
+    component->h   = health;
+    component->max = max_health;
+
+    create_component(uid, HEALTH, (void *) component);
 }
 
 void create_c_movement(const entity_id uid, const uint8_t flags) {

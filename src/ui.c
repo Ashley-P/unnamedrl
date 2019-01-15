@@ -3,6 +3,7 @@
 #include "defs.h"
 #include "debug.h"
 #include "draw_utils.h"
+#include "ecs_component.h"
 #include "ecs_system.h"
 #include "llist.h"
 #include "map.h"
@@ -69,11 +70,13 @@ void draw_ui_game() {
 
     draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, L"Player Stats", 0x0A);
     draw_string(WIDTH_FOUR_FIFTH + 2, 3, HORIZONTAL, L"Coming Soon", 0x0A);
-    ///* Health */
-    //wchar_t *hp = create_string(L"HP:     %d/%d", (globals.player)->hp, MAX_HEALTH);
-    //draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp, 0x0A);
-    //draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, (globals.player)->hp, MAX_HEALTH, 0x0A);
-    //free(hp);
+    /* Health */
+    const struct C_Health *hp = (get_component(globals.player_id, HEALTH))->c;
+    
+    wchar_t *hp_str = create_string(L"HP:      %d/%d", hp->h, hp->max);
+    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp_str, 0x04);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, hp->h, hp->max, 0x04);
+    free(hp_str);
 
     ///* Energy */
     //wchar_t *energy = create_string(L"Energy: %d/%d", (globals.player)->energy, MAX_ENERGY);
