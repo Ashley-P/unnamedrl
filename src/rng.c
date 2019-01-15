@@ -1,4 +1,5 @@
-#include <stdint.h>
+//#include <stdint.h>
+//#include <stdlib.h>
 #include "defs.h"
 
 uint64_t xorshift64star(uint64_t *state) {
@@ -10,6 +11,9 @@ uint64_t xorshift64star(uint64_t *state) {
 	return x * 0x2545F4914F6CDD1D;
 }
 
-int bounded_rng(int max) {
-    return xorshift64star(&globals.xorshift_state) % max;
+int bounded_rng(int lower, int upper) {
+    int t = abs(lower) + abs(upper);
+    int r = xorshift64star(&globals.xorshift_state) % t;
+    r -= abs(lower);
+    return r;
 }
