@@ -105,7 +105,7 @@ void test_entities() {
     create_c_render(c, L'@', 0x07);
     create_c_position(c, 2, 2);
     create_c_energy(c, 1);
-    create_c_movement(c, 1 << 7);
+    create_c_movement(c, 1 << 0);
     create_c_playercon(c);
     create_c_health(c, 100, 100);
 

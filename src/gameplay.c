@@ -26,7 +26,7 @@ int move_entity(entity_id uid, int x, int y) {
     struct C_Movement *mov = m->c;
 
     // Checking if the entity can move
-    if (!(mov->flags & (1 << 7))) {
+    if (!(mov->flags & (1 << 0))) {
         // If it's the player then we send a message
         if (uid == globals.player_id) {
             GAME_MESSAGE(L"You can't move right now!", 0x07);

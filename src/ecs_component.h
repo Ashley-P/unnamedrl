@@ -91,14 +91,14 @@ struct C_Movement {
     /** 
      * Flags for movement capabilities from MSB to LSB
      * 
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
      * Whether the entity can move right now
-     * UNUSED
-     * UNUSED
-     * UNUSED
-     * UNUSED
-     * UNUSED
-     * UNUSED
-     * UNUSED
      */
     uint8_t flags;
 };
