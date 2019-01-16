@@ -4,11 +4,17 @@
 #include <stdint.h>
 #include "defs.h"
 
+/* Any enums required for the components to work */
 
 enum AI_STATE {
     AI_INVALID,
     AI_DECIDING, // This is where the ai get's to choose what it want's to do next
     AI_TEST,     // Test value before I implement it properly
+};
+
+enum TerrainType {
+    T_WALL,
+    T_FLOOR,
 };
 
 enum ComponentType {
@@ -19,22 +25,10 @@ enum ComponentType {
     PLAYERCON,      // Player controllable
     POSITION,
     RENDER,
+    TERRAIN,
 }; 
 
-/* Holds a component, used so we can have a list of an entities components */
-struct ComponentContainer {
-    entity_id owner;
 
-    enum ComponentType type;
-    void *c;
-};
-
-struct ComponentManager {
-    enum ComponentType type;
-    size_t size;
-
-    struct ComponentContainer **containers;
-};
 
 /* Extern Functions */
 void init_component_managers();
@@ -53,14 +47,31 @@ void create_c_movement(const entity_id uid, const uint8_t flags);
 void create_c_playercon(const entity_id uid);
 void create_c_position(const entity_id uid, const int x, const int y);
 void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
+void create_c_terrain(const entity_id uid, const enum TerrainType type, const uint8_t flags);
+
 
 
 /********* Component definitions go here *********/
 /**
  * All component structs are prefixed with C_ 
  * to prevent me from writing Component all the time 
- * Also they're placed in alphabetical order
+ * Also they're placed in alphabetical order except for the component managers/containers
  */
+
+/* Holds a component, used so we can have a list of an entities components */
+struct ComponentContainer {
+    entity_id owner;
+
+    enum ComponentType type;
+    void *c;
+};
+
+struct ComponentManager {
+    enum ComponentType type;
+    size_t size;
+
+    struct ComponentContainer **containers;
+};
 
 /**
  * Later this would have a variable/enum to say what type of AI it is
@@ -121,6 +132,21 @@ struct C_Render {
     unsigned char col;
 };
 
+struct C_Terrain {
+    enum TerrainType type;
+    /**
+      * Flags from MSB to LSB
+      * UNUSED
+      * UNUSED
+      * UNUSED
+      * UNUSED
+      * UNUSED
+      * UNUSED
+      * UNUSED
+      * Whether this tile is passable by an entity (aka can an entity move onto it)
+      */
+    uint8_t flags;
+};
 
 
 #endif

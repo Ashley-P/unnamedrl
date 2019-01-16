@@ -73,6 +73,10 @@ entity_id create_entity() {
     return uid;
 }
 
+/* Copies an entity and it's components */
+void copy_entity(entity_id src, entity_id dest) {
+}
+
 /* Deletes the entity and all attached components */
 void delete_entity(entity_id uid) {
     delete_components(uid);

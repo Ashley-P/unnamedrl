@@ -24,6 +24,7 @@ struct ComponentManager *cm_movement;
 struct ComponentManager *cm_playercon;
 struct ComponentManager *cm_position;
 struct ComponentManager *cm_render;
+struct ComponentManager *cm_terrain;
 
 
 // Function to reverse the enum into a string for error messages 
@@ -36,6 +37,7 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
         case PLAYERCON: return L"PLAYERCON";
         case POSITION:  return L"POSITION";
         case RENDER:    return L"RENDER";
+        case TERRAIN:   return L"TERRAIN";
         default:        return L"INVALID TYPE SUPPLIED";
     }
 }
@@ -60,6 +62,7 @@ void init_component_managers() {
     init_component_manager(&cm_playercon , PLAYERCON);
     init_component_manager(&cm_position  , POSITION);
     init_component_manager(&cm_render    , RENDER);
+    init_component_manager(&cm_terrain   , TERRAIN);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
@@ -83,6 +86,7 @@ void deinit_component_managers() {
     deinit_component_manager(cm_playercon);
     deinit_component_manager(cm_position);
     deinit_component_manager(cm_render);
+    deinit_component_manager(cm_terrain);
 }
 
 /**
@@ -118,6 +122,7 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
         case PLAYERCON: return cm_playercon;
         case POSITION:  return cm_position;
         case RENDER:    return cm_render;
+        case TERRAIN:   return cm_terrain;
         default:        return NULL;
     }
 }
@@ -263,6 +268,14 @@ void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char 
     component->owner = uid;
     component->ch    = ch;
     component->col   = col;
+
+    create_component(uid, RENDER, (void *) component);
+}
+
+void create_c_terrain(const entity_id uid, const enum TerrainType type, const uint8_t flags) {
+    struct C_Terrain *component = malloc(sizeof(struct C_Terrain));
+    component->type  = type;
+    component->flags = flags;
 
     create_component(uid, RENDER, (void *) component);
 }
