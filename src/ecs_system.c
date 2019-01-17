@@ -87,7 +87,7 @@ void s_tick() {
         else
             continue;
 
-        entity_id uid = e->owner;
+        entity_id uid = (*(t->containers + i))->owner;
 
         /**
          * If the actor has above 0 energy then we let it do an action

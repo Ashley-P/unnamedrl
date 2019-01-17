@@ -83,8 +83,6 @@ struct C_AICon {
 
 /* Required for the entity to be managed by the S_Turns system */
 struct C_Energy {
-    entity_id owner;
-
     /**
      * Actions are checked against the energy variable, if the actor has enough energy
      * then it can do the action, else it waits.
@@ -118,16 +116,12 @@ struct C_PlayerCon {
 };
 
 struct C_Position {
-    entity_id owner;
-
     int x;
     int y;
 };
 
 /* Required for the entity to be displayed on the screen */
 struct C_Render {
-    entity_id owner;
-
     wchar_t ch;
     unsigned char col;
 };

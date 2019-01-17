@@ -224,7 +224,6 @@ void create_c_aicon(const entity_id uid) {
 
 void create_c_energy(const entity_id uid, const int e_gain) {
     struct C_Energy *component = malloc(sizeof(struct C_Energy));
-    component->owner  = uid;
     component->energy = 0;
     component->e_gain = e_gain;
 
@@ -256,7 +255,6 @@ void create_c_playercon(const entity_id uid) {
 
 void create_c_position(const entity_id uid, const int x, const int y) {
     struct C_Position *component = malloc(sizeof(struct C_Position));
-    component->owner = uid;
     component->x     = x;
     component->y     = y;
 
@@ -265,7 +263,6 @@ void create_c_position(const entity_id uid, const int x, const int y) {
 
 void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col) {
     struct C_Render *component = malloc(sizeof(struct C_Render));
-    component->owner = uid;
     component->ch    = ch;
     component->col   = col;
 
