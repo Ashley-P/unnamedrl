@@ -3,6 +3,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "defs.h"
 #include "debug.h"
 #include "ecs_component.h"
@@ -210,6 +211,36 @@ void delete_components(entity_id uid) {
         else delete_component(uid, (*(list + i))->type);
     }
 }
+
+/* Makes a new component for dest */
+void copy_component(entity_id dest, struct ComponentContainer *src) {
+    void *comp;
+    size_t sz;
+
+    switch (src->type) {
+        case AICON:     sz = sizeof(struct C_AICon);
+        case ENERGY:    sz = sizeof(struct C_Energy);
+        case HEALTH:    sz = sizeof(struct C_Health);
+        case MOVEMENT:  sz = sizeof(struct C_Movement);
+        case PLAYERCON: sz = sizeof(struct C_PlayerCon);
+        case POSITION:  sz = sizeof(struct C_Position);
+        case RENDER:    sz = sizeof(struct C_Render);
+        case TERRAIN:   sz = sizeof(struct C_Terrain);
+    }
+
+    comp = malloc(sz);
+    memcpy(comp, src->c, sz);
+    create_component(dest, src->type, comp);
+}
+
+/* Get's a list of components for an entity */
+struct ComponentContainer **get_component_list(entity_id uid) {
+    return &component_list[uid][0];
+}
+
+
+
+
 
 
 /**

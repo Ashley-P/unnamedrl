@@ -38,6 +38,8 @@ struct ComponentManager *get_component_manager(enum ComponentType type);
 //void create_component(const entity_id uid, enum ComponentType type, void *comp); // shouldn't be called
 void delete_component(entity_id uid, enum ComponentType type);
 void delete_components(entity_id uid);
+void copy_component(entity_id dest, struct ComponentContainer *src);
+struct ComponentContainer **get_component_list(entity_id uid);
 
 /* Extern functions but it's the constructors */
 void create_c_aicon(const entity_id uid);

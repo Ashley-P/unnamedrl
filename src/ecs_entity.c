@@ -73,8 +73,20 @@ entity_id create_entity() {
     return uid;
 }
 
-/* Copies an entity and it's components */
-void copy_entity(entity_id src, entity_id dest) {
+/* Makes a copy of an entity into a new one */
+entity_id copy_entity(entity_id src) {
+    entity_id uid = create_entity();
+
+    /* Get the components from src and call copy_component on them */
+    struct ComponentContainer **list = get_component_list(src);
+
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
+        if (*(list + i)) {
+            copy_component(uid, *(list + i));
+        }
+    }
+
+    return uid;
 }
 
 /* Deletes the entity and all attached components */
@@ -96,12 +108,11 @@ void test_entities() {
     create_c_aicon(a);
 
     // AI
-    entity_id b = create_entity();
-    create_c_render(b, L'C', 0x07);
-    create_c_position(b, 7, 7);
-    create_c_energy(b, 1);
-    create_c_aicon(b);
+    entity_id b = copy_entity(a);
+    struct C_Position *pos = (get_component(b, POSITION))->c;
 
+    pos->x = 7;
+    pos->y = 7;
     //delete_entity(b);
 
     // Player
