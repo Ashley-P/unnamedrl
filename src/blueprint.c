@@ -62,12 +62,11 @@ void init_blueprints() {
     bp1.name = L"TEST_BP";
 
     bp1.list[0] = RENDER;
-    bp1.list[1] = POSITION; // Position should be set by the function that wants to create it
-    bp1.list[2] = ENERGY;
-    bp1.list[3] = AICON;
+    bp1.list[1] = ENERGY;
+    bp1.list[2] = AICON;
 
     bp1.args[0][0] = (int) L'X';
-    bp1.args[2][0] = 1;
+    bp1.args[1][0] = 1;
 
     blueprints[0] = bp1;
     bp_size++;

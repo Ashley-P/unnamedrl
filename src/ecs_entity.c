@@ -104,18 +104,11 @@ entity_id copy_entity(entity_id src) {
 void test_entities() {
     // AI
     entity_id a = create_entity_from_blueprint(L"TEST_BP");
-    struct C_Position *apos = (get_component(a, POSITION))->c;
-    apos->x = 6;
-    apos->y = 6;
+    create_c_position(a, 7, 7);
 
     // AI
     entity_id b = create_entity_from_blueprint(L"TEST_BP");
-    //entity_id b = copy_entity(a);
-    struct C_Position *pos = (get_component(b, POSITION))->c;
-
-    pos->x = 7;
-    pos->y = 7;
-    //delete_entity(b);
+    create_c_position(b, 8, 8);
 
     // Player
     entity_id c = create_entity();
