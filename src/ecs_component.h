@@ -139,7 +139,7 @@ struct C_Terrain {
       * UNUSED
       * UNUSED
       * UNUSED
-      * UNUSED
+      * Whether this tile blocks LOS
       * Whether this tile is passable by an entity (aka can an entity move onto it)
       */
     uint8_t flags;

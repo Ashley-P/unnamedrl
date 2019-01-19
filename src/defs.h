@@ -106,7 +106,6 @@ struct Globals {
     enum ProgState program_state;
     enum ProgState control_state;
 
-    struct Map *test_map;
     struct ListNode *message_list;
 
     entity_id player_id;

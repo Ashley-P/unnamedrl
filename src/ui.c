@@ -62,7 +62,6 @@ void draw_ui_game() {
                     HEIGHT_FOUR_FIFTH);
 
     /* Drawing stuff on the play_screen actors, objects etc */
-    draw_map(globals.test_map);
     s_render();
 
     /* Drawing Stats */

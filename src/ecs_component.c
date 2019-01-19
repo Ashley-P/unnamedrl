@@ -305,5 +305,5 @@ void create_c_terrain(const entity_id uid, const enum TerrainType type, const ui
     component->type  = type;
     component->flags = flags;
 
-    create_component(uid, RENDER, (void *) component);
+    create_component(uid, TERRAIN, (void *) component);
 }

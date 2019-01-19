@@ -34,7 +34,30 @@ int move_entity(entity_id uid, int x, int y) {
         return 0;
     }
 
-    // Normally we do some collsion detection but the map doesn't exist
+    // Collision detection (really inefficient) Should be it's own function
+    struct ComponentManager *terrain = get_component_manager(TERRAIN);
+    for (int i = 0; i < terrain->size; i++) {
+        // If a component has a TERRAIN component, then it has a POSITION one too
+        entity_id ter_uid = (*(terrain->containers + i))->owner;
+
+        struct ComponentContainer *t_c = get_component(ter_uid, TERRAIN);
+        struct ComponentContainer *p_c = get_component(ter_uid, POSITION);
+
+        struct C_Terrain  *ter = t_c->c;
+        struct C_Position *ter_pos = p_c->c;
+
+        // Checking if the terrain piece is in the direction our entity wants to move
+        if ((pos->x + x) == ter_pos->x && (pos->y + y) == ter_pos->y) {
+            // Check if it blocks movement
+            if (ter->flags & (1 << 0)) {
+                if (uid == globals.player_id) {
+                    GAME_MESSAGE(L"You can't walk into that!", 0x07);
+                }
+                return 0; // Because the entity didn't move
+            }
+        }
+    }
+
     // Bounds checking
     if (pos->x + x < 0 || pos->y + y < 0) {
         ERROR_MESSAGE(create_string(L"Warning in move_entity: entity uid %d tried moving "
@@ -42,7 +65,7 @@ int move_entity(entity_id uid, int x, int y) {
         return 0;
     }
 
-    // Do the movement taking into account any terrain penalties
+    // Do the movement taking into account any terrain penalties (which don't exist yet)
     pos->x += x;
     pos->y += y;
 

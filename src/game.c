@@ -74,19 +74,21 @@ void game_init() {
     globals.xorshift_seed  = t;
     globals.xorshift_state = t;
 
+#if 0
     for (int i = 0; i < 30; i++) {
         DEBUG_MESSAGE(create_string(L"rng test %d", bounded_rng(0, 2)), 0x05);
     }
+#endif
 
     /* message_list doesn't need initialisation */
     d_debug_init();
-    map_init(); // remove
 
-    init_blueprints();
     init_events();
     init_entity_manager();
     init_component_managers();
+    init_blueprints();
 
+    init_map();
     test_entities();
 }
 
@@ -95,13 +97,14 @@ void game_init() {
  */
 void game_deinit() {
     d_debug_deinit();
-    map_deinit();
     message_list_deinit(&(globals.message_list));
 
-    deinit_blueprints();
     deinit_events();
     deinit_entity_manager();
     deinit_component_managers();
+    deinit_blueprints();
+
+    deinit_map();
 }
 
 /**

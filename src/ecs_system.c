@@ -44,15 +44,17 @@ int s_ai(const entity_id uid) {
  * @TODO : Implement a Z-Buffer so actors get drawn on top of items
  */
 void s_render() {
-    struct ComponentManager *r = get_component_manager(RENDER);
-    for (int i = 0; i < r->size; i++) {
+    struct ComponentManager *r_manager = get_component_manager(RENDER);
+    for (int i = 0; i < r_manager->size; i++) {
         // Check if the entity that own's this component has a POSITION component
-        struct ComponentContainer *p = get_component((*(r->containers + i))->owner, POSITION);
+        entity_id uid = (*(r_manager->containers + i))->owner;
+        struct ComponentContainer *p = get_component(uid, POSITION);
+        struct ComponentContainer *r = get_component(uid, RENDER);
 
         if (!p) continue;
 
         struct C_Position *pos = p->c;
-        struct C_Render *ren   = (*(r->containers + i))->c;
+        struct C_Render *ren   = r->c;
 
         draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
     }

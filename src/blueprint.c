@@ -16,7 +16,7 @@ static struct Blueprint invalid_bp = {L"INVALID", {0}};
 void create_blueprint() {}
 
 struct Blueprint get_blueprint(wchar_t *name) {
-    for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
+    for (int i = 0; i < bp_size; i++) {
         if (w_string_cmp(name, blueprints[i].name)) {
             return blueprints[i];
         }
@@ -65,10 +65,43 @@ void init_blueprints() {
     bp1.list[1] = ENERGY;
     bp1.list[2] = AICON;
 
-    bp1.args[0][0] = (int) L'X';
+    bp1.args[0][0] = (int) L'y';
+    bp1.args[0][1] = 0x06;
     bp1.args[1][0] = 1;
 
-    blueprints[0] = bp1;
+    blueprints[bp_size] = bp1;
+    bp_size++;
+
+
+    struct Blueprint bp2;
+    bp2.name = L"Wall";
+    bp2.list[0] = RENDER;
+    bp2.list[1] = TERRAIN;
+    bp2.list[2] = POSITION;
+
+    bp2.args[0][0] = (int) L'#';
+    bp2.args[0][1] = 0x07;
+
+    bp2.args[1][0] = T_WALL;
+    bp2.args[1][1] = 1 | 2;
+
+    blueprints[bp_size] = bp2;
+    bp_size++;
+
+
+    struct Blueprint bp3;
+    bp3.name = L"Floor";
+    bp3.list[0] = RENDER;
+    bp3.list[1] = TERRAIN;
+    bp3.list[2] = POSITION;
+    
+    bp3.args[0][0] = (int) L'.';
+    bp3.args[0][1] = 0x07;
+
+    bp3.args[1][0] = T_FLOOR;
+    bp3.args[1][1] = 0;
+
+    blueprints[bp_size] = bp3;
     bp_size++;
 }
 
