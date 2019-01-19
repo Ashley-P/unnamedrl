@@ -13,12 +13,13 @@ enum AI_STATE {
 };
 
 enum TerrainType {
+    T_INVALID,
     T_WALL,
     T_FLOOR,
 };
 
 enum ComponentType {
-    AICON,          // AI controllable
+    AICON = 1,          // AI controllable 
     ENERGY,
     HEALTH,
     MOVEMENT,

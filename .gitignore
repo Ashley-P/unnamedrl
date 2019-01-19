@@ -3,6 +3,7 @@ src/obj/*.o
 
 # Vim swap files
 *.swp
+*.swo
 
 # Test Executables
 *.exe

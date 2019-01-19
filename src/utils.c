@@ -190,22 +190,7 @@ int w_str_to_int(const wchar_t *str) {
     int len = w_string_len(str);
     int a = 0;
     for (int i = 0; i < len; i++) {
-        switch (*(str + i)) {
-            case L'1': a += 1; break;
-            case L'2': a += 2; break;
-            case L'3': a += 3; break;
-            case L'4': a += 4; break;
-            case L'5': a += 5; break;
-            case L'6': a += 6; break;
-            case L'7': a += 7; break;
-            case L'8': a += 8; break;
-            case L'9': a += 9; break;
-            case L'0': a += 0; break;
-            default: ERROR_MESSAGE(create_string(L"Error in w_str_to_int: Expected [0-9], got %lc",
-                                 *(str + i)), 0x0C);
-                     break;
-        }
-
+        a += ((int) *(str + i)) - 48;
         a *= 10;
     }
     a /= 10;

@@ -20,6 +20,7 @@ struct Event {
 
 /* Extern functions */
 void init_events();
+void deinit_events();
 void event_dispatcher();
 
 #endif

@@ -16,6 +16,7 @@ void deinit_entity_manager();
 int check_uid(entity_id uid);
 entity_id create_entity();
 void delete_entity(entity_id uid);
+entity_id copy_entity(entity_id src);
 
 /* @NOTE : test function */
 void test_entities();

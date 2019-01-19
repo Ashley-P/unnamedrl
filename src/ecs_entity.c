@@ -3,6 +3,7 @@
  */
 
 #include <stdlib.h>
+#include "blueprint.h"
 #include "debug.h"
 #include "ecs_component.h"
 #include "ecs_entity.h"
@@ -73,6 +74,14 @@ entity_id create_entity() {
     return uid;
 }
 
+/* Deletes the entity and all attached components */
+void delete_entity(entity_id uid) {
+    delete_components(uid);
+    free(*(entities + uid));
+    *(entities + uid) = NULL;
+    entity_count--;
+}
+
 /* Makes a copy of an entity into a new one */
 entity_id copy_entity(entity_id src) {
     entity_id uid = create_entity();
@@ -89,26 +98,19 @@ entity_id copy_entity(entity_id src) {
     return uid;
 }
 
-/* Deletes the entity and all attached components */
-void delete_entity(entity_id uid) {
-    delete_components(uid);
-    free(*(entities + uid));
-    *(entities + uid) = NULL;
-    entity_count--;
-}
 
 
 /* @TODO @FIXME Hard coding some entities to check if this works */
 void test_entities() {
     // AI
-    entity_id a = create_entity();
-    create_c_render(a, L'X', 0x07);
-    create_c_position(a, 8, 8);
-    create_c_energy(a, 1);
-    create_c_aicon(a);
+    entity_id a = create_entity_from_blueprint(L"TEST_BP");
+    struct C_Position *apos = (get_component(a, POSITION))->c;
+    apos->x = 6;
+    apos->y = 6;
 
     // AI
-    entity_id b = copy_entity(a);
+    entity_id b = create_entity_from_blueprint(L"TEST_BP");
+    //entity_id b = copy_entity(a);
     struct C_Position *pos = (get_component(b, POSITION))->c;
 
     pos->x = 7;

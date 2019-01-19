@@ -1,10 +1,11 @@
 #include <windows.h>
 #include <stdio.h>
 #include <time.h>
+#include "blueprint.h"
 #include "defs.h"
 #include "debug.h"
 #include "draw_utils.h"
-//#include "ecs_component.h"
+#include "ecs_component.h"
 #include "ecs_entity.h"
 #include "ecs_event.h"
 #include "ecs_system.h"
@@ -79,8 +80,9 @@ void game_init() {
 
     /* message_list doesn't need initialisation */
     d_debug_init();
-    map_init();
+    map_init(); // remove
 
+    init_blueprints();
     init_events();
     init_entity_manager();
     init_component_managers();
@@ -96,8 +98,10 @@ void game_deinit() {
     map_deinit();
     message_list_deinit(&(globals.message_list));
 
-    deinit_component_managers();
+    deinit_blueprints();
+    deinit_events();
     deinit_entity_manager();
+    deinit_component_managers();
 }
 
 /**
