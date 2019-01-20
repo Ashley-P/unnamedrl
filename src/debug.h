@@ -6,11 +6,6 @@
 #include "llist.h"
 #include "message.h" // Needed for the macro expansion
 
-#define DEBUG_MESSAGE(x, y) add_message(&d_debug.debug_messages, (struct String) {x, y}); \
-                            add_message(&d_debug.display_messages, (struct String) {x, y});
-
-#define ERROR_MESSAGE(x, y) add_message(&d_debug.error_messages, (struct String) {x, y}); \
-                            add_message(&d_debug.display_messages, (struct String) {x, y});
 
 /**
  * A struct to hold onto everything relevant to the debug file
@@ -42,8 +37,19 @@ struct d_Debug {
     /* What character the text cursor displays */
     wchar_t curs_ch;
 
-    /* Bit field - Left to right */
-    uint8_t flags;   // toggle token printing in the parser
+    /** 
+     * Flags for debug stuff MSB to LSB
+     * 
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * Unread messages in debug mode
+     * Toggle token printing
+     */
+    uint8_t flags;
 };
 
 /* Data types */
@@ -82,6 +88,7 @@ struct d_Token {
 /* Externs */
 void d_debug_init();
 void d_debug_deinit();
+void d_debug_message(unsigned char col, int flag, wchar_t *str, ...);
 void d_addchar(const wchar_t ch);
 void d_delchar();
 void d_intepreter(const wchar_t *line);

@@ -111,7 +111,7 @@ void deinit_component_managers() {
 struct ComponentContainer *get_component(const entity_id uid, enum ComponentType type) {
     // Check if the entity exists
     if (!check_uid(uid)) {
-        ERROR_MESSAGE(create_string(L"Error in get_component: entity uid %d doesn't exist", uid), 0x0C);
+        d_debug_message(0x0C, 2, L"Error in get_component: entity uid %d doesn't exist", uid);
         return NULL;
     }
     // Use the lookup table and then return the component with the right type
@@ -159,8 +159,8 @@ void add_component_to_lists(struct ComponentContainer *comp) {
     struct ComponentManager *manager = get_component_manager(comp->type);
 
     if (manager->size == MAX_BUFSIZE_SUPER) {
-        ERROR_MESSAGE(create_string(L"Unable to add component type %ls. "
-                    "Reason : Too many components of that type", component_type_finder(comp->type)), 0x0C);
+        d_debug_message(0x0C, 2, L"Unable to add component type %ls. "
+                "Reason : Too many components of that type", component_type_finder(comp->type));
     } else {
        *(manager->containers + manager->size) = comp;
        manager->size++;
@@ -193,8 +193,8 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
         case POSITION:  a->c = create_c_position(args);  break;
         case RENDER:    a->c = create_c_render(args);    break;
         case TERRAIN:   a->c = create_c_terrain(args);   break;
-        default: DEBUG_MESSAGE(create_string(L"Error in create_component, unknown component type %d",
-                             type), 0x0C); return NULL;
+        default: d_debug_message(0x0C, 2, L"Error in create_component, unknown component type %d", type);
+                 return NULL;
     }
 
     va_end(args);

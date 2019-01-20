@@ -160,6 +160,10 @@ void draw_ui() {
     } else if (globals.program_state == DEBUG_FULL) {
         draw_ui_debug_full();
     }
+
+    // Draw a 'D' If there is a debug message to be read
+    if (d_debug.flags & (1 << 1))
+        draw_character(SCREENWIDTH - 2, 0, L'D', 0x0C);
 }
 
 /**

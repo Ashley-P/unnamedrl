@@ -33,7 +33,7 @@ void deinit_systems() {
  */
 int s_ai(const entity_id uid) {
     // Right now we just send a message
-    GAME_MESSAGE(create_string(L"Entity uid %d takes a turn", uid), 0x07);
+    game_message(0x07, L"Entity uid %d takes a turn", uid);
     return 100;
 }
 

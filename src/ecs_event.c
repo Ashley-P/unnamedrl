@@ -67,8 +67,7 @@ void event_dispatcher() {
     struct Event *e = node->data;
     switch (e->type) {
         default:
-            ERROR_MESSAGE(create_string(L"Error in event_dispatcher: Unknown EventType %d",
-                        e->type), 0x0C);
+            d_debug_message(0x0C, 2, L"Error in event_dispatcher: Unknown EventType %d", e->type);
             break;
     }
     // Delete the event when we're done with it

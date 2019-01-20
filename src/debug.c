@@ -5,7 +5,10 @@
  * @TODO : Add logging all debug messages to a debug.log file and all error messages to an error.log file
  */
 
+#include <stdarg.h>
+#include <wchar.h>
 #include "debug.h" // defs.h already included in here
+#include "defs.h"
 #include "debug_commands.h"
 #include "utils.h"
 
@@ -47,6 +50,26 @@ void d_debug_deinit() {
     message_list_deinit(&d_debug.debug_messages);
     message_list_deinit(&d_debug.error_messages);
     message_list_deinit(&d_debug.display_messages);
+}
+
+// Creates a debug message, flag = 1 for debug, flag = 2 for error
+void d_debug_message(unsigned char col, int flag, wchar_t *str, ...) {
+    va_list args;  
+    va_start(args, str);
+    wchar_t *new_str = (wchar_t *)malloc(sizeof(wchar_t) * MAX_BUFSIZE_SMALL);
+    vswprintf(new_str, str, args);
+    va_end(args);
+
+    if (flag == 1)
+        add_message(&d_debug.debug_messages, (struct String) {new_str, col});
+    else if (flag == 2)
+        add_message(&d_debug.error_messages, (struct String) {new_str, col});
+
+    add_message(&d_debug.display_messages, (struct String) {new_str, col});
+
+    // set unread messages flag
+    if (globals.program_state != DEBUG && globals.program_state != DEBUG_FULL)
+        d_debug.flags |= 1 << 1;
 }
 
 struct d_Token *d_tokens_init() {
@@ -124,8 +147,8 @@ static inline int d_token_type_checker(const struct d_Token *tokens, enum d_Toke
 
 void d_print_tokens(const struct d_Token *tokens, unsigned char colour) {
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
-        DEBUG_MESSAGE(create_string(L"Token Value : %ls, Token Type : %ls",
-                    (tokens+i)->value, d_token_type_finder((tokens+i)->type)), colour);
+        d_debug_message(colour, 1, L"Token Value : %ls, Token Type : %ls",
+                    (tokens+i)->value, d_token_type_finder((tokens+i)->type));
 
         if ((tokens+i)->type == D_EOL) break;
     }
@@ -142,7 +165,7 @@ void d_print_tokens(const struct d_Token *tokens, unsigned char colour) {
 void d_intepreter(const wchar_t *line) {
     // If the line is empty just jump to cleanup
     if (w_string_cmp(line, L"")) {
-        DEBUG_MESSAGE(L"", 0x07);
+        d_debug_message(0x07, 1, L"");
         return;
     }
 
@@ -221,8 +244,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
             if (ch == L'\0' || ch == L' ')
                 T_TYPE = ARG_INT;
             else {
-                DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Expected [0-9], got \'%c\'",
-                            ++tokens_read, ch), 0x0C);
+                d_debug_message(0x0C, 1, L"Lexer error, Token #%d: Expected [0-9], got \'%c\'", ++tokens_read, ch);
                 tokens->type = INVALID;
                 return tokens;
             }
@@ -234,8 +256,8 @@ struct d_Token *d_lexer(const wchar_t *line) {
             while(1) {
                 ch = d_scanner_getch(line);
                 if (ch == L'\0') {    // ERROR
-                    DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: End of line reached before "
-                                "closing quotes", ++tokens_read, ch), 0x0C);
+                    d_debug_message(0x0C, 1, L"Lexer error, Token #%d: End of line reached before "
+                            "closing quotes", ++tokens_read, ch);
                     tokens->type = INVALID;
                     return tokens;
                 } else if (ch == L'"') {
@@ -262,8 +284,8 @@ struct d_Token *d_lexer(const wchar_t *line) {
                 if (d_is_digit(ch) || d_is_alpha(ch))
                     T_NAME[col++] = ch;
                 else if (ch == L'"') { // Don't allow quotes in the middle
-                    DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Stray quote inside of argument",
-                                ++tokens_read, ch), 0x0C);
+                    d_debug_message(0x0C, 1, L"Lexer error, Token #%d: Stray quote inside of argument",
+                            ++tokens_read, ch);
                     tokens->type = INVALID;
                     return tokens;
                 } else
@@ -274,8 +296,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
 
         /* Throw an error */
         else {
-            DEBUG_MESSAGE(create_string(L"Lexer error, Token #%d: Unknown character \'%c\' found",
-                        ++tokens_read, ch), 0x0C);
+            d_debug_message(0x0C, 1, L"Lexer error, Token #%d: Unknown character \'%c\' found", ++tokens_read, ch);
             tokens->type = INVALID;
             return tokens;
         }
@@ -287,7 +308,7 @@ struct d_Token *d_lexer(const wchar_t *line) {
     
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
         if ((tokens + i)->type == INVALID) {
-            DEBUG_MESSAGE(L"Lexer error invalid tokens found:", 0x0C);
+            d_debug_message(0x0C, 1, L"Lexer error invalid tokens found:");
             d_print_tokens(tokens, 0x0C);
             tokens->type = INVALID;
             break;
@@ -300,15 +321,22 @@ struct d_Token *d_lexer(const wchar_t *line) {
 }
 
 
+/* Prints the parser error for incorrect arguments */
+void incorrect_argument_printer(wchar_t *com_name, int arg_num, int num) {
+    d_debug_message(0x0C, 1, L"Parser Error: \"%ls\" expects %d argument(s), got %d", com_name, arg_num, num);
+}
+
 void d_parser(const struct d_Token *tokens) {
-    if (d_debug.flags & 1 << 7)
+    if (d_debug.flags & 1 << 0)
         d_print_tokens(tokens, 0x0A);
 
+#if 0
     /* If the first token is an empty string then just return */
     if (w_string_cmp(tokens->value, L"")) {
         DEBUG_MESSAGE(L"", 0x07);
         return;
     }
+#endif
 
 
 
@@ -328,9 +356,8 @@ void d_parser(const struct d_Token *tokens) {
 
     /********* D_CLS - void d_cls(); *********/
     } else if (w_string_cmp(tokens->value, d_commands[2])) {
-        if (d_token_counter(tokens) != 2) {
-            DEBUG_MESSAGE(create_string(L"Parser Error: \"cls\" expects 0 arguments, got %d",
-                        d_token_counter(tokens) - 2), 0x0C);
+        if (d_token_counter(tokens) - 2 != 0) {
+            incorrect_argument_printer(tokens->value, 0, d_token_counter(tokens) - 2);
             return;
         } 
         d_cls();
@@ -339,9 +366,8 @@ void d_parser(const struct d_Token *tokens) {
 
     /********* D_PRINT_COMMANDS - void d_print_commands(const struct d_Token *tokens); *********/
     } else if (w_string_cmp(tokens->value, d_commands[3])) {
-        if (d_token_counter(tokens) != 2) {
-            DEBUG_MESSAGE(create_string(L"Parser Error: \"commands\" expects 0 arguments, got %d",
-                        d_token_counter(tokens) - 2), 0x0C);
+        if (d_token_counter(tokens) - 2 != 0) {
+            incorrect_argument_printer(tokens->value, 0, d_token_counter(tokens) - 2);
             return;
         } 
         d_print_commands(tokens);
@@ -350,9 +376,8 @@ void d_parser(const struct d_Token *tokens) {
 
     /********* D_TOGGLE_TOKEN_PRINTING - void d_toggle_token_printing(int a) *********/
     } else if (w_string_cmp(tokens->value, d_commands[4])) {
-        if (d_token_counter(tokens) != 3) {
-            DEBUG_MESSAGE(create_string(L"Parser Error: \"toggle_token_printing\" expects 1 argument, got %d",
-                        d_token_counter(tokens) - 2), 0x0C);
+        if (d_token_counter(tokens) - 2 != 1) {
+            incorrect_argument_printer(tokens->value, 1, d_token_counter(tokens) - 2);
             return;
         } 
         d_toggle_token_printing(w_str_to_int((tokens + 1)->value));
@@ -362,6 +387,7 @@ void d_parser(const struct d_Token *tokens) {
 
     } else if (0) {
     } else {
-        DEBUG_MESSAGE(create_string(L"Parser Error: \"%ls\" is not a recognized command", tokens->value), 0x0C);
+        d_debug_message(0x0C, 1, L"Parser Error: \"%ls\" is not a recognized command", tokens->value);
+        
     }
 }

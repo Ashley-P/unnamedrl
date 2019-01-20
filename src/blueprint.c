@@ -47,7 +47,10 @@ entity_id create_entity_from_blueprint(wchar_t *name) {
     struct Blueprint bp = get_blueprint(name);
 
     // Check to see if the blueprint exists
-    if (w_string_cmp(bp.name, L"INVALID_BP")) return -1;
+    if (w_string_cmp(bp.name, L"INVALID_BP")) {
+        d_debug_message(0x0C, 2, L"Error in create_entity_from_blueprint: Unknown blueprint \"%ls\"", name);
+        return -1;
+    }
 
     entity_id uid = create_entity();
 

@@ -19,44 +19,12 @@
 #include "ui.h"
 #include "utils.h"
 
-#if 0
-/* Constants */
-static int done_playing;
-static int paused;
-long long ticks;
-enum ProgState program_state;
-enum ProgState control_state;
-
-
-/* Extern Constants */
-struct Player *player;
-struct Map *test_map;
-struct ListNode *message_list;
-struct ListNode *turn_list;
-struct ListNode *obj_list; // NOT IMPLEMENTED
-#endif
 
 /* Globals in here */
 struct Globals globals;
 
-
 /* Function Prototypes */
 int handle_keys(KEY_EVENT_RECORD kev);
-
-
-
-
-#ifdef GAME_DEBUG
-/**
- * NOTE: TESTING PURPOSES ONLY
- */ 
-struct String test_message() {
-    static int i = 0;
-    struct String rtn = {create_string(L"TEST MESSAGE %d", ++i), 0x07};
-
-    return rtn;
-}
-#endif
 
 /**
  * Initialising the game, mainly by calling other init functions
@@ -179,18 +147,20 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                 case 0x31:                  // '1' key - DEBUG MODE
                     globals.program_state = DEBUG;
                     globals.control_state = DEBUG;
+                    d_debug.flags &= ~(1 << 1);
                     lock_s_tick();
                     break;
 
                 case 0x32:                  // '2' key - DEBUG_FULL MODE
                     globals.program_state = DEBUG_FULL;
                     globals.control_state = DEBUG;
+                    d_debug.flags &= ~(1 << 1);
                     lock_s_tick();
                     break;
 
-                // Delete messages test button
-                case 0x33:                  // '3' key - DEBUG_FULL MODE
-                    message_list_deinit(&(globals.message_list));
+                // Send a message to the debug screen
+                case 0x33:                  // '3' key
+                    d_debug_message(0x07, 1, L"Message from the play screen!");
                     break;
                 default:
                     break;

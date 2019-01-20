@@ -29,7 +29,7 @@ int move_entity(entity_id uid, int x, int y) {
     if (!(mov->flags & (1 << 0))) {
         // If it's the player then we send a message
         if (uid == globals.player_id) {
-            GAME_MESSAGE(L"You can't move right now!", 0x07);
+            game_message(0x07, L"You can't move right now!");
         }
         return 0;
     }
@@ -62,8 +62,8 @@ int move_entity(entity_id uid, int x, int y) {
 
     // Bounds checking
     if (pos->x + x < 0 || pos->y + y < 0) {
-        ERROR_MESSAGE(create_string(L"Warning in move_entity: entity uid %d tried moving "
-                    L"out of bounds, posx = %d, posy = %d", uid, pos->x, pos->y), 0x0E);
+        d_debug_message(0x0E, 2, L"Warning in move_entity: entity uid %d tried moving "
+                    L"out of bounds, posx = %d, posy = %d", uid, pos->x, pos->y);
         return 0;
     }
 
@@ -79,7 +79,7 @@ int move_entity(entity_id uid, int x, int y) {
 /* Let's an entity spend 10 energy to wait a bit */
 int wait_entity(entity_id uid) {
     if (uid == globals.player_id) {
-        GAME_MESSAGE(L"You wait", 0x07);
+        game_message(0x07, L"You wait");
     }
 
     return 10;

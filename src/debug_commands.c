@@ -15,7 +15,7 @@ const wchar_t *d_commands[] = {L"echo",
 
 /* Function that gets called in dummy functions */
 void d_not_implemented(const struct d_Token *tokens) {
-    DEBUG_MESSAGE(create_string(L"Command \"%s\" is not implemented!", tokens->value), 0x0B);
+    d_debug_message(0x0B, 1, L"Command \"%s\" is not implemented!", tokens->value);
 }
 
 
@@ -23,7 +23,7 @@ void d_not_implemented(const struct d_Token *tokens) {
 void d_echo(const struct d_Token *tokens) {
     int i = 1;
     while ((tokens + i)->type != D_EOL) {
-        DEBUG_MESSAGE(create_string(L"%ls", (tokens + i)->value), 0x07);
+        d_debug_message(0x07, 1, L"%ls", (tokens + i)->value);
         i++;
     }
 }
@@ -39,14 +39,13 @@ void d_cls() {
 void d_print_commands() {
     for (int i = 0;; i++) {
         if (w_string_cmp(d_commands[i], L"")) return;
-        DEBUG_MESSAGE(create_string(L"%ls", d_commands[i]), 0x07);
+        d_debug_message(0x07, 1, L"%ls", d_commands[i]);
     }
 }
 
 void d_toggle_token_printing(int a) {
-    DEBUG_MESSAGE(create_string(L"a = %d", a), 0x09);
     if (!a)
-        d_debug.flags &= (1 << 7) - 1;
+        d_debug.flags &= ~(1 << 0);
     else 
-        d_debug.flags |= 1 << 7;
+        d_debug.flags |= 1 << 0;
 }

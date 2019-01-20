@@ -9,6 +9,8 @@
 #define MAX_MESSAGE_LENGTH WIDTH_FOUR_FIFTH - 2
 #define MESSAGE_BOX_HEIGHT HEIGHT_ONE_FIFTH - 2
 
+#include <stdarg.h>
+#include <wchar.h>
 #include "defs.h" // For the String struct
 #include "draw_utils.h"
 #include "game.h"
@@ -126,4 +128,14 @@ void draw_messages(const int x, int y, const struct ListNode *messages, int num_
             num_messages--;
         }
     }
+}
+
+void game_message(unsigned char col, wchar_t *str, ...) {
+    va_list args;  
+    va_start(args, str);
+    wchar_t *new_str = (wchar_t *)malloc(sizeof(wchar_t) * MAX_BUFSIZE_SMALL);
+    vswprintf(new_str, str, args);
+    va_end(args);
+
+    add_message(&globals.message_list, (struct String) {new_str, col});
 }

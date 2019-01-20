@@ -48,8 +48,7 @@ entity_id gen_uid() {
         else return i;
     }
     // If we get this far then we've used too many uids
-    ERROR_MESSAGE(create_string(L"Error in gen_uid: Too many entities created (Max = %d)",
-                MAX_BUFSIZE_SUPER), 0x0C);
+    d_debug_message(0x0C, 2, L"Error in gen_uid: Too many entities created (Max = %d)", MAX_BUFSIZE_SUPER);
     return -1;
 }
 
@@ -64,8 +63,7 @@ entity_id create_entity() {
 
     // If the entity id is already taken then we send an error and return;
     if (check_uid(uid)) {
-        ERROR_MESSAGE(create_string(L"Could not create entity. Reason : Entity id %d already exists", uid),
-                0x0C);
+        d_debug_message(0x0C, 2, L"Could not create entity. Reason : Entity id %d already exists", uid);
         return -1;
     }
 
