@@ -2,6 +2,7 @@
  * This file handles all the component creation
  */
 
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include "defs.h"
@@ -9,6 +10,19 @@
 #include "ecs_component.h"
 #include "ecs_entity.h"
 #include "utils.h"
+
+/* Function Prototypes */
+void *create_c_aicon(va_list args);
+void *create_c_energy(va_list args);
+void *create_c_health(va_list args);
+void *create_c_movement(va_list args);
+void *create_c_playercon(va_list args);
+void *create_c_position(va_list args);
+void *create_c_render(va_list args);
+void *create_c_terrain(va_list args);
+
+
+
 
 /* lookup table that matches entities with their components */
 struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
@@ -44,10 +58,11 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
 }
 
 void init_component_manager(struct ComponentManager **manager, enum ComponentType type) {
-    *manager             = malloc(sizeof(struct ComponentManager));
+    *manager               = malloc(sizeof(struct ComponentManager));
     (*manager)->type       = type;
     (*manager)->size       = 0;
     (*manager)->containers = malloc(sizeof(struct ComponentContainer *) * MAX_BUFSIZE_SUPER);
+
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         *((*manager)->containers + i) = NULL;
     }
@@ -56,14 +71,14 @@ void init_component_manager(struct ComponentManager **manager, enum ComponentTyp
  * an init function that initialises all the component managers
  */
 void init_component_managers() {
-    init_component_manager(&cm_aicon     , AICON);
-    init_component_manager(&cm_energy    , ENERGY);
-    init_component_manager(&cm_health    , HEALTH);
-    init_component_manager(&cm_movement  , MOVEMENT);
-    init_component_manager(&cm_playercon , PLAYERCON);
-    init_component_manager(&cm_position  , POSITION);
-    init_component_manager(&cm_render    , RENDER);
-    init_component_manager(&cm_terrain   , TERRAIN);
+    init_component_manager(&cm_aicon    , AICON);
+    init_component_manager(&cm_energy   , ENERGY);
+    init_component_manager(&cm_health   , HEALTH);
+    init_component_manager(&cm_movement , MOVEMENT);
+    init_component_manager(&cm_playercon, PLAYERCON);
+    init_component_manager(&cm_position , POSITION);
+    init_component_manager(&cm_render   , RENDER);
+    init_component_manager(&cm_terrain  , TERRAIN);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
@@ -128,37 +143,67 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
     }
 }
 
-/**
- * Creates a ComponentContainer and adds it to the relevant lists
- * Usually called from inside a specific component constructor
- */
-void create_component(const entity_id uid, enum ComponentType type, void *comp) {
-    // Call the constructor for the component
-
-    struct ComponentContainer *a = malloc(sizeof(struct ComponentContainer));
-    a->owner = uid;
-    a->type  = type;
-    a->c     = comp;
-
+/* Takes a filled ComponentContainer struct and adds it to the relevant lists */
+void add_component_to_lists(struct ComponentContainer *comp) {
     // Add it to component_list
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
-        // Finding an empty slot to place the component in
-        if (!component_list[uid][i]) {
-            component_list[uid][i] = a;
-            break;
+        if (!component_list[comp->owner][i]) {
+        component_list[comp->owner][i] = comp;
+        break;
         } else
             continue;
     }
 
-    struct ComponentManager *manager = get_component_manager(type);
 
-    // Jump to the size and add it with a check first
+    // Add it to the manager
+    struct ComponentManager *manager = get_component_manager(comp->type);
+
     if (manager->size == MAX_BUFSIZE_SUPER) {
         ERROR_MESSAGE(create_string(L"Unable to add component type %ls. "
-                    "Reason : Too many components of that type", component_type_finder(type)), 0x0C);
+                    "Reason : Too many components of that type", component_type_finder(comp->type)), 0x0C);
     } else {
-       *(manager->containers + manager->size) = a;
+       *(manager->containers + manager->size) = comp;
        manager->size++;
+    }
+
+}
+
+/**
+ * Creates a ComponentContainer and adds it to the relevant lists
+ * If the uid provided is -1 Then it just returns the ComponentContainer
+ * without adding it to any lists
+ * Also we just assume that the extra arguments provided are correct because there
+ * isn't a good way to check them
+ */
+struct ComponentContainer *create_component(const entity_id uid, enum ComponentType type, ...) {
+    struct ComponentContainer *a = malloc(sizeof(struct ComponentContainer));
+    a->owner = uid;
+    a->type  = type; 
+
+    va_list args;
+    va_start(args, type);
+
+    // Call specific constructor 
+    switch (type) {
+        case AICON:     a->c = create_c_aicon(args);     break;
+        case ENERGY:    a->c = create_c_energy(args);    break;
+        case HEALTH:    a->c = create_c_health(args);    break;
+        case MOVEMENT:  a->c = create_c_movement(args);  break;
+        case PLAYERCON: a->c = create_c_playercon(args); break;
+        case POSITION:  a->c = create_c_position(args);  break;
+        case RENDER:    a->c = create_c_render(args);    break;
+        case TERRAIN:   a->c = create_c_terrain(args);   break;
+        default: DEBUG_MESSAGE(create_string(L"Error in create_component, unknown component type %d",
+                             type), 0x0C); return NULL;
+    }
+
+    va_end(args);
+
+    // If the uid is -1 then we don't add it to the lists
+    if (uid == -1) return a;
+    else {
+        add_component_to_lists(a);
+        return a;
     }
 }
 
@@ -213,7 +258,8 @@ void delete_components(entity_id uid) {
 }
 
 /* Makes a new component for dest */
-void copy_component(entity_id dest, struct ComponentContainer *src) {
+void copy_component(entity_id dest, const struct ComponentContainer *src) {
+    struct ComponentContainer *a = malloc(sizeof(struct ComponentContainer));
     void *comp;
     size_t sz;
 
@@ -230,7 +276,12 @@ void copy_component(entity_id dest, struct ComponentContainer *src) {
 
     comp = malloc(sz);
     memcpy(comp, src->c, sz);
-    create_component(dest, src->type, comp);
+
+    a->owner = dest;
+    a->type  = src->type;
+    a->c     = comp;
+
+    add_component_to_lists(a);
 }
 
 /* Get's a list of components for an entity */
@@ -246,64 +297,64 @@ struct ComponentContainer **get_component_list(entity_id uid) {
 /**
  * A bunch of constructors for the component types
  */
-void create_c_aicon(const entity_id uid) {
+void *create_c_aicon(va_list args) {
     struct C_AICon *component = malloc(sizeof(struct C_AICon));
-    component->state = AI_TEST;
+    component->state = va_arg(args, enum AI_STATE);
 
-    create_component(uid, AICON, (void *) component);
+    return component;
 }
 
-void create_c_energy(const entity_id uid, const int e_gain) {
+void *create_c_energy(va_list args) {
     struct C_Energy *component = malloc(sizeof(struct C_Energy));
     component->energy = 0;
-    component->e_gain = e_gain;
+    component->e_gain = va_arg(args, int);
 
-    create_component(uid, ENERGY, (void *) component);
+    return component;
 }
 
-void create_c_health(const entity_id uid, const int health, const int max_health) {
+void *create_c_health(va_list args) {
     struct C_Health *component = malloc(sizeof(struct C_Health));
-    component->h   = health;
-    component->max = max_health;
+    component->h   = va_arg(args, int);
+    component->max = va_arg(args, int);
 
-    create_component(uid, HEALTH, (void *) component);
+    return component;
 }
 
-void create_c_movement(const entity_id uid, const uint8_t flags) {
+void *create_c_movement(va_list args) {
     struct C_Movement *component = malloc(sizeof(struct C_Movement));
-    component->flags = flags;
+    component->flags = va_arg(args, int); // Should be uint8_t
 
-    create_component(uid, MOVEMENT, (void *) component);
+    return component;
 }
 
 // We assume that this get's called once
-void create_c_playercon(const entity_id uid) {
+void *create_c_playercon(va_list args) {
     struct C_PlayerCon *component = malloc(sizeof(struct C_PlayerCon));
-    globals.player_id = uid;
+    globals.player_id = va_arg(args, entity_id);
 
-    create_component(uid, PLAYERCON, (void *) component);
+    return component;
 }
 
-void create_c_position(const entity_id uid, const int x, const int y) {
+void *create_c_position(va_list args) {
     struct C_Position *component = malloc(sizeof(struct C_Position));
-    component->x     = x;
-    component->y     = y;
+    component->x = va_arg(args, int);
+    component->y = va_arg(args, int);
 
-    create_component(uid, POSITION, (void *) component);
+    return component;
 }
 
-void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col) {
+void *create_c_render(va_list args) {
     struct C_Render *component = malloc(sizeof(struct C_Render));
-    component->ch    = ch;
-    component->col   = col;
+    component->ch    = va_arg(args, int); // Should be wchar_t
+    component->col   = va_arg(args, int); // Should be unsigned char
 
-    create_component(uid, RENDER, (void *) component);
+    return component;
 }
 
-void create_c_terrain(const entity_id uid, const enum TerrainType type, const uint8_t flags) {
+void *create_c_terrain(va_list args) {
     struct C_Terrain *component = malloc(sizeof(struct C_Terrain));
-    component->type  = type;
-    component->flags = flags;
+    component->type  = va_arg(args, enum TerrainType);
+    component->flags = va_arg(args, int); // Should be uint8_t
 
-    create_component(uid, TERRAIN, (void *) component);
+    return component;
 }

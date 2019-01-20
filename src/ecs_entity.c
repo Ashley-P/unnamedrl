@@ -103,20 +103,23 @@ entity_id copy_entity(entity_id src) {
 /* @TODO @FIXME Hard coding some entities to check if this works */
 void test_entities() {
     // AI
-    entity_id a = create_entity_from_blueprint(L"TEST_BP");
-    create_c_position(a, 7, 7);
+    entity_id a = create_entity_from_blueprint(L"Test_actor");
+    delete_component(a, POSITION);
+    create_component(a, POSITION, 7, 7);
+
 
     // AI
-    entity_id b = create_entity_from_blueprint(L"TEST_BP");
-    create_c_position(b, 8, 8);
+    entity_id b = create_entity_from_blueprint(L"Test_actor");
+    delete_component(b, POSITION);
+    create_component(b, POSITION, 8, 8);
 
     // Player
     entity_id c = create_entity();
-    create_c_render(c, L'@', 0x07);
-    create_c_position(c, 2, 2);
-    create_c_energy(c, 1);
-    create_c_movement(c, 1 << 0);
-    create_c_playercon(c);
-    create_c_health(c, 100, 100);
+    create_component(c, RENDER, L'@', 0x07);
+    create_component(c, POSITION, 2, 2);
+    create_component(c, ENERGY, 1);
+    create_component(c, MOVEMENT, 1 << 0);
+    create_component(c, PLAYERCON, c);
+    create_component(c, HEALTH, 100, 100);
 
 }

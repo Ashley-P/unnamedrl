@@ -6,18 +6,18 @@
 #include "ecs_component.h"
 #include "ecs_entity.h"
 
-/* Holds a list of types for the component */
+/* Holds Components that aren't a part of the entity system as a */
 struct Blueprint {
     // Name for the BP - is a string so we can read it from a file
     wchar_t *name;
 
-    /* list[i] expects to get arguments from args[i][...] */
-    enum ComponentType list[MAX_BUFSIZE_SMALL];
-    int args[MAX_BUFSIZE_SMALL][MAX_BUFSIZE_TINY]; // Might need intptr_t if we want strings
+    struct ComponentContainer *components[MAX_BUFSIZE_MINI];
 };
 
 
 /* Extern functions */
+struct Blueprint get_blueprint(wchar_t *name);
+struct ComponentContainer *get_component_from_blueprint(struct Blueprint, enum ComponentType type);
 entity_id create_entity_from_blueprint(wchar_t *name);
 void init_blueprints();
 void deinit_blueprints();

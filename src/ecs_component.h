@@ -36,21 +36,11 @@ void init_component_managers();
 void deinit_component_managers();
 struct ComponentContainer *get_component(const entity_id uid, enum ComponentType type);
 struct ComponentManager *get_component_manager(enum ComponentType type);
-//void create_component(const entity_id uid, enum ComponentType type, void *comp); // shouldn't be called
+struct ComponentContainer *create_component(const entity_id uid, enum ComponentType type, ...);
 void delete_component(entity_id uid, enum ComponentType type);
 void delete_components(entity_id uid);
-void copy_component(entity_id dest, struct ComponentContainer *src);
+void copy_component(entity_id dest, const struct ComponentContainer *src);
 struct ComponentContainer **get_component_list(entity_id uid);
-
-/* Extern functions but it's the constructors */
-void create_c_aicon(const entity_id uid);
-void create_c_energy(const entity_id uid, const int e_gain);
-void create_c_health(const entity_id uid, const int health, const int max_health);
-void create_c_movement(const entity_id uid, const uint8_t flags);
-void create_c_playercon(const entity_id uid);
-void create_c_position(const entity_id uid, const int x, const int y);
-void create_c_render(const entity_id uid, const wchar_t ch, const unsigned char col);
-void create_c_terrain(const entity_id uid, const enum TerrainType type, const uint8_t flags);
 
 
 

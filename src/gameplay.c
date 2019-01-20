@@ -34,6 +34,7 @@ int move_entity(entity_id uid, int x, int y) {
         return 0;
     }
 
+#if 0
     // Collision detection (really inefficient) Should be it's own function
     struct ComponentManager *terrain = get_component_manager(TERRAIN);
     for (int i = 0; i < terrain->size; i++) {
@@ -57,6 +58,7 @@ int move_entity(entity_id uid, int x, int y) {
             }
         }
     }
+#endif
 
     // Bounds checking
     if (pos->x + x < 0 || pos->y + y < 0) {
