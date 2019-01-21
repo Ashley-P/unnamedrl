@@ -15,6 +15,7 @@
 void *create_c_aicon(va_list args);
 void *create_c_energy(va_list args);
 void *create_c_health(va_list args);
+void *create_c_map(va_list args);
 void *create_c_movement(va_list args);
 void *create_c_playercon(va_list args);
 void *create_c_position(va_list args);
@@ -35,6 +36,7 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
 struct ComponentManager *cm_aicon;
 struct ComponentManager *cm_energy;
 struct ComponentManager *cm_health;
+struct ComponentManager *cm_map;
 struct ComponentManager *cm_movement;
 struct ComponentManager *cm_playercon;
 struct ComponentManager *cm_position;
@@ -45,15 +47,16 @@ struct ComponentManager *cm_terrain;
 // Function to reverse the enum into a string for error messages 
 static inline wchar_t *component_type_finder(enum ComponentType type) {
     switch (type) {
-        case AICON:     return L"AICON";
-        case ENERGY:    return L"ENERGY";
-        case HEALTH:    return L"HEALTH";
-        case MOVEMENT:  return L"MOVEMENT";
-        case PLAYERCON: return L"PLAYERCON";
-        case POSITION:  return L"POSITION";
-        case RENDER:    return L"RENDER";
-        case TERRAIN:   return L"TERRAIN";
-        default:        return L"INVALID TYPE SUPPLIED";
+        case C_AICON:     return L"AICON";
+        case C_ENERGY:    return L"ENERGY";
+        case C_HEALTH:    return L"HEALTH";
+        case C_MAP:       return L"MAP";
+        case C_MOVEMENT:  return L"MOVEMENT";
+        case C_PLAYERCON: return L"PLAYERCON";
+        case C_POSITION:  return L"POSITION";
+        case C_RENDER:    return L"RENDER";
+        case C_TERRAIN:   return L"TERRAIN";
+        default:          return L"INVALID TYPE SUPPLIED";
     }
 }
 
@@ -71,14 +74,15 @@ void init_component_manager(struct ComponentManager **manager, enum ComponentTyp
  * an init function that initialises all the component managers
  */
 void init_component_managers() {
-    init_component_manager(&cm_aicon    , AICON);
-    init_component_manager(&cm_energy   , ENERGY);
-    init_component_manager(&cm_health   , HEALTH);
-    init_component_manager(&cm_movement , MOVEMENT);
-    init_component_manager(&cm_playercon, PLAYERCON);
-    init_component_manager(&cm_position , POSITION);
-    init_component_manager(&cm_render   , RENDER);
-    init_component_manager(&cm_terrain  , TERRAIN);
+    init_component_manager(&cm_aicon    , C_AICON);
+    init_component_manager(&cm_energy   , C_ENERGY);
+    init_component_manager(&cm_health   , C_HEALTH);
+    init_component_manager(&cm_map      , C_MAP);
+    init_component_manager(&cm_movement , C_MOVEMENT);
+    init_component_manager(&cm_playercon, C_PLAYERCON);
+    init_component_manager(&cm_position , C_POSITION);
+    init_component_manager(&cm_render   , C_RENDER);
+    init_component_manager(&cm_terrain  , C_TERRAIN);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
         for (int j = 0; j < MAX_BUFSIZE_SMALL; j++) {
@@ -98,6 +102,7 @@ void deinit_component_managers() {
     deinit_component_manager(cm_aicon);
     deinit_component_manager(cm_energy);
     deinit_component_manager(cm_health);
+    deinit_component_manager(cm_map);
     deinit_component_manager(cm_movement);
     deinit_component_manager(cm_playercon);
     deinit_component_manager(cm_position);
@@ -131,14 +136,15 @@ struct ComponentContainer *get_component(const entity_id uid, enum ComponentType
 
 struct ComponentManager *get_component_manager(enum ComponentType type) {
     switch (type) {
-        case AICON:     return cm_aicon;
-        case ENERGY:    return cm_energy;
-        case HEALTH:    return cm_health;
-        case MOVEMENT:  return cm_movement;
-        case PLAYERCON: return cm_playercon;
-        case POSITION:  return cm_position;
-        case RENDER:    return cm_render;
-        case TERRAIN:   return cm_terrain;
+        case C_AICON:     return cm_aicon;
+        case C_ENERGY:    return cm_energy;
+        case C_HEALTH:    return cm_health;
+        case C_MAP:       return cm_map;
+        case C_MOVEMENT:  return cm_movement;
+        case C_PLAYERCON: return cm_playercon;
+        case C_POSITION:  return cm_position;
+        case C_RENDER:    return cm_render;
+        case C_TERRAIN:   return cm_terrain;
         default:        return NULL;
     }
 }
@@ -185,14 +191,15 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
 
     // Call specific constructor 
     switch (type) {
-        case AICON:     a->c = create_c_aicon(args);     break;
-        case ENERGY:    a->c = create_c_energy(args);    break;
-        case HEALTH:    a->c = create_c_health(args);    break;
-        case MOVEMENT:  a->c = create_c_movement(args);  break;
-        case PLAYERCON: a->c = create_c_playercon(args); break;
-        case POSITION:  a->c = create_c_position(args);  break;
-        case RENDER:    a->c = create_c_render(args);    break;
-        case TERRAIN:   a->c = create_c_terrain(args);   break;
+        case C_AICON:     a->c = create_c_aicon(args);     break;
+        case C_ENERGY:    a->c = create_c_energy(args);    break;
+        case C_HEALTH:    a->c = create_c_health(args);    break;
+        case C_MAP:       a->c = create_c_map(args);       break;
+        case C_MOVEMENT:  a->c = create_c_movement(args);  break;
+        case C_PLAYERCON: a->c = create_c_playercon(args); break;
+        case C_POSITION:  a->c = create_c_position(args);  break;
+        case C_RENDER:    a->c = create_c_render(args);    break;
+        case C_TERRAIN:   a->c = create_c_terrain(args);   break;
         default: d_debug_message(0x0C, 2, L"Error in create_component, unknown component type %d", type);
                  return NULL;
     }
@@ -264,14 +271,15 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
     size_t sz;
 
     switch (src->type) {
-        case AICON:     sz = sizeof(struct C_AICon);
-        case ENERGY:    sz = sizeof(struct C_Energy);
-        case HEALTH:    sz = sizeof(struct C_Health);
-        case MOVEMENT:  sz = sizeof(struct C_Movement);
-        case PLAYERCON: sz = sizeof(struct C_PlayerCon);
-        case POSITION:  sz = sizeof(struct C_Position);
-        case RENDER:    sz = sizeof(struct C_Render);
-        case TERRAIN:   sz = sizeof(struct C_Terrain);
+        case C_AICON:     sz = sizeof(struct C_AICon);
+        case C_ENERGY:    sz = sizeof(struct C_Energy);
+        case C_HEALTH:    sz = sizeof(struct C_Health);
+        case C_MAP:       sz = sizeof(struct C_Map);
+        case C_MOVEMENT:  sz = sizeof(struct C_Movement);
+        case C_PLAYERCON: sz = sizeof(struct C_PlayerCon);
+        case C_POSITION:  sz = sizeof(struct C_Position);
+        case C_RENDER:    sz = sizeof(struct C_Render);
+        case C_TERRAIN:   sz = sizeof(struct C_Terrain);
     }
 
     comp = malloc(sz);
@@ -316,6 +324,14 @@ void *create_c_health(va_list args) {
     struct C_Health *component = malloc(sizeof(struct C_Health));
     component->h   = va_arg(args, int);
     component->max = va_arg(args, int);
+
+    return component;
+}
+
+void *create_c_map(va_list args) {
+    struct C_Map *component = malloc(sizeof(struct C_Map));
+    component->width  = va_arg(args, int);
+    component->height = va_arg(args, int);
 
     return component;
 }

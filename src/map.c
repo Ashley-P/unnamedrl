@@ -1,6 +1,7 @@
 #include "blueprint.h"
 #include "ecs_component.h"
 #include "ecs_entity.h"
+#include "map.h"
 
 
 /* Right now we create a basic map that is a box */

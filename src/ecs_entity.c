@@ -102,22 +102,22 @@ entity_id copy_entity(entity_id src) {
 void test_entities() {
     // AI
     entity_id a = create_entity_from_blueprint(L"Test_actor");
-    delete_component(a, POSITION);
-    create_component(a, POSITION, 7, 7);
+    delete_component(a, C_POSITION);
+    create_component(a, C_POSITION, 7, 7);
 
 
     // AI
     entity_id b = create_entity_from_blueprint(L"Test_actor");
-    delete_component(b, POSITION);
-    create_component(b, POSITION, 8, 8);
+    delete_component(b, C_POSITION);
+    create_component(b, C_POSITION, 8, 8);
 
     // Player
     entity_id c = create_entity();
-    create_component(c, RENDER, L'@', 0x07);
-    create_component(c, POSITION, 2, 2);
-    create_component(c, ENERGY, 1);
-    create_component(c, MOVEMENT, 1 << 0);
-    create_component(c, PLAYERCON, c);
-    create_component(c, HEALTH, 100, 100);
+    create_component(c, C_RENDER, L'@', 0x07);
+    create_component(c, C_POSITION, 2, 2);
+    create_component(c, C_ENERGY, 1);
+    create_component(c, C_MOVEMENT, 1 << 0);
+    create_component(c, C_PLAYERCON, c);
+    create_component(c, C_HEALTH, 100, 100);
 
 }

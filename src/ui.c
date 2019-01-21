@@ -70,7 +70,7 @@ void draw_ui_game() {
     draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, L"Player Stats", 0x0A);
     draw_string(WIDTH_FOUR_FIFTH + 2, 3, HORIZONTAL, L"Coming Soon", 0x0A);
     /* Health */
-    const struct C_Health *hp = (get_component(globals.player_id, HEALTH))->c;
+    const struct C_Health *hp = (get_component(globals.player_id, C_HEALTH))->c;
     
     wchar_t *hp_str = create_string(L"HP:      %d/%d", hp->h, hp->max);
     draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp_str, 0x04);

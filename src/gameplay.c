@@ -17,8 +17,8 @@
  */
 int move_entity(entity_id uid, int x, int y) {
     // Get the POSITION and MOVEMENT components
-    struct ComponentContainer *p = get_component(uid, POSITION);
-    struct ComponentContainer *m = get_component(uid, MOVEMENT);
+    struct ComponentContainer *p = get_component(uid, C_POSITION);
+    struct ComponentContainer *m = get_component(uid, C_MOVEMENT);
 
     if (!p || !m) return 0;
 

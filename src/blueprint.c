@@ -72,9 +72,9 @@ void init_blueprints() {
     // Wall
     struct Blueprint bp1 = create_blueprint();
     bp1.name = L"Wall";
-    bp1.components[0] = create_component(-1, POSITION, -1, -1);
-    bp1.components[1] = create_component(-1, RENDER, L'#', 0x07);
-    bp1.components[2] = create_component(-1, TERRAIN, T_WALL, 1 | 2);
+    bp1.components[0] = create_component(-1, C_POSITION, -1, -1);
+    bp1.components[1] = create_component(-1, C_RENDER, L'#', 0x07);
+    bp1.components[2] = create_component(-1, C_TERRAIN, T_WALL, 1 | 2);
 
     blueprints[bp_size++] = bp1;
 
@@ -82,9 +82,9 @@ void init_blueprints() {
     // Floor
     struct Blueprint bp2 = create_blueprint();
     bp2.name = L"Floor";
-    bp2.components[0] = create_component(-1, POSITION, -1, -1);
-    bp2.components[1] = create_component(-1, RENDER, L'.', 0x07);
-    bp2.components[2] = create_component(-1, TERRAIN, T_FLOOR, 0);
+    bp2.components[0] = create_component(-1, C_POSITION, -1, -1);
+    bp2.components[1] = create_component(-1, C_RENDER, L'.', 0x07);
+    bp2.components[2] = create_component(-1, C_TERRAIN, T_FLOOR, 0);
 
     blueprints[bp_size++] = bp2;
 
@@ -92,10 +92,10 @@ void init_blueprints() {
     // test actor
     struct Blueprint bp3 = create_blueprint();
     bp3.name = L"Test_actor";
-    bp3.components[0] = create_component(-1, POSITION, -1, -1);
-    bp3.components[1] = create_component(-1, RENDER, L'X', 0x08);
-    bp3.components[2] = create_component(-1, AICON, AI_TEST);
-    bp3.components[3] = create_component(-1, ENERGY, 1);
+    bp3.components[0] = create_component(-1, C_POSITION, -1, -1);
+    bp3.components[1] = create_component(-1, C_RENDER, L'X', 0x08);
+    bp3.components[2] = create_component(-1, C_AICON, AI_TEST);
+    bp3.components[3] = create_component(-1, C_ENERGY, 1);
 
     blueprints[bp_size++] = bp3;
 

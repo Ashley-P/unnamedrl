@@ -44,12 +44,12 @@ int s_ai(const entity_id uid) {
  * @TODO : Implement a Z-Buffer so actors get drawn on top of items
  */
 void s_render() {
-    struct ComponentManager *r_manager = get_component_manager(RENDER);
+    struct ComponentManager *r_manager = get_component_manager(C_RENDER);
     for (int i = 0; i < r_manager->size; i++) {
         // Check if the entity that own's this component has a POSITION component
         entity_id uid = (*(r_manager->containers + i))->owner;
-        struct ComponentContainer *p = get_component(uid, POSITION);
-        struct ComponentContainer *r = get_component(uid, RENDER);
+        struct ComponentContainer *p = get_component(uid, C_POSITION);
+        struct ComponentContainer *r = get_component(uid, C_RENDER);
 
         if (!p) continue;
 
@@ -79,7 +79,7 @@ void unlock_s_tick() {
 /* Actors do their stuff in here */
 void s_tick() {
     // Get the manager for the energy component
-    struct ComponentManager *t = get_component_manager(ENERGY);
+    struct ComponentManager *t = get_component_manager(C_ENERGY);
 
     for (int i = 0; i < t->size; i++) {
         // Check if the component exists
@@ -98,14 +98,14 @@ void s_tick() {
          */
         if (e->energy > 0) {
             // AI
-            if (get_component(uid, AICON)) {
+            if (get_component(uid, C_AICON)) {
                 while (e->energy > 0) {
                     e->energy -= s_ai(uid);
                     redraw_screen(); // Just incase
                 }
 
             // PLAYER
-            } else if (get_component(uid, PLAYERCON)) {
+            } else if (get_component(uid, C_PLAYERCON)) {
                 while (e->energy > 0) {
                     e->energy -= event_handler();
                     redraw_screen(); // So we can see what we're doing in menus
