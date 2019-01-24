@@ -3,10 +3,12 @@
  * aka movement, or picking up items
  */
 
+#include "blueprint.h"
 #include "defs.h"
 #include "debug.h"
 #include "ecs_component.h"
 #include "ecs_entity.h"
+#include "map.h"
 #include "message.h"
 #include "utils.h"
 
@@ -17,8 +19,8 @@
  */
 int move_entity(entity_id uid, int x, int y) {
     // Get the POSITION and MOVEMENT components
-    struct ComponentContainer *p = get_component(uid, C_POSITION);
-    struct ComponentContainer *m = get_component(uid, C_MOVEMENT);
+    const struct ComponentContainer *p = get_component(uid, C_POSITION);
+    const struct ComponentContainer *m = get_component(uid, C_MOVEMENT);
 
     if (!p || !m) return 0;
 
@@ -34,31 +36,20 @@ int move_entity(entity_id uid, int x, int y) {
         return 0;
     }
 
-#if 0
-    // Collision detection (really inefficient) Should be it's own function
-    struct ComponentManager *terrain = get_component_manager(TERRAIN);
-    for (int i = 0; i < terrain->size; i++) {
-        // If a component has a TERRAIN component, then it has a POSITION one too
-        entity_id ter_uid = (*(terrain->containers + i))->owner;
+    // Collision detection with the test map
+    struct Blueprint bp = get_blueprint(*(test_map->map + pos->x + x + ((pos->y + y) * test_map->width)));
+    const struct ComponentContainer *t = get_component_from_blueprint(bp, C_TERRAIN);
 
-        struct ComponentContainer *t_c = get_component(ter_uid, TERRAIN);
-        struct ComponentContainer *p_c = get_component(ter_uid, POSITION);
-
-        struct C_Terrain  *ter = t_c->c;
-        struct C_Position *ter_pos = p_c->c;
-
-        // Checking if the terrain piece is in the direction our entity wants to move
-        if ((pos->x + x) == ter_pos->x && (pos->y + y) == ter_pos->y) {
-            // Check if it blocks movement
-            if (ter->flags & (1 << 0)) {
-                if (uid == globals.player_id) {
-                    GAME_MESSAGE(L"You can't walk into that!", 0x07);
-                }
-                return 0; // Because the entity didn't move
+    if (t) {
+        const struct C_Terrain *ter = t->c;
+        // Check flags for movement
+        if (ter->flags & (1 << 0)) {
+            if (uid == globals.player_id) {
+                game_message(0x07, L"You can't walk into that!");
             }
+            return 0;
         }
     }
-#endif
 
     // Bounds checking
     if (pos->x + x < 0 || pos->y + y < 0) {

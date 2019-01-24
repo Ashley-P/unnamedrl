@@ -3,12 +3,14 @@
  * A system is something that works on a full list of components
  */
 
+#include "blueprint.h"
 #include "defs.h"
 #include "debug.h"
 #include "draw_utils.h"
 #include "ecs_component.h"
 #include "ecs_entity.h"
 #include "game.h"
+#include "map.h"
 #include "message.h"
 #include "ui.h"
 #include "utils.h"
@@ -44,17 +46,29 @@ int s_ai(const entity_id uid) {
  * @TODO : Implement a Z-Buffer so actors get drawn on top of items
  */
 void s_render() {
+    // Map render, will probably change in the future
+    for (int i = 0; i < test_map->width * test_map->height; i++) {
+        struct Blueprint bp = get_blueprint(*(test_map->map + i));
+        const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
+        
+        if (cmp == NULL) continue;
+
+        const struct C_Render *ren   = cmp->c;
+        draw_character((i % 10) + PLAY_SCREEN_OFFSET_X, (i / 10) + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+    }
+
+    // Entity render
     struct ComponentManager *r_manager = get_component_manager(C_RENDER);
     for (int i = 0; i < r_manager->size; i++) {
         // Check if the entity that own's this component has a POSITION component
         entity_id uid = (*(r_manager->containers + i))->owner;
-        struct ComponentContainer *p = get_component(uid, C_POSITION);
-        struct ComponentContainer *r = get_component(uid, C_RENDER);
+        const struct ComponentContainer *p = get_component(uid, C_POSITION);
+        const struct ComponentContainer *r = get_component(uid, C_RENDER);
 
         if (!p) continue;
 
-        struct C_Position *pos = p->c;
-        struct C_Render *ren   = r->c;
+        const struct C_Position *pos = p->c;
+        const struct C_Render *ren   = r->c;
 
         draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
     }

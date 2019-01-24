@@ -33,7 +33,7 @@ struct Blueprint get_blueprint(wchar_t *name) {
     return invalid_bp;
 }
 
-struct ComponentContainer *get_component_from_blueprint(struct Blueprint bp, enum ComponentType type) {
+const struct ComponentContainer *get_component_from_blueprint(struct Blueprint bp, enum ComponentType type) {
     for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
         if ((bp.components[i])->type == type) return bp.components[i];
         else continue;

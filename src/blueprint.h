@@ -17,7 +17,7 @@ struct Blueprint {
 
 /* Extern functions */
 struct Blueprint get_blueprint(wchar_t *name);
-struct ComponentContainer *get_component_from_blueprint(struct Blueprint, enum ComponentType type);
+const struct ComponentContainer *get_component_from_blueprint(struct Blueprint, enum ComponentType type);
 entity_id create_entity_from_blueprint(wchar_t *name);
 void init_blueprints();
 void deinit_blueprints();
