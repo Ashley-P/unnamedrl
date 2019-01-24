@@ -18,6 +18,7 @@ void gen_test_map() {
 
     for (int i = 0; i < test_map->width * test_map->height; i++) {
         *(test_map->map + i) = calloc(MAX_BUFSIZE_TINY, sizeof(wchar_t));
+        **(test_map->map + i) = L'\0';
     }
 
     for (int i = 0; i < 10; i++) {
