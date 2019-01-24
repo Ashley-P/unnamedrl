@@ -22,7 +22,6 @@ enum ComponentType {
     C_AICON = 1,          // AI controllable 
     C_ENERGY,
     C_HEALTH,
-    C_MAP,
     C_MOVEMENT,
     C_PLAYERCON,      // Player controllable
     C_POSITION,
@@ -88,11 +87,6 @@ struct C_Energy {
 struct C_Health {
     int h;
     int max;
-};
-
-struct C_Map {
-    int width;
-    int height;
 };
 
 struct C_Movement {

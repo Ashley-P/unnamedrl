@@ -15,7 +15,6 @@
 void *create_c_aicon(va_list args);
 void *create_c_energy(va_list args);
 void *create_c_health(va_list args);
-void *create_c_map(va_list args);
 void *create_c_movement(va_list args);
 void *create_c_playercon(va_list args);
 void *create_c_position(va_list args);
@@ -50,7 +49,6 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
         case C_AICON:     return L"AICON";
         case C_ENERGY:    return L"ENERGY";
         case C_HEALTH:    return L"HEALTH";
-        case C_MAP:       return L"MAP";
         case C_MOVEMENT:  return L"MOVEMENT";
         case C_PLAYERCON: return L"PLAYERCON";
         case C_POSITION:  return L"POSITION";
@@ -77,7 +75,6 @@ void init_component_managers() {
     init_component_manager(&cm_aicon    , C_AICON);
     init_component_manager(&cm_energy   , C_ENERGY);
     init_component_manager(&cm_health   , C_HEALTH);
-    init_component_manager(&cm_map      , C_MAP);
     init_component_manager(&cm_movement , C_MOVEMENT);
     init_component_manager(&cm_playercon, C_PLAYERCON);
     init_component_manager(&cm_position , C_POSITION);
@@ -139,7 +136,6 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
         case C_AICON:     return cm_aicon;
         case C_ENERGY:    return cm_energy;
         case C_HEALTH:    return cm_health;
-        case C_MAP:       return cm_map;
         case C_MOVEMENT:  return cm_movement;
         case C_PLAYERCON: return cm_playercon;
         case C_POSITION:  return cm_position;
@@ -194,7 +190,6 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
         case C_AICON:     a->c = create_c_aicon(args);     break;
         case C_ENERGY:    a->c = create_c_energy(args);    break;
         case C_HEALTH:    a->c = create_c_health(args);    break;
-        case C_MAP:       a->c = create_c_map(args);       break;
         case C_MOVEMENT:  a->c = create_c_movement(args);  break;
         case C_PLAYERCON: a->c = create_c_playercon(args); break;
         case C_POSITION:  a->c = create_c_position(args);  break;
@@ -274,7 +269,6 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
         case C_AICON:     sz = sizeof(struct C_AICon);
         case C_ENERGY:    sz = sizeof(struct C_Energy);
         case C_HEALTH:    sz = sizeof(struct C_Health);
-        case C_MAP:       sz = sizeof(struct C_Map);
         case C_MOVEMENT:  sz = sizeof(struct C_Movement);
         case C_PLAYERCON: sz = sizeof(struct C_PlayerCon);
         case C_POSITION:  sz = sizeof(struct C_Position);
@@ -324,14 +318,6 @@ void *create_c_health(va_list args) {
     struct C_Health *component = malloc(sizeof(struct C_Health));
     component->h   = va_arg(args, int);
     component->max = va_arg(args, int);
-
-    return component;
-}
-
-void *create_c_map(va_list args) {
-    struct C_Map *component = malloc(sizeof(struct C_Map));
-    component->width  = va_arg(args, int);
-    component->height = va_arg(args, int);
 
     return component;
 }
