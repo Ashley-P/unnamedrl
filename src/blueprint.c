@@ -12,6 +12,12 @@ static struct Blueprint invalid_bp = {L"INVALID_BP", {0}};
 
 
 
+/* Checks if the blueprint is valid */
+int check_blueprint(struct Blueprint bp) {
+    if (w_string_cmp(bp.name, invalid_bp.name)) return 0;
+    else return 1;
+}
+
 /* Creates a blueprint and adds it to the blueprint list */
 struct Blueprint create_blueprint() {
     struct Blueprint bp;

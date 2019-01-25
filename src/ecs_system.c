@@ -39,28 +39,52 @@ int s_ai(const entity_id uid) {
     return 100;
 }
 
-/*
- * Renders entities on the play screen
- * @TODO : Implement a camera system
- * @TODO : Implement FOV properly
- * @TODO : Implement a Z-Buffer so actors get drawn on top of items
- */
-void s_render() {
-    // Map render, will probably change in the future
-    for (int i = 0; i < test_map->width * test_map->height; i++) {
-        struct Blueprint bp = get_blueprint(*(test_map->map + i));
-        const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
-        
-        if (cmp == NULL) continue;
+void render_player_los(struct Line *line) {
+    // This only works if the map is complete
+    //for (int i = MAX_BUFSIZE_MINI - 1; i < 0; i--) {
+    for (int i = 0; i <= MAX_BUFSIZE_MINI; i++) {
+        // @TODO @FIXME : Fix when maps get changed
 
-        const struct C_Render *ren   = cmp->c;
-        draw_character((i % 10) + PLAY_SCREEN_OFFSET_X, (i / 10) + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+        if (*(line->x + i) < 0 || (*(line->y + i) < 0)) continue;
+        else if (*(line->x + i) >= test_map->width || (*(line->y + i) >= test_map->height)) continue;
+
+        int px = *(line->x + i);
+        int py = *(line->y + i);
+
+        struct Blueprint bp = get_blueprint(*(test_map->map + px + (py * test_map->width)));
+        if (!check_blueprint(bp)) continue;
+        const struct C_Render *ren  = (get_component_from_blueprint(bp, C_RENDER))->c;
+        const struct C_Terrain *ter = (get_component_from_blueprint(bp, C_TERRAIN))->c;
+
+
+        draw_character(px + PLAY_SCREEN_OFFSET_X, py + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+        if (ter->flags & (1 << 1)) return;
+    }
+}
+
+
+/**
+ * Calculates the players FOV using bresenham's line algorithm to check every tile
+ * Really inefficient
+ */
+void render_player_fov() {
+    const struct C_Position *pos = (get_component(globals.player_id, C_POSITION))->c;
+    const struct C_Sight *sight  = (get_component(globals.player_id, C_SIGHT))->c;
+
+    // @TODO @FIXME: Needs to change when we have more than one map
+    // right now we just check the border of a square because circles are hard
+    struct Line *line;
+
+    for (int i = -(sight->fov_distance); i < sight->fov_distance; i++) {
+        for (int j = -(sight->fov_distance); j < sight->fov_distance; j++) {
+            line = plot_line(pos->x, pos->y, pos->x + i, pos->y + j);
+            render_player_los(line);
+        }
     }
 
-    // Entity render
+    // Entity rendering
     struct ComponentManager *r_manager = get_component_manager(C_RENDER);
     for (int i = 0; i < r_manager->size; i++) {
-        // Check if the entity that own's this component has a POSITION component
         entity_id uid = (*(r_manager->containers + i))->owner;
         const struct ComponentContainer *p = get_component(uid, C_POSITION);
         const struct ComponentContainer *r = get_component(uid, C_RENDER);
@@ -71,7 +95,48 @@ void s_render() {
         const struct C_Render *ren   = r->c;
 
         draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+
     }
+}
+
+/*
+ * Renders entities on the play screen
+ * @TODO : Implement a camera system
+ * @TODO : Implement FOV properly
+ * @TODO : Implement a Z-Buffer so actors get drawn on top of items
+ */
+void s_render() {
+    // If the FOV is toggled off then we do the entire map
+    if (d_debug.flags & (1 << 2)) {
+        // Map render, will probably change in the future
+        for (int i = 0; i < test_map->width * test_map->height; i++) {
+            struct Blueprint bp = get_blueprint(*(test_map->map + i));
+            const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
+
+            if (cmp == NULL) continue;
+
+            const struct C_Render *ren   = cmp->c;
+            draw_character((i % 10) + PLAY_SCREEN_OFFSET_X, (i / 10) + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+        }
+
+        // Entity render
+        struct ComponentManager *r_manager = get_component_manager(C_RENDER);
+        for (int i = 0; i < r_manager->size; i++) {
+            // Check if the entity that own's this component has a POSITION component
+            entity_id uid = (*(r_manager->containers + i))->owner;
+            const struct ComponentContainer *p = get_component(uid, C_POSITION);
+            const struct ComponentContainer *r = get_component(uid, C_RENDER);
+
+            if (!p) continue;
+
+            const struct C_Position *pos = p->c;
+            const struct C_Render *ren   = r->c;
+
+            draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+        }
+    } else 
+        render_player_fov();
+
 }
 
 /**

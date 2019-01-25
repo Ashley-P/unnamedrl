@@ -385,6 +385,17 @@ void d_parser(const struct d_Token *tokens) {
 
 
 
+    /********* D_FOV - void d_fov(int a) *********/
+    } else if (w_string_cmp(tokens->value, d_commands[5])) {
+        if (d_token_counter(tokens) - 2 != 1) {
+            incorrect_argument_printer(tokens->value, 1, d_token_counter(tokens) - 2);
+            return;
+        } 
+        d_fov(w_str_to_int((tokens + 1)->value));
+
+
+
+
     } else if (0) {
     } else {
         d_debug_message(0x0C, 1, L"Parser Error: \"%ls\" is not a recognized command", tokens->value);

@@ -119,5 +119,6 @@ void test_entities() {
     create_component(c, C_MOVEMENT, 1 << 0);
     create_component(c, C_PLAYERCON, c);
     create_component(c, C_HEALTH, 100, 100);
+    create_component(c, C_SIGHT, 6, 0);
 
 }

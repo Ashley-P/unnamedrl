@@ -26,6 +26,7 @@ enum ComponentType {
     C_PLAYERCON,      // Player controllable
     C_POSITION,
     C_RENDER,
+    C_SIGHT,
     C_TERRAIN,
 }; 
 
@@ -91,7 +92,7 @@ struct C_Health {
 
 struct C_Movement {
     /** 
-     * Flags for movement capabilities from MSB to LSB
+     * Flags from MSB to LSB
      * 
      * UNUSED
      * UNUSED
@@ -117,21 +118,50 @@ struct C_Position {
 struct C_Render {
     wchar_t ch;
     unsigned char col;
+    /**
+     * Flags from MSB to LSB
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * Is this tile visible from the player's perspective 
+     */
+    uint8_t flags;
+};
+
+struct C_Sight {
+    int fov_distance; // How far the unit can see
+    /**
+     * Flags from MSB to LSB
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * Whether the entity has nightvision
+     */
+    uint8_t flags;
+
 };
 
 struct C_Terrain {
     enum TerrainType type;
     /**
-      * Flags from MSB to LSB
-      * UNUSED
-      * UNUSED
-      * UNUSED
-      * UNUSED
-      * UNUSED
-      * UNUSED
-      * Whether this tile blocks LOS
-      * Whether this tile is passable by an entity (aka can an entity move onto it)
-      */
+     * Flags from MSB to LSB
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * Whether this tile blocks LOS
+     * Whether this tile is passable by an entity (aka can an entity move onto it)
+     */
     uint8_t flags;
 };
 

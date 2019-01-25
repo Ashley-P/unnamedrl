@@ -9,6 +9,7 @@ const wchar_t *d_commands[] = {L"echo",
                                L"cls",
                                L"commands", // d_print_commands
                                L"toggle_tokens",
+                               L"FOV",
                                L"", // Exists so d_print_commands works
                                 };
 
@@ -48,4 +49,11 @@ void d_toggle_token_printing(int a) {
         d_debug.flags &= ~(1 << 0);
     else 
         d_debug.flags |= 1 << 0;
+}
+
+void d_fov(int a) {
+    if (!a)
+        d_debug.flags |= 1 << 2;
+    else 
+        d_debug.flags &= ~(1 << 2);
 }

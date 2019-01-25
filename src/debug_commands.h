@@ -9,5 +9,6 @@ void d_set_vars(const struct d_Token *tokens);
 void d_cls();
 void d_print_commands();
 void d_toggle_token_printing(int a);
+void d_fov(int a);
 
 #endif

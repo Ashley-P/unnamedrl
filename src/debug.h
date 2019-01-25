@@ -45,7 +45,7 @@ struct d_Debug {
      * UNUSED
      * UNUSED
      * UNUSED
-     * UNUSED
+     * Toggle FOV
      * Unread messages in debug mode
      * Toggle token printing
      */

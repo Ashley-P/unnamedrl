@@ -31,6 +31,13 @@ void gen_test_map() {
         }
     }
 
+    // Manually adding some extra walls
+    w_string_cpy(L"Wall", *(test_map->map + 3 + (3 * 10)));
+    w_string_cpy(L"Wall", *(test_map->map + 3 + (6 * 10)));
+    w_string_cpy(L"Wall", *(test_map->map + 6 + (3 * 10)));
+    w_string_cpy(L"Wall", *(test_map->map + 6 + (6 * 10)));
+
+
 }
 
 void init_map() {

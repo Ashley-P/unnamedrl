@@ -124,4 +124,11 @@ struct String {
     unsigned char colour;
 };
 
+/**
+ * Struct that holds an x and y value
+ */
+struct Line {
+    int *x;
+    int *y;
+};
 #endif

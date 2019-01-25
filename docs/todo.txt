@@ -32,18 +32,118 @@ TODO:
 
 
 
+----- COMPONENTS -----
+Attack component:
+- Damage
+- Armour penetration
+- Ammunition required (if needed)
+- Range
+- Cooldown?
+- Multiple attacks (each with a the above attributes)
+
+Defense component:
+- Damage mitigation (%)
+- Protection vs environment (maybe multiple environment types)
+
+Item component:
+- Weight
+- Size?
+- Let's the item be stored in an inventory
+- Maybe a general type variable
+- Stack size
+
+Inventory/Storage component: (Could be used for wearing and wielding stuff too)
+- Let's items be stored in it (just uids to entities)
+- Storage size (current and max)
+
+Speech/Text/Quest component: (Could be done seperate from the ECS)
+- Let's the player interact with it
+
+Sight component:
+- Sight radius
+- Night vision
+
+Smell component:
+- Smell map
+- Smell strength 
+
+Hearing component:
+- Noise map
+- Noise strength
+
+Appearance component:
+- Short description
+- Long description
+
+Consumable component:
+- Let's the component be used for some sort of gain
+
+Ammunition component:
+- extra damage
+- status effects
+
+
+
+
+
+
 ----- ITEMS/ENTITIES/OBJECTS -----
 Required reading
 http://roguebasin.roguelikedevelopment.org/index.php?title=Info_Files
 http://roguebasin.roguelikedevelopment.org/index.php?title=Info_File_Variant_-_Compile-to-Code
 
+@NOTE : Actual specification of this markup language will be elsewhere these are just semi-unordered ideas
+
 Stuff like items need to be put in a seperate text file
+Before lexing proper, we would get all the files in a directory named "entity" or "raws" and 
+put every filename that ends in ".raw" or ".entity" in a list which is scanned later.
+
+
+Preprocessor:
+Have a basic preprocessor that acts upon each file and searches for lines that start with a bang (!) or double bang (!!)
+These are special lines which are like commands given to alter something about the file 
+e.g !READ_FIRST would alter the read list of the scanner to put the file at the start
+
+
+
+
+
+Keyword ideas:
+!!! They must be all caps for easy recognition !!!
+
+*** Preprocessor keywords ***
+
+- READ_FIRST:
+This would place the filename of the file at the start of the scanlist
+
+
+
+
+*** Normal keywords ***
+- BASE_TYPE
+Sets the next object to be read as a special blueprint that doesn't make it into the final game, but allows it to be INHERITed
+by other objects
+
+- INHERITS <object name>
+Inherits the components and values of a blueprint with the name of the provided argument. Should only work if the argument blueprint
+has been created.
+
+- COMPONENT_NAME (without the C_ part)
+Defines a component for the blueprint arguments follow to the side or below
+
+- 
+
+
+
+
 
 Syntax ideas:
+Bangs (!) and double bangs (!!) for special commands
 # for comments
 Remember to check newlines
 object type := MONSTER, ITEM (Maybe expand this or have a sub type for the item)
 All keywords are in ALL CAPS
+
 
 
 

@@ -19,6 +19,7 @@ void *create_c_movement(va_list args);
 void *create_c_playercon(va_list args);
 void *create_c_position(va_list args);
 void *create_c_render(va_list args);
+void *create_c_sight(va_list args);
 void *create_c_terrain(va_list args);
 
 
@@ -35,11 +36,11 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
 struct ComponentManager *cm_aicon;
 struct ComponentManager *cm_energy;
 struct ComponentManager *cm_health;
-struct ComponentManager *cm_map;
 struct ComponentManager *cm_movement;
 struct ComponentManager *cm_playercon;
 struct ComponentManager *cm_position;
 struct ComponentManager *cm_render;
+struct ComponentManager *cm_sight;
 struct ComponentManager *cm_terrain;
 
 
@@ -53,6 +54,7 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
         case C_PLAYERCON: return L"PLAYERCON";
         case C_POSITION:  return L"POSITION";
         case C_RENDER:    return L"RENDER";
+        case C_SIGHT:     return L"SIGHT";
         case C_TERRAIN:   return L"TERRAIN";
         default:          return L"INVALID TYPE SUPPLIED";
     }
@@ -79,6 +81,7 @@ void init_component_managers() {
     init_component_manager(&cm_playercon, C_PLAYERCON);
     init_component_manager(&cm_position , C_POSITION);
     init_component_manager(&cm_render   , C_RENDER);
+    init_component_manager(&cm_sight    , C_SIGHT);
     init_component_manager(&cm_terrain  , C_TERRAIN);
 
     for (int i = 0; i < MAX_BUFSIZE_SUPER; i++) {
@@ -99,11 +102,11 @@ void deinit_component_managers() {
     deinit_component_manager(cm_aicon);
     deinit_component_manager(cm_energy);
     deinit_component_manager(cm_health);
-    deinit_component_manager(cm_map);
     deinit_component_manager(cm_movement);
     deinit_component_manager(cm_playercon);
     deinit_component_manager(cm_position);
     deinit_component_manager(cm_render);
+    deinit_component_manager(cm_sight);
     deinit_component_manager(cm_terrain);
 }
 
@@ -140,6 +143,7 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
         case C_PLAYERCON: return cm_playercon;
         case C_POSITION:  return cm_position;
         case C_RENDER:    return cm_render;
+        case C_SIGHT:     return cm_sight;
         case C_TERRAIN:   return cm_terrain;
         default:        return NULL;
     }
@@ -194,6 +198,7 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
         case C_PLAYERCON: a->c = create_c_playercon(args); break;
         case C_POSITION:  a->c = create_c_position(args);  break;
         case C_RENDER:    a->c = create_c_render(args);    break;
+        case C_SIGHT:     a->c = create_c_sight(args);     break;
         case C_TERRAIN:   a->c = create_c_terrain(args);   break;
         default: d_debug_message(0x0C, 2, L"Error in create_component, unknown component type %d", type);
                  return NULL;
@@ -273,6 +278,7 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
         case C_PLAYERCON: sz = sizeof(struct C_PlayerCon);
         case C_POSITION:  sz = sizeof(struct C_Position);
         case C_RENDER:    sz = sizeof(struct C_Render);
+        case C_SIGHT:     sz = sizeof(struct C_Sight);
         case C_TERRAIN:   sz = sizeof(struct C_Terrain);
     }
 
@@ -349,6 +355,15 @@ void *create_c_render(va_list args) {
     struct C_Render *component = malloc(sizeof(struct C_Render));
     component->ch    = va_arg(args, int); // Should be wchar_t
     component->col   = va_arg(args, int); // Should be unsigned char
+    component->flags = 0;
+
+    return component;
+}
+
+void *create_c_sight(va_list args) {
+    struct C_Sight *component = malloc(sizeof(struct C_Sight));
+    component->fov_distance = va_arg(args, int);
+    component->flags        = va_arg(args, int); // Should be uint8_t
 
     return component;
 }

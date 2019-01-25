@@ -5,7 +5,7 @@
 
 /* Externs */
 wchar_t *create_string(wchar_t *str, ...);
-void plot_line(int x0, int x1, int y0, int y1);
+struct Line *plot_line(int x0, int y0, int x1, int y1);
 int power(int base, unsigned int expt);
 
 /* String utility functions */
