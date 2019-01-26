@@ -39,26 +39,33 @@ int s_ai(const entity_id uid) {
     return 100;
 }
 
-void render_player_los(struct Line *line) {
+void render_player_los(int x0, int y0, int x1, int y1) {
     // This only works if the map is complete
-    //for (int i = MAX_BUFSIZE_MINI - 1; i < 0; i--) {
-    for (int i = 0; i <= MAX_BUFSIZE_MINI; i++) {
-        // @TODO @FIXME : Fix when maps get changed
+    if (x1 < 0 || y1 < 0 || x1 >= test_map->width || y1 >= test_map->height) return;
 
-        if (*(line->x + i) < 0 || (*(line->y + i) < 0)) continue;
-        else if (*(line->x + i) >= test_map->width || (*(line->y + i) >= test_map->height)) continue;
+    struct Line *line = plot_line(x0, y0, x1, y1);
 
-        int px = *(line->x + i);
-        int py = *(line->y + i);
+    struct Blueprint bp = get_blueprint(*(test_map->map + x1 + (y1 * test_map->width)));
+    const struct C_Render *ren = (get_component_from_blueprint(bp, C_RENDER))->c;
 
-        struct Blueprint bp = get_blueprint(*(test_map->map + px + (py * test_map->width)));
-        if (!check_blueprint(bp)) continue;
-        const struct C_Render *ren  = (get_component_from_blueprint(bp, C_RENDER))->c;
-        const struct C_Terrain *ter = (get_component_from_blueprint(bp, C_TERRAIN))->c;
+    for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
+        if (*(line->x + i) == -1 && *(line->y + i) == -1) {
+            draw_character(x1 + PLAY_SCREEN_OFFSET_X, y1 + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+            return;
+        }
 
+        struct Blueprint bp2 = get_blueprint(*(test_map->map + *(line->x + i) +
+                    (*(line->y + i) * test_map->width)));
+        const struct C_Terrain *terrain = (get_component_from_blueprint(bp2, C_TERRAIN))->c;
 
-        draw_character(px + PLAY_SCREEN_OFFSET_X, py + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
-        if (ter->flags & (1 << 1)) return;
+        // @FIXME : Doesn't draw walls
+        if (terrain->flags & (1 << 1)) {
+            if (*(line->x + i + 1) == -1 && (*(line->y + i + 1) == -1))
+                draw_character(x1 + PLAY_SCREEN_OFFSET_X, y1 + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+
+            if (i == 0) continue;
+            return;
+        }
     }
 }
 
@@ -72,13 +79,10 @@ void render_player_fov() {
     const struct C_Sight *sight  = (get_component(globals.player_id, C_SIGHT))->c;
 
     // @TODO @FIXME: Needs to change when we have more than one map
-    // right now we just check the border of a square because circles are hard
-    struct Line *line;
 
-    for (int i = -(sight->fov_distance); i < sight->fov_distance; i++) {
-        for (int j = -(sight->fov_distance); j < sight->fov_distance; j++) {
-            line = plot_line(pos->x, pos->y, pos->x + i, pos->y + j);
-            render_player_los(line);
+    for (int i = -(sight->fov_distance); i <= sight->fov_distance; i++) {
+        for (int j = -(sight->fov_distance); j <= sight->fov_distance; j++) {
+            render_player_los(pos->x, pos->y, pos->x + i, pos->y + j);
         }
     }
 
