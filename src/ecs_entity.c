@@ -53,7 +53,8 @@ entity_id gen_uid() {
 }
 
 int check_uid(entity_id uid) {
-    if (*(entities + uid)) return 1;
+    if (uid == -1) return 0;
+    else if (*(entities + uid)) return 1;
     else return 0;
 }
 

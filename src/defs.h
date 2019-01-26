@@ -130,5 +130,7 @@ struct String {
 struct Line {
     int *x;
     int *y;
+
+    size_t sz;
 };
 #endif

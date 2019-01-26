@@ -3,6 +3,7 @@
  * A system is something that works on a full list of components
  */
 
+#include <stdlib.h>
 #include "blueprint.h"
 #include "defs.h"
 #include "debug.h"
@@ -39,19 +40,24 @@ int s_ai(const entity_id uid) {
     return 100;
 }
 
-void render_player_los(int x0, int y0, int x1, int y1) {
-    // This only works if the map is complete
-    if (x1 < 0 || y1 < 0 || x1 >= test_map->width || y1 >= test_map->height) return;
+/**
+ * Calulates LOS
+ * Returns 1 if x0, y0 can see x1, y1
+ * @FIXME : This only works if the map is complete, and doesn't check entitites
+ * @FIXME : Change when the map get's redone (again)
+ */
+int calc_los(int x0, int y0, int x1, int y1) {
+    int rtn;
+    if (x1 < 0 || y1 < 0 || x1 >= test_map->width || y1 >= test_map->height) return 0;
+    if (x0 < 0 || y0 < 0 || x0 >= test_map->width || y0 >= test_map->height) return 0;
 
     struct Line *line = plot_line(x0, y0, x1, y1);
 
-    struct Blueprint bp = get_blueprint(*(test_map->map + x1 + (y1 * test_map->width)));
-    const struct C_Render *ren = (get_component_from_blueprint(bp, C_RENDER))->c;
-
-    for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
-        if (*(line->x + i) == -1 && *(line->y + i) == -1) {
-            draw_character(x1 + PLAY_SCREEN_OFFSET_X, y1 + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
-            return;
+    for (int i = 0; i < line->sz; i++) {
+        if (i + 1 == line->sz) {
+            //draw_character(x1 + PLAY_SCREEN_OFFSET_X, y1 + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+            rtn = 1;
+            break;
         }
 
         struct Blueprint bp2 = get_blueprint(*(test_map->map + *(line->x + i) +
@@ -60,47 +66,87 @@ void render_player_los(int x0, int y0, int x1, int y1) {
 
         // @FIXME : Doesn't draw walls
         if (terrain->flags & (1 << 1)) {
-            if (*(line->x + i + 1) == -1 && (*(line->y + i + 1) == -1))
-                draw_character(x1 + PLAY_SCREEN_OFFSET_X, y1 + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+            if (i == line->sz) {
+                rtn = 1;
+                break;
+            } else if (i == 0) continue;
 
-            if (i == 0) continue;
-            return;
+            rtn = 0;
+            break;
         }
     }
+    // cleanup
+    free(line->x);
+    free(line->y);
+    free(line);
+    return rtn;
 }
 
-
 /**
- * Calculates the players FOV using bresenham's line algorithm to check every tile
+ * Calculates the FOV of the entity using bresenham's line algorithm to check every tile
  * Really inefficient
+ * Passes back a Line struct with the coords of each map tile it can see
  */
-void render_player_fov() {
-    const struct C_Position *pos = (get_component(globals.player_id, C_POSITION))->c;
-    const struct C_Sight *sight  = (get_component(globals.player_id, C_SIGHT))->c;
+struct Line *calc_map_fov(entity_id uid) {
+    struct Line *visible_tiles = malloc(sizeof(struct Line));
+    visible_tiles->x          = malloc(sizeof(int) * MAX_BUFSIZE_MED);
+    visible_tiles->y          = malloc(sizeof(int) * MAX_BUFSIZE_MED);
+    visible_tiles->sz         = 0;
+    
+    // We just assume that the entity has a position and sight component or this wouldn't be called
+    const struct C_Position *pos = (get_component(uid, C_POSITION))->c;
+    const struct C_Sight *sight  = (get_component(uid, C_SIGHT))->c;
 
     // @TODO @FIXME: Needs to change when we have more than one map
 
     for (int i = -(sight->fov_distance); i <= sight->fov_distance; i++) {
         for (int j = -(sight->fov_distance); j <= sight->fov_distance; j++) {
-            render_player_los(pos->x, pos->y, pos->x + i, pos->y + j);
+            int los1 = calc_los(pos->x, pos->y, pos->x + i, pos->y + j);
+            //int los2 = calc_los(pos->x + i, pos->y + j, pos->x, pos->y);
+            
+            // testing out FOV types
+            if (los1) {
+                (visible_tiles->x)[visible_tiles->sz] = pos->x + i;
+                (visible_tiles->y)[visible_tiles->sz] = pos->y + j;
+                visible_tiles->sz++;
+            }
         }
     }
 
-    // Entity rendering
-    struct ComponentManager *r_manager = get_component_manager(C_RENDER);
-    for (int i = 0; i < r_manager->size; i++) {
-        entity_id uid = (*(r_manager->containers + i))->owner;
-        const struct ComponentContainer *p = get_component(uid, C_POSITION);
-        const struct ComponentContainer *r = get_component(uid, C_RENDER);
+    return visible_tiles;
+}
 
-        if (!p) continue;
+/**
+ * Calculates which entities the provided entity can see
+ * @TODO @FIXME : Doesn't work properly with entities that block LOS
+ */
+entity_id *calc_entity_fov(entity_id uid) {
+    // Get the relevant components for the uid
+    entity_id *ids = malloc(sizeof(entity_id) * MAX_BUFSIZE_SMALL);
+    size_t sz = 0;
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) ids[i] = -1;
 
-        const struct C_Position *pos = p->c;
-        const struct C_Render *ren   = r->c;
+    const struct C_Position *uid_pos = (get_component(uid, C_POSITION))->c;
+    const struct C_Sight *uid_sight  = (get_component(uid, C_SIGHT))->c;
 
-        draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
 
+    struct ComponentManager *p_manager = get_component_manager(C_POSITION);
+    d_debug_message(0x07, 1, L"%p", p_manager);
+    for (int i = 0; i < p_manager->size; i++) {
+        const struct C_Position *check_pos = (*(p_manager->containers + i))->c;
+
+        if (abs(check_pos->x) > uid_pos->x + uid_sight->fov_distance ||
+                (abs(check_pos->y) > uid_pos->y + uid_sight->fov_distance))
+            continue;
+        int los1 = calc_los(uid_pos->x, uid_pos->y, check_pos->x, check_pos->y);
+        //int los2 = calc_los(check_pos->x, check_pos->y, uid_pos->x, uid_pos->y);
+
+        if (los1) {
+            ids[sz++] = (*(p_manager->containers + i))->owner;
+        }
     }
+
+    return ids;
 }
 
 /*
@@ -119,7 +165,7 @@ void s_render() {
 
             if (cmp == NULL) continue;
 
-            const struct C_Render *ren   = cmp->c;
+            const struct C_Render *ren = cmp->c;
             draw_character((i % 10) + PLAY_SCREEN_OFFSET_X, (i / 10) + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
         }
 
@@ -138,8 +184,41 @@ void s_render() {
 
             draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
         }
-    } else 
-        render_player_fov();
+    } else {
+        // Gathering information
+        struct Line *fov = calc_map_fov(globals.player_id);
+        entity_id *ids = calc_entity_fov(globals.player_id);
+
+        // Map rendering
+        for (int i = 0; i < fov->sz; i++) {
+            struct Blueprint bp = get_blueprint(*(test_map->map + *(fov->x + i) +
+                        (*(fov->y + i) * test_map->width)));
+            const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
+
+            if (cmp == NULL) continue;
+
+            const struct C_Render *ren = cmp->c;
+            draw_character(*(fov->x + i) + PLAY_SCREEN_OFFSET_X, *(fov->y + i) + PLAY_SCREEN_OFFSET_Y,
+                    ren->ch, ren->col);
+        }
+
+        // Entity rendering
+        for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
+            if (check_uid(ids[i])) {
+                const struct C_Position *ent_pos = (get_component(ids[i], C_POSITION))->c;
+                const struct C_Render *ent_ren   = (get_component(ids[i], C_RENDER))->c;
+
+                draw_character(ent_pos->x + PLAY_SCREEN_OFFSET_X, ent_pos->y + PLAY_SCREEN_OFFSET_Y,
+                        ent_ren->ch, ent_ren->col);
+            }
+        }
+
+        // Freeing resources
+        free(fov->x);
+        free(fov->y);
+        free(fov);
+        free(ids);
+    }
 
 }
 

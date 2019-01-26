@@ -242,13 +242,15 @@ void delete_component(const entity_id uid, enum ComponentType type) {
         if (*(manager->containers + i) == component) {
             *(manager->containers + i) = NULL;
             // Move the component at the end to this position
-            *(manager->containers) = *(manager->containers + manager->size - 1);
+            *(manager->containers + i) = *(manager->containers + manager->size - 1);
             *(manager->containers + manager->size - 1) = NULL;
             break;
         }
     }
 
     manager->size--;
+    free(component->c);
+    free(component);
 }
 
 /**

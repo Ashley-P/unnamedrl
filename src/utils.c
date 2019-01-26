@@ -21,17 +21,13 @@ wchar_t *create_string(wchar_t *str, ...) {
     return new_str;
 }
 
-static inline struct Line *init_Line_struct() {
+struct Line *init_line_struct() {
     struct Line *rtn = malloc(sizeof(struct Line));
 
     // Init pointers
     rtn->x = malloc(sizeof(int) * MAX_BUFSIZE_MINI); //64
     rtn->y = malloc(sizeof(int) * MAX_BUFSIZE_MINI); //64
-    for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
-        *(rtn->x + i) = -1;
-        *(rtn->y + i) = -1;
-
-    }
+    rtn->sz = 0;
 
     return rtn;
 }
@@ -43,8 +39,7 @@ static inline struct Line *init_Line_struct() {
  * characters to the screen
  */
 struct Line *plot_line_low(int x0, int y0, int x1, int y1) {
-    struct Line *line = init_Line_struct();
-    size_t sz = 0;
+    struct Line *line = init_line_struct();
 
     int dx = x1 - x0;
     int dy = y1 - y0;
@@ -57,9 +52,9 @@ struct Line *plot_line_low(int x0, int y0, int x1, int y1) {
     int y = y0;
 
     for (int x = x0; x <= x1; x++) {
-        *(line->x + sz) = x;
-        *(line->y + sz) = y;
-        sz++;
+        *(line->x + line->sz) = x;
+        *(line->y + line->sz) = y;
+        line->sz++;
 
         if (D > 0) {
             y = y + yi;
@@ -73,8 +68,7 @@ struct Line *plot_line_low(int x0, int y0, int x1, int y1) {
 
 
 struct Line *plot_line_high(int x0, int y0, int x1, int y1) {
-    struct Line *line = init_Line_struct();
-    size_t sz = 0;
+    struct Line *line = init_line_struct();
 
     int dx = x1 - x0;
     int dy = y1 - y0;
@@ -87,9 +81,9 @@ struct Line *plot_line_high(int x0, int y0, int x1, int y1) {
     int x = x0;
 
     for (int y = y0; y <= y1; y++) {
-        *(line->x + sz) = x;
-        *(line->y + sz) = y;
-        sz++;
+        *(line->x + line->sz) = x;
+        *(line->y + line->sz) = y;
+        line->sz++;
 
         if (D > 0) {
             x = x + xi;
