@@ -33,15 +33,15 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
  *
  */
 
-struct ComponentManager *cm_aicon;
-struct ComponentManager *cm_energy;
-struct ComponentManager *cm_health;
-struct ComponentManager *cm_movement;
-struct ComponentManager *cm_playercon;
-struct ComponentManager *cm_position;
-struct ComponentManager *cm_render;
-struct ComponentManager *cm_sight;
-struct ComponentManager *cm_terrain;
+static struct ComponentManager *cm_aicon;
+static struct ComponentManager *cm_energy;
+static struct ComponentManager *cm_health;
+static struct ComponentManager *cm_movement;
+static struct ComponentManager *cm_playercon;
+static struct ComponentManager *cm_position;
+static struct ComponentManager *cm_render;
+static struct ComponentManager *cm_sight;
+static struct ComponentManager *cm_terrain;
 
 
 // Function to reverse the enum into a string for error messages 

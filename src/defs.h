@@ -97,7 +97,6 @@ enum ProgState {
 /* Externs */
 extern struct d_Debug d_debug;
 extern struct Globals globals;
-extern struct Map *test_map;
 
 struct Globals {
     int done_playing;

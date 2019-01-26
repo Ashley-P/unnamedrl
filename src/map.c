@@ -40,6 +40,11 @@ void gen_test_map() {
 
 }
 
+/* This will be expanded to return the current map */
+struct Map *get_map() {
+    // right now we just return the test map
+    return test_map;
+}
 void init_map() {
     gen_test_map();
 }

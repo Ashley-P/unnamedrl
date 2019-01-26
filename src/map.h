@@ -2,6 +2,8 @@
 #define MAP_H
 
 struct Map {
+    wchar_t name[MAX_BUFSIZE_MINI];
+
     /**
      * Name of each blueprint in the map
      * if the name is empty, then we assume that a relevant entity is in it's place
@@ -14,6 +16,7 @@ struct Map {
 };
 
 /* Externs */
+struct Map *get_map();
 void init_map();
 void deinit_map();
 

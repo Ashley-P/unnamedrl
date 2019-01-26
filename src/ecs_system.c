@@ -47,9 +47,10 @@ int s_ai(const entity_id uid) {
  * @FIXME : Change when the map get's redone (again)
  */
 int calc_los(int x0, int y0, int x1, int y1) {
+    const struct Map *map = get_map();
     int rtn;
-    if (x1 < 0 || y1 < 0 || x1 >= test_map->width || y1 >= test_map->height) return 0;
-    if (x0 < 0 || y0 < 0 || x0 >= test_map->width || y0 >= test_map->height) return 0;
+    if (x1 < 0 || y1 < 0 || x1 >= map->width || y1 >= map->height) return 0;
+    if (x0 < 0 || y0 < 0 || x0 >= map->width || y0 >= map->height) return 0;
 
     struct Line *line = plot_line(x0, y0, x1, y1);
 
@@ -60,8 +61,8 @@ int calc_los(int x0, int y0, int x1, int y1) {
             break;
         }
 
-        struct Blueprint bp2 = get_blueprint(*(test_map->map + *(line->x + i) +
-                    (*(line->y + i) * test_map->width)));
+        struct Blueprint bp2 = get_blueprint(*(map->map + *(line->x + i) +
+                    (*(line->y + i) * map->width)));
         const struct C_Terrain *terrain = (get_component_from_blueprint(bp2, C_TERRAIN))->c;
 
         // @FIXME : Doesn't draw walls
@@ -131,7 +132,6 @@ entity_id *calc_entity_fov(entity_id uid) {
 
 
     struct ComponentManager *p_manager = get_component_manager(C_POSITION);
-    d_debug_message(0x07, 1, L"%p", p_manager);
     for (int i = 0; i < p_manager->size; i++) {
         const struct C_Position *check_pos = (*(p_manager->containers + i))->c;
 
@@ -156,11 +156,12 @@ entity_id *calc_entity_fov(entity_id uid) {
  * @TODO : Implement a Z-Buffer so actors get drawn on top of items
  */
 void s_render() {
+    const struct Map *map = get_map();
     // If the FOV is toggled off then we do the entire map
     if (d_debug.flags & (1 << 2)) {
         // Map render, will probably change in the future
-        for (int i = 0; i < test_map->width * test_map->height; i++) {
-            struct Blueprint bp = get_blueprint(*(test_map->map + i));
+        for (int i = 0; i < map->width * map->height; i++) {
+            struct Blueprint bp = get_blueprint(*(map->map + i));
             const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
 
             if (cmp == NULL) continue;
@@ -191,8 +192,8 @@ void s_render() {
 
         // Map rendering
         for (int i = 0; i < fov->sz; i++) {
-            struct Blueprint bp = get_blueprint(*(test_map->map + *(fov->x + i) +
-                        (*(fov->y + i) * test_map->width)));
+            struct Blueprint bp = get_blueprint(*(map->map + *(fov->x + i) +
+                        (*(fov->y + i) * map->width)));
             const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
 
             if (cmp == NULL) continue;

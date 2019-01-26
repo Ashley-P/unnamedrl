@@ -18,6 +18,9 @@
  * @TODO @FIXME : Fix this when the map get's implemented
  */
 int move_entity(entity_id uid, int x, int y) {
+    // Get the map
+    const struct Map *map = get_map();
+
     // Get the POSITION and MOVEMENT components
     const struct ComponentContainer *p = get_component(uid, C_POSITION);
     const struct ComponentContainer *m = get_component(uid, C_MOVEMENT);
@@ -37,7 +40,7 @@ int move_entity(entity_id uid, int x, int y) {
     }
 
     // Collision detection with the test map
-    struct Blueprint bp = get_blueprint(*(test_map->map + pos->x + x + ((pos->y + y) * test_map->width)));
+    struct Blueprint bp = get_blueprint(*(map->map + pos->x + x + ((pos->y + y) * map->width)));
     const struct ComponentContainer *t = get_component_from_blueprint(bp, C_TERRAIN);
 
     if (t) {
