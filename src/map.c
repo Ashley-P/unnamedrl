@@ -66,7 +66,7 @@ void gen_test_map() {
 
 
     // Manually adding some extra walls
-    w_string_cpy(L"Wall", *(test_map->map + 3 + (3 * test_map->width)));
+    w_string_cpy(L"", *(test_map->map + 3 + (3 * test_map->width)));
     w_string_cpy(L"Wall", *(test_map->map + 3 + (6 * test_map->width)));
     w_string_cpy(L"Wall", *(test_map->map + 6 + (3 * test_map->width)));
     w_string_cpy(L"Wall", *(test_map->map + 6 + (6 * test_map->width)));

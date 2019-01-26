@@ -56,16 +56,35 @@ int calc_los(int x0, int y0, int x1, int y1) {
 
     for (int i = 0; i < line->sz; i++) {
         if (i + 1 == line->sz) {
-            //draw_character(x1 + PLAY_SCREEN_OFFSET_X, y1 + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
             rtn = 1;
             break;
         }
 
         struct Blueprint bp2 = get_blueprint(*(map->map + *(line->x + i) +
                     (*(line->y + i) * map->width)));
-        const struct C_Terrain *terrain = (get_component_from_blueprint(bp2, C_TERRAIN))->c;
 
-        // @FIXME : Doesn't draw walls
+        const struct C_Terrain *terrain = NULL;
+
+        // If the space is empty we check each entity with a C_Terrain struct and see if it's there
+        if (!check_blueprint(bp2)) {
+            const struct ComponentManager *t_manager = get_component_manager(C_TERRAIN);
+            for (int j = 0; j < t_manager->size; j++) {
+                entity_id owner = (*(t_manager->containers + j))->owner;
+                const struct C_Position *owner_pos = (get_component(owner, C_POSITION))->c;
+
+                if (owner_pos->x == *(line->x + i) && owner_pos->y == *(line->y + i)) {
+                    terrain = (get_component(owner, C_TERRAIN))->c;
+                    break;
+                }
+            }
+        } else
+            terrain = (get_component_from_blueprint(bp2, C_TERRAIN))->c;
+
+        if (terrain == NULL) {
+            d_debug_message(0x0C, ERROR_D, L"Error in calc_los: No terrain entity or blueprint at x = %d, y = %d",
+                    *(line->x + i), *(line->y + i));
+            return 1;
+        }
         if (terrain->flags & (1 << 1)) {
             if (i == line->sz) {
                 rtn = 1;
@@ -194,6 +213,8 @@ void s_render() {
         for (int i = 0; i < fov->sz; i++) {
             struct Blueprint bp = get_blueprint(*(map->map + *(fov->x + i) +
                         (*(fov->y + i) * map->width)));
+            // If it's an invalid blueprint, then there is a terrain entity in it's place and we just leave it
+            if (!check_blueprint(bp)) continue;
             const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
 
             if (cmp == NULL) continue;

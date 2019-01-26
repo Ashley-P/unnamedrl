@@ -39,19 +39,36 @@ int move_entity(entity_id uid, int x, int y) {
         return 0;
     }
 
-    // Collision detection with the test map
+    // Collision detection with the map
     struct Blueprint bp = get_blueprint(*(map->map + pos->x + x + ((pos->y + y) * map->width)));
-    const struct ComponentContainer *t = get_component_from_blueprint(bp, C_TERRAIN);
 
-    if (t) {
-        const struct C_Terrain *ter = t->c;
-        // Check flags for movement
-        if (ter->flags & (1 << 0)) {
-            if (uid == globals.player_id) {
-                game_message(0x07, L"You can't walk into that!");
+    // If the map piece is missing, then there is probably a terrain piece in it's place
+    const struct C_Terrain *ter = NULL;
+
+    if (!check_blueprint(bp)) {
+        const struct ComponentManager *t_manager = get_component_manager(C_TERRAIN);
+        for (int i = 0; i < t_manager->size; i++) {
+            entity_id owner = (*(t_manager->containers + i))->owner;
+            const struct C_Position *owner_pos = (get_component(owner, C_POSITION))->c;
+            if (owner_pos->x == pos->x + x && owner_pos->y == pos->y + y) {
+                ter = (get_component(owner, C_TERRAIN))->c;
+                break;
             }
-            return 0;
         }
+    } else
+        ter = (get_component_from_blueprint(bp, C_TERRAIN))->c;
+
+    if (ter == NULL) {
+        d_debug_message(0x0C, ERROR_D, L"Error in move_entity: entity %d tried to move into a position "
+                "with no terrain x = %d, y = %d", uid, pos->x + x, pos->y + y);
+        return 0;
+    }
+    // Check flags for movement
+    if (ter->flags & (1 << 0)) {
+        if (uid == globals.player_id) {
+            game_message(0x07, L"You can't walk into that!");
+        }
+        return 0;
     }
 
     // Bounds checking

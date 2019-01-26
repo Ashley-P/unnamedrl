@@ -122,4 +122,9 @@ void test_entities() {
     create_component(c, C_HEALTH, 100, 100);
     create_component(c, C_SIGHT, 6, 0);
 
+    // Wall
+    entity_id d = create_entity_from_blueprint(L"Wall");
+    delete_component(d, C_POSITION);
+    create_component(d, C_POSITION, 3, 3);
+
 }
