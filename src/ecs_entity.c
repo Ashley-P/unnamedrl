@@ -127,4 +127,9 @@ void test_entities() {
     delete_component(d, C_POSITION);
     create_component(d, C_POSITION, 3, 3);
 
+    // Player Camera
+    entity_id e = create_entity_from_blueprint(L"Camera");
+    struct C_Camera *camera = (get_component(e, C_CAMERA))->c;
+    camera->follow = globals.player_id;
+    camera->active = 1;
 }

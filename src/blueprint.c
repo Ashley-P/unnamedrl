@@ -71,10 +71,9 @@ entity_id create_entity_from_blueprint(wchar_t *name) {
 }
 
 /**
- * This would load blueprints from the file to be used by the game,
- * Right now it starts up some hardcoded blueprints 
+ * Some blueprints need to be hardcoded or else everything breaks
  */
-void init_blueprints() {
+void init_hardcode_blueprints() {
     // Wall
     struct Blueprint bp1 = create_blueprint();
     bp1.name = L"Wall";
@@ -105,6 +104,13 @@ void init_blueprints() {
 
     blueprints[bp_size++] = bp3;
 
+    // Camera
+    struct Blueprint bp4 = create_blueprint();
+    bp4.name = L"Camera";
+    bp4.components[0] = create_component(-1, C_POSITION, -1, -1);
+    bp4.components[1] = create_component(-1, C_CAMERA, -1, 0);
+
+    blueprints[bp_size++] = bp4;
 }
 
 void deinit_blueprints() {

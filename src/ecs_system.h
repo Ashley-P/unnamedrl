@@ -6,6 +6,7 @@ struct S_TurnSys {
 };
 
 /* Extern Functions */
+void s_camera_move();
 void s_movement();
 void s_render();
 void lock_s_tick();

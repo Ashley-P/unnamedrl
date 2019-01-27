@@ -20,6 +20,7 @@ enum TerrainType {
 
 enum ComponentType {
     C_AICON = 1,          // AI controllable 
+    C_CAMERA,
     C_ENERGY,
     C_HEALTH,
     C_MOVEMENT,
@@ -73,6 +74,11 @@ struct ComponentManager {
  */
 struct C_AICon {
     enum AI_STATE state;
+};
+
+struct C_Camera {
+    entity_id follow; // The id of the entity that the camera is following
+    int active;
 };
 
 /* Required for the entity to be managed by the S_Turns system */

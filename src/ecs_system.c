@@ -40,6 +40,24 @@ int s_ai(const entity_id uid) {
     return 100;
 }
 
+/* Moves all cameras so they follow the entity they are attached to */
+void s_camera_move() {
+    struct ComponentManager *c_manager = get_component_manager(C_CAMERA);
+
+    for (int i = 0; i < c_manager->size; i++) {
+        const struct C_Camera *cam = (*(c_manager->containers + i))->c;
+        entity_id following = cam->follow;
+        if (following == -1) continue;
+
+        // We assume that whatever it's following has a position
+        const struct C_Position *follow_pos = (get_component(following, C_POSITION))->c;
+        struct C_Position *cam_pos = (get_component((*(c_manager->containers + i))->owner, C_POSITION))->c;
+
+        cam_pos->x = follow_pos->x;
+        cam_pos->y = follow_pos->y;
+    }
+}
+
 /**
  * Calulates LOS
  * Returns 1 if x0, y0 can see x1, y1
@@ -170,12 +188,38 @@ entity_id *calc_entity_fov(entity_id uid) {
 
 /*
  * Renders entities on the play screen
- * @TODO : Implement a camera system
- * @TODO : Implement FOV properly
  * @TODO : Implement a Z-Buffer so actors get drawn on top of items
  */
 void s_render() {
+    // Getting the camera working
+    const struct C_Camera *active_cam = NULL;
+    entity_id cam_id = -1;
+
+    const struct ComponentManager *c_manager = get_component_manager(C_CAMERA);
+    for (int i = 0; i < c_manager->size; i++) {
+        const struct C_Camera *cam = (*(c_manager->containers + i))->c;
+        if (cam->active) {
+            active_cam = cam;
+            cam_id = (*(c_manager->containers + i))->owner;
+            break;
+        }
+    }
+
+    if (active_cam == NULL) {
+        d_debug_message(0x0C, ERROR_D, L"Error in s_render: No active camera");
+        return;
+    }
+
+    const struct C_Position *cam_pos = (get_component(cam_id, C_POSITION))->c;
+
+    int mid_x = WIDTH_FOUR_FIFTH / 2;
+    int mid_y = HEIGHT_FOUR_FIFTH / 2;
+    int offset_x = cam_pos->x - mid_x + PLAY_SCREEN_OFFSET_X;
+    int offset_y = cam_pos->y - mid_y + PLAY_SCREEN_OFFSET_Y;
+
+
     const struct Map *map = get_map();
+
     // If the FOV is toggled off then we do the entire map
     if (d_debug.flags & (1 << 2)) {
         // Map render, will probably change in the future
@@ -220,19 +264,30 @@ void s_render() {
             if (cmp == NULL) continue;
 
             const struct C_Render *ren = cmp->c;
-            draw_character(*(fov->x + i) + PLAY_SCREEN_OFFSET_X, *(fov->y + i) + PLAY_SCREEN_OFFSET_Y,
-                    ren->ch, ren->col);
+            // If the drawing is going to be outside of the play screen then we just skip
+            if (*(fov->x + i) + offset_x > WIDTH_FOUR_FIFTH - 1  ||
+                *(fov->x + i) + offset_x < 1                     ||
+                *(fov->y + i) + offset_y > HEIGHT_FOUR_FIFTH - 1 ||
+                *(fov->y + i) + offset_y < 1)
+                continue;
+            else
+                draw_character(*(fov->x + i) + offset_x, *(fov->y + i) + offset_y, ren->ch, ren->col);
         }
 
         // Entity rendering
-        for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
-            if (check_uid(ids[i])) {
-                const struct C_Position *ent_pos = (get_component(ids[i], C_POSITION))->c;
-                const struct C_Render *ent_ren   = (get_component(ids[i], C_RENDER))->c;
+        struct ComponentManager *r_manager = get_component_manager(C_RENDER);
+        for (int i = 0; i < r_manager->size; i++) {
+            entity_id uid = (*(r_manager->containers + i))->owner;
+            const struct C_Position *ent_pos = (get_component(uid, C_POSITION))->c;
+            const struct C_Render *ent_ren   = (get_component(uid, C_RENDER))->c;
 
-                draw_character(ent_pos->x + PLAY_SCREEN_OFFSET_X, ent_pos->y + PLAY_SCREEN_OFFSET_Y,
-                        ent_ren->ch, ent_ren->col);
-            }
+            if (ent_pos->x + offset_x > WIDTH_FOUR_FIFTH - 1  ||
+                ent_pos->x + offset_x < 1                     ||
+                ent_pos->y + offset_y > HEIGHT_FOUR_FIFTH - 1 ||
+                ent_pos->y + offset_y < 1)
+                continue;
+            else
+                draw_character(ent_pos->x + offset_x, ent_pos->y + offset_y, ent_ren->ch, ent_ren->col);
         }
 
         // Freeing resources

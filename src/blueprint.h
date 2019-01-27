@@ -20,7 +20,7 @@ int check_blueprint(struct Blueprint bp);
 struct Blueprint get_blueprint(wchar_t *name);
 const struct ComponentContainer *get_component_from_blueprint(struct Blueprint, enum ComponentType type);
 entity_id create_entity_from_blueprint(wchar_t *name);
-void init_blueprints();
+void init_hardcode_blueprints();
 void deinit_blueprints();
 
 #endif

@@ -5,6 +5,7 @@
 
 enum EventType {
     E_INVALID, // Needed because we can't have an empty enum
+    E_MOVE_CAMERAS
 };
 
 struct Event {

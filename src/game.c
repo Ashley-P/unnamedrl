@@ -54,7 +54,7 @@ void game_init() {
     init_events();
     init_entity_manager();
     init_component_managers();
-    init_blueprints();
+    init_hardcode_blueprints();
 
     init_map();
     test_entities();

@@ -44,7 +44,8 @@ void create_event(enum EventType type, const entity_id *uids) {
 
 /* Used so we can start the game by doing a tick event, which progresses the game */
 void init_events() {
-    events = NULL;
+    create_event(E_MOVE_CAMERAS, NULL);
+    //events = NULL;
 }
 
 void deinit_events() {
@@ -66,6 +67,10 @@ void event_dispatcher() {
     struct ListNode *node = ll_pop_front(&events);
     struct Event *e = node->data;
     switch (e->type) {
+        case E_MOVE_CAMERAS:
+            s_camera_move();
+            create_event(E_MOVE_CAMERAS, NULL);
+            break;
         default:
             d_debug_message(0x0C, 2, L"Error in event_dispatcher: Unknown EventType %d", e->type);
             break;
