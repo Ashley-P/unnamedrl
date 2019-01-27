@@ -47,7 +47,7 @@ void s_camera_move() {
     for (int i = 0; i < c_manager->size; i++) {
         const struct C_Camera *cam = (*(c_manager->containers + i))->c;
         entity_id following = cam->follow;
-        if (following == -1) continue;
+        if (!check_uid(following)) continue;
 
         // We assume that whatever it's following has a position
         const struct C_Position *follow_pos = (get_component(following, C_POSITION))->c;
@@ -212,10 +212,10 @@ void s_render() {
 
     const struct C_Position *cam_pos = (get_component(cam_id, C_POSITION))->c;
 
-    int mid_x = WIDTH_FOUR_FIFTH / 2;
-    int mid_y = HEIGHT_FOUR_FIFTH / 2;
-    int offset_x = cam_pos->x - mid_x + PLAY_SCREEN_OFFSET_X;
-    int offset_y = cam_pos->y - mid_y + PLAY_SCREEN_OFFSET_Y;
+    int mid_x = (WIDTH_FOUR_FIFTH - (PLAY_SCREEN_OFFSET_X * 2)) / 2;
+    int mid_y = (HEIGHT_FOUR_FIFTH - (PLAY_SCREEN_OFFSET_X * 2)) / 2;
+    int offset_x = mid_x - cam_pos->x + PLAY_SCREEN_OFFSET_X;
+    int offset_y = mid_y - cam_pos->y + PLAY_SCREEN_OFFSET_Y;
 
 
     const struct Map *map = get_map();
@@ -225,12 +225,15 @@ void s_render() {
         // Map render, will probably change in the future
         for (int i = 0; i < map->width * map->height; i++) {
             struct Blueprint bp = get_blueprint(*(map->map + i));
+            if (!check_blueprint(bp)) continue;
+
             const struct ComponentContainer *cmp = get_component_from_blueprint(bp, C_RENDER);
-
-            if (cmp == NULL) continue;
-
             const struct C_Render *ren = cmp->c;
-            draw_character((i % 10) + PLAY_SCREEN_OFFSET_X, (i / 10) + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+            if ((i % 10) + offset_x > 1 && (i % 10) < WIDTH_FOUR_FIFTH - 1 &&
+                (i / 10) + offset_y > 1 && (i % 10) < HEIGHT_FOUR_FIFTH - 1)
+                draw_character((i % 10) + offset_x, (i / 10) + offset_y, ren->ch, ren->col);
+            else
+                continue;
         }
 
         // Entity render
@@ -246,7 +249,7 @@ void s_render() {
             const struct C_Position *pos = p->c;
             const struct C_Render *ren   = r->c;
 
-            draw_character(pos->x + PLAY_SCREEN_OFFSET_X, pos->y + PLAY_SCREEN_OFFSET_Y, ren->ch, ren->col);
+            draw_character(pos->x + offset_x, pos->y + offset_y, ren->ch, ren->col);
         }
     } else {
         // Gathering information
@@ -264,14 +267,11 @@ void s_render() {
             if (cmp == NULL) continue;
 
             const struct C_Render *ren = cmp->c;
-            // If the drawing is going to be outside of the play screen then we just skip
-            if (*(fov->x + i) + offset_x > WIDTH_FOUR_FIFTH - 1  ||
-                *(fov->x + i) + offset_x < 1                     ||
-                *(fov->y + i) + offset_y > HEIGHT_FOUR_FIFTH - 1 ||
-                *(fov->y + i) + offset_y < 1)
-                continue;
+            if (*(fov->x + i) + offset_x > 1 && *(fov->x + i) < WIDTH_FOUR_FIFTH - 1 &&
+                *(fov->y + i) + offset_y > 1 && *(fov->x + i) < HEIGHT_FOUR_FIFTH - 1)
+               draw_character(*(fov->x + i) + offset_x, *(fov->y + i) + offset_y, ren->ch, ren->col);
             else
-                draw_character(*(fov->x + i) + offset_x, *(fov->y + i) + offset_y, ren->ch, ren->col);
+                continue;
         }
 
         // Entity rendering
@@ -280,14 +280,12 @@ void s_render() {
             entity_id uid = (*(r_manager->containers + i))->owner;
             const struct C_Position *ent_pos = (get_component(uid, C_POSITION))->c;
             const struct C_Render *ent_ren   = (get_component(uid, C_RENDER))->c;
-
-            if (ent_pos->x + offset_x > WIDTH_FOUR_FIFTH - 1  ||
-                ent_pos->x + offset_x < 1                     ||
-                ent_pos->y + offset_y > HEIGHT_FOUR_FIFTH - 1 ||
-                ent_pos->y + offset_y < 1)
-                continue;
-            else
+            if (ent_pos->x + offset_x > 1 && ent_pos->x < WIDTH_FOUR_FIFTH - 1 &&
+                ent_pos->y + offset_y > 1 && ent_pos->y < HEIGHT_FOUR_FIFTH - 1)
                 draw_character(ent_pos->x + offset_x, ent_pos->y + offset_y, ent_ren->ch, ent_ren->col);
+            else
+                continue;
+
         }
 
         // Freeing resources
