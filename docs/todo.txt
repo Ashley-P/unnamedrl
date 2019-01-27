@@ -1,6 +1,6 @@
 TODO:
 
-- FOV
++ FOV
 - Pathfinding
 - AI
     - Basic stuff

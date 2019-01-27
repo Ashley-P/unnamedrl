@@ -44,8 +44,7 @@ void create_event(enum EventType type, const entity_id *uids) {
 
 /* Used so we can start the game by doing a tick event, which progresses the game */
 void init_events() {
-    create_event(E_MOVE_CAMERAS, NULL);
-    //events = NULL;
+    events = NULL;
 }
 
 void deinit_events() {

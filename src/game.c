@@ -86,6 +86,7 @@ void play_game() {
     /* Game loop */
     while (!globals.done_playing) {
         s_tick();
+        s_camera_move();
         event_dispatcher();
 
         /* Drawing */

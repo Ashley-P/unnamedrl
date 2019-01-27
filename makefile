@@ -1,5 +1,5 @@
 CC     = gcc
-CLFAGS = -Wall -g
+CLFAGS = -Wall -g -Og
 BUILD_DIR = .\src\obj
 
 src = $(wildcard src/*.c)

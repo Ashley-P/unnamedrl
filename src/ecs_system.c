@@ -66,7 +66,7 @@ void s_camera_move() {
  */
 int calc_los(int x0, int y0, int x1, int y1) {
     const struct Map *map = get_map();
-    int rtn;
+    int rtn = 0;
     if (x1 < 0 || y1 < 0 || x1 >= map->width || y1 >= map->height) return 0;
     if (x0 < 0 || y0 < 0 || x0 >= map->width || y0 >= map->height) return 0;
 
@@ -222,6 +222,7 @@ void s_render() {
 
     // If the FOV is toggled off then we do the entire map
     if (d_debug.flags & (1 << 2)) {
+        // @FIXME : Doesn't render correctly with the camera system
         // Map render, will probably change in the future
         for (int i = 0; i < map->width * map->height; i++) {
             struct Blueprint bp = get_blueprint(*(map->map + i));
