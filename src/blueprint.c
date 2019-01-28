@@ -74,7 +74,7 @@ entity_id create_entity_from_blueprint(wchar_t *name) {
  * Some blueprints need to be hardcoded or else everything breaks
  */
 void init_hardcode_blueprints() {
-    // Wall
+    // Wall - Doesn't need to be hardcoded
     struct Blueprint bp1 = create_blueprint();
     bp1.name = L"Wall";
     bp1.components[0] = create_component(-1, C_POSITION, -1, -1);
@@ -84,7 +84,7 @@ void init_hardcode_blueprints() {
     blueprints[bp_size++] = bp1;
 
 
-    // Floor
+    // Floor - Doesn't need to be hardcoded
     struct Blueprint bp2 = create_blueprint();
     bp2.name = L"Floor";
     bp2.components[0] = create_component(-1, C_POSITION, -1, -1);
@@ -94,7 +94,7 @@ void init_hardcode_blueprints() {
     blueprints[bp_size++] = bp2;
 
 
-    // test actor
+    // Test Actor - Doesn't need to be hardcoded
     struct Blueprint bp3 = create_blueprint();
     bp3.name = L"Test_actor";
     bp3.components[0] = create_component(-1, C_POSITION, -1, -1);
@@ -111,6 +111,21 @@ void init_hardcode_blueprints() {
     bp4.components[1] = create_component(-1, C_CAMERA, -1, 0);
 
     blueprints[bp_size++] = bp4;
+
+
+    // Player
+    struct Blueprint bp5 = create_blueprint();
+    bp5.name = L"Player";
+
+    bp5.components[0] = create_component(-1, C_RENDER, L'@', 0x07);
+    bp5.components[1] = create_component(-1, C_POSITION, 2, 2);
+    bp5.components[2] = create_component(-1, C_ENERGY, 1);
+    bp5.components[3] = create_component(-1, C_MOVEMENT, 1 << 0);
+    bp5.components[4] = create_component(-1, C_PLAYERCON, -1);
+    bp5.components[5] = create_component(-1, C_HEALTH, 100, 100);
+    bp5.components[6] = create_component(-1, C_SIGHT, 6, 0);
+
+    blueprints[bp_size++] = bp5;
 }
 
 void deinit_blueprints() {

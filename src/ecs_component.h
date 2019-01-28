@@ -12,17 +12,15 @@ enum AI_STATE {
     AI_TEST,     // Test value before I implement it properly
 };
 
-enum TerrainType {
-    T_INVALID,
-    T_WALL,
-    T_FLOOR,
-};
-
 enum ComponentType {
-    C_AICON = 1,          // AI controllable 
+    C_AICON = 1,      // AI controllable 
     C_CAMERA,
+    C_DESC,           // Descriptions
     C_ENERGY,
     C_HEALTH,
+    //C_INTERACT,       // interactable items
+    C_INVENTORY,      // Can store entities
+    C_ITEM,           // Let's the item be stored
     C_MOVEMENT,
     C_PLAYERCON,      // Player controllable
     C_POSITION,
@@ -31,6 +29,16 @@ enum ComponentType {
     C_TERRAIN,
 }; 
 
+enum ItemType {
+    I_INVALID,
+    I_OBJ,      // For testing
+};
+
+enum TerrainType {
+    T_INVALID,
+    T_WALL,
+    T_FLOOR,
+};
 
 
 /* Extern Functions */
@@ -81,6 +89,12 @@ struct C_Camera {
     int active;
 };
 
+struct C_Desc {
+    wchar_t name[MAX_BUFSIZE_MINI];
+    wchar_t short_desc[MAX_BUFSIZE_TINY][MAX_BUFSIZE_TINY];
+    wchar_t long_desc[MAX_BUFSIZE_TINY][MAX_BUFSIZE_TINY];
+};
+
 /* Required for the entity to be managed by the S_Turns system */
 struct C_Energy {
     /**
@@ -95,6 +109,35 @@ struct C_Health {
     int h;
     int max;
 };
+
+#if 0
+struct C_Interact {
+};
+#endif
+
+struct C_Inventory {
+    int max_weight;
+    entity_id storage[MAX_BUFSIZE_SMALL];
+};
+
+struct C_Item {
+    enum ItemType type;
+    /** 
+     * Flags from MSB to LSB
+     * 
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     * UNUSED
+     */
+    uint8_t flags;
+    int weight;
+};
+
 
 struct C_Movement {
     /** 

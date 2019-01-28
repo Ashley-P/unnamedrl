@@ -14,8 +14,11 @@
 /* Function Prototypes */
 void *create_c_aicon(va_list args);
 void *create_c_camera(va_list args);
+void *create_c_desc(va_list args);
 void *create_c_energy(va_list args);
 void *create_c_health(va_list args);
+void *create_c_inventory(va_list args);
+void *create_c_item(va_list args);
 void *create_c_movement(va_list args);
 void *create_c_playercon(va_list args);
 void *create_c_position(va_list args);
@@ -36,8 +39,11 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
 
 static struct ComponentManager *cm_aicon;
 static struct ComponentManager *cm_camera;
+static struct ComponentManager *cm_desc;
 static struct ComponentManager *cm_energy;
 static struct ComponentManager *cm_health;
+static struct ComponentManager *cm_inventory;
+static struct ComponentManager *cm_item;
 static struct ComponentManager *cm_movement;
 static struct ComponentManager *cm_playercon;
 static struct ComponentManager *cm_position;
@@ -51,8 +57,11 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
     switch (type) {
         case C_AICON:     return L"AICON";
         case C_CAMERA:    return L"CAMERA";
+        case C_DESC:      return L"DESC";
         case C_ENERGY:    return L"ENERGY";
         case C_HEALTH:    return L"HEALTH";
+        case C_INVENTORY: return L"INVENTORY";
+        case C_ITEM:      return L"ITEM";
         case C_MOVEMENT:  return L"MOVEMENT";
         case C_PLAYERCON: return L"PLAYERCON";
         case C_POSITION:  return L"POSITION";
@@ -79,8 +88,11 @@ void init_component_manager(struct ComponentManager **manager, enum ComponentTyp
 void init_component_managers() {
     init_component_manager(&cm_aicon    , C_AICON);
     init_component_manager(&cm_camera   , C_CAMERA);
+    init_component_manager(&cm_desc     , C_DESC);
     init_component_manager(&cm_energy   , C_ENERGY);
     init_component_manager(&cm_health   , C_HEALTH);
+    init_component_manager(&cm_inventory, C_INVENTORY);
+    init_component_manager(&cm_item     , C_ITEM);
     init_component_manager(&cm_movement , C_MOVEMENT);
     init_component_manager(&cm_playercon, C_PLAYERCON);
     init_component_manager(&cm_position , C_POSITION);
@@ -105,8 +117,11 @@ void deinit_component_manager(struct ComponentManager *manager) {
 void deinit_component_managers() {
     deinit_component_manager(cm_aicon);
     deinit_component_manager(cm_camera);
+    deinit_component_manager(cm_desc);
     deinit_component_manager(cm_energy);
     deinit_component_manager(cm_health);
+    deinit_component_manager(cm_inventory);
+    deinit_component_manager(cm_item);
     deinit_component_manager(cm_movement);
     deinit_component_manager(cm_playercon);
     deinit_component_manager(cm_position);
@@ -143,15 +158,18 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
     switch (type) {
         case C_AICON:     return cm_aicon;
         case C_CAMERA:    return cm_camera;
+        case C_DESC:      return cm_desc;
         case C_ENERGY:    return cm_energy;
         case C_HEALTH:    return cm_health;
+        case C_INVENTORY: return cm_inventory;
+        case C_ITEM:      return cm_item;
         case C_MOVEMENT:  return cm_movement;
         case C_PLAYERCON: return cm_playercon;
         case C_POSITION:  return cm_position;
         case C_RENDER:    return cm_render;
         case C_SIGHT:     return cm_sight;
         case C_TERRAIN:   return cm_terrain;
-        default:        return NULL;
+        default:          return NULL;
     }
 }
 
@@ -199,8 +217,11 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
     switch (type) {
         case C_AICON:     a->c = create_c_aicon(args);     break;
         case C_CAMERA:    a->c = create_c_camera(args);    break;
+        case C_DESC:      a->c = create_c_desc(args);      break;
         case C_ENERGY:    a->c = create_c_energy(args);    break;
         case C_HEALTH:    a->c = create_c_health(args);    break;
+        case C_INVENTORY: a->c = create_c_inventory(args); break;
+        case C_ITEM:      a->c = create_c_item(args);      break;
         case C_MOVEMENT:  a->c = create_c_movement(args);  break;
         case C_PLAYERCON: a->c = create_c_playercon(args); break;
         case C_POSITION:  a->c = create_c_position(args);  break;
@@ -282,8 +303,11 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
     switch (src->type) {
         case C_AICON:     sz = sizeof(struct C_AICon);
         case C_CAMERA:    sz = sizeof(struct C_Camera);
+        case C_DESC:      sz = sizeof(struct C_Desc);
         case C_ENERGY:    sz = sizeof(struct C_Energy);
         case C_HEALTH:    sz = sizeof(struct C_Health);
+        case C_INVENTORY: sz = sizeof(struct C_Inventory);
+        case C_ITEM:      sz = sizeof(struct C_Item);
         case C_MOVEMENT:  sz = sizeof(struct C_Movement);
         case C_PLAYERCON: sz = sizeof(struct C_PlayerCon);
         case C_POSITION:  sz = sizeof(struct C_Position);
@@ -330,6 +354,23 @@ void *create_c_camera(va_list args) {
     return component;
 }
 
+void *create_c_desc(va_list args) {
+    struct C_Desc *component = malloc(sizeof(struct C_Desc));
+    // We assume we get 3 pointers to each of the description variables
+    wchar_t *name        = va_arg(args, wchar_t *);
+    wchar_t **short_desc = va_arg(args, wchar_t **);
+    wchar_t **long_desc  = va_arg(args, wchar_t **);
+
+    // Then we copy the args to the component
+    w_string_cpy(name, component->name);
+    for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
+        w_string_cpy(short_desc[i], (component->short_desc)[i]);
+        w_string_cpy(long_desc[i], (component->long_desc)[i]);
+    }
+
+    return component;
+}
+
 void *create_c_energy(va_list args) {
     struct C_Energy *component = malloc(sizeof(struct C_Energy));
     component->energy = 0;
@@ -342,6 +383,23 @@ void *create_c_health(va_list args) {
     struct C_Health *component = malloc(sizeof(struct C_Health));
     component->h   = va_arg(args, int);
     component->max = va_arg(args, int);
+
+    return component;
+}
+
+
+void *create_c_inventory(va_list args) {
+    struct C_Inventory *component = malloc(sizeof(struct C_Inventory));
+    component->max_weight = va_arg(args, size_t);
+
+    return component;
+}
+
+void *create_c_item(va_list args) {
+    struct C_Item *component = malloc(sizeof(struct C_Item));
+    component->type   = va_arg(args, enum ItemType);
+    component->flags  = va_arg(args, int); // Should be uint8_t
+    component->weight = va_arg(args, int);
 
     return component;
 }

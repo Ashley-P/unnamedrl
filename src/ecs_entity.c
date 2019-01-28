@@ -113,14 +113,11 @@ void test_entities() {
     create_component(b, C_POSITION, 8, 8);
 
     // Player
-    entity_id c = create_entity();
-    create_component(c, C_RENDER, L'@', 0x07);
+    entity_id c = create_entity_from_blueprint(L"Player");
+    delete_component(c, C_POSITION);
     create_component(c, C_POSITION, 2, 2);
-    create_component(c, C_ENERGY, 1);
-    create_component(c, C_MOVEMENT, 1 << 0);
+    delete_component(c, C_PLAYERCON);
     create_component(c, C_PLAYERCON, c);
-    create_component(c, C_HEALTH, 100, 100);
-    create_component(c, C_SIGHT, 6, 0);
 
     // Wall
     entity_id d = create_entity_from_blueprint(L"Wall");
