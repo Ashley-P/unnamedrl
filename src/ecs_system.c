@@ -40,7 +40,11 @@ int s_ai(const entity_id uid) {
     return 100;
 }
 
-/* Moves all cameras so they follow the entity they are attached to */
+/**
+ * Moves all cameras so they follow the entity they are attached to
+ * This skips over any C_CAMERA components that are directly attached to something
+ * since they wouldn't have a following uid
+ */
 void s_camera_move() {
     struct ComponentManager *c_manager = get_component_manager(C_CAMERA);
 

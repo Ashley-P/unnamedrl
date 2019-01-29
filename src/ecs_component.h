@@ -12,8 +12,18 @@ enum AI_STATE {
     AI_TEST,     // Test value before I implement it properly
 };
 
+enum BodyPartType {
+    B_INVALID,
+    B_HEAD,
+    B_LEG,
+    B_ARM,
+    B_TORSO,
+    B_TAIL,
+};
+
 enum ComponentType {
     C_AICON = 1,      // AI controllable 
+    C_BODY,
     C_CAMERA,
     C_DESC,           // Descriptions
     C_ENERGY,
@@ -82,6 +92,12 @@ struct ComponentManager {
  */
 struct C_AICon {
     enum AI_STATE state;
+};
+
+struct C_Body {
+    enum BodyPartType parts[MAX_BUFSIZE_TINY];
+    int part_hp[MAX_BUFSIZE_TINY];
+    entity_id wearing[MAX_BUFSIZE_TINY];
 };
 
 struct C_Camera {

@@ -101,6 +101,10 @@ entity_id copy_entity(entity_id src) {
 
 /* @TODO @FIXME Hard coding some entities to check if this works */
 void test_entities() {
+    /**
+     * @NOTE : lot more readable to delete the position component
+     * then re-add it
+     */
     // AI
     entity_id a = create_entity_from_blueprint(L"Test_actor");
     delete_component(a, C_POSITION);
@@ -118,15 +122,19 @@ void test_entities() {
     create_component(c, C_POSITION, 2, 2);
     delete_component(c, C_PLAYERCON);
     create_component(c, C_PLAYERCON, c);
+    delete_component(c, C_CAMERA);
+    create_component(c, C_CAMERA, -1, 1);
 
     // Wall
     entity_id d = create_entity_from_blueprint(L"Wall");
     delete_component(d, C_POSITION);
     create_component(d, C_POSITION, 3, 3);
 
+#if 0
     // Player Camera
     entity_id e = create_entity_from_blueprint(L"Camera");
     struct C_Camera *camera = (get_component(e, C_CAMERA))->c;
     camera->follow = globals.player_id;
     camera->active = 1;
+#endif
 }

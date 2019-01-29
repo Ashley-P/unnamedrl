@@ -13,6 +13,7 @@
 
 /* Function Prototypes */
 void *create_c_aicon(va_list args);
+void *create_c_body(va_list args);
 void *create_c_camera(va_list args);
 void *create_c_desc(va_list args);
 void *create_c_energy(va_list args);
@@ -38,6 +39,7 @@ struct ComponentContainer *component_list[MAX_BUFSIZE_SUPER][MAX_BUFSIZE_SMALL];
  */
 
 static struct ComponentManager *cm_aicon;
+static struct ComponentManager *cm_body;
 static struct ComponentManager *cm_camera;
 static struct ComponentManager *cm_desc;
 static struct ComponentManager *cm_energy;
@@ -56,6 +58,7 @@ static struct ComponentManager *cm_terrain;
 static inline wchar_t *component_type_finder(enum ComponentType type) {
     switch (type) {
         case C_AICON:     return L"AICON";
+        case C_BODY:      return L"BODY";
         case C_CAMERA:    return L"CAMERA";
         case C_DESC:      return L"DESC";
         case C_ENERGY:    return L"ENERGY";
@@ -87,6 +90,7 @@ void init_component_manager(struct ComponentManager **manager, enum ComponentTyp
  */
 void init_component_managers() {
     init_component_manager(&cm_aicon    , C_AICON);
+    init_component_manager(&cm_body     , C_BODY);
     init_component_manager(&cm_camera   , C_CAMERA);
     init_component_manager(&cm_desc     , C_DESC);
     init_component_manager(&cm_energy   , C_ENERGY);
@@ -116,6 +120,7 @@ void deinit_component_manager(struct ComponentManager *manager) {
 }
 void deinit_component_managers() {
     deinit_component_manager(cm_aicon);
+    deinit_component_manager(cm_body);
     deinit_component_manager(cm_camera);
     deinit_component_manager(cm_desc);
     deinit_component_manager(cm_energy);
@@ -157,6 +162,7 @@ struct ComponentContainer *get_component(const entity_id uid, enum ComponentType
 struct ComponentManager *get_component_manager(enum ComponentType type) {
     switch (type) {
         case C_AICON:     return cm_aicon;
+        case C_BODY:      return cm_body;
         case C_CAMERA:    return cm_camera;
         case C_DESC:      return cm_desc;
         case C_ENERGY:    return cm_energy;
@@ -216,6 +222,7 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
     // Call specific constructor 
     switch (type) {
         case C_AICON:     a->c = create_c_aicon(args);     break;
+        case C_BODY:      a->c = create_c_body(args);      break;
         case C_CAMERA:    a->c = create_c_camera(args);    break;
         case C_DESC:      a->c = create_c_desc(args);      break;
         case C_ENERGY:    a->c = create_c_energy(args);    break;
@@ -302,6 +309,7 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
 
     switch (src->type) {
         case C_AICON:     sz = sizeof(struct C_AICon);
+        case C_BODY:      sz = sizeof(struct C_Body);
         case C_CAMERA:    sz = sizeof(struct C_Camera);
         case C_DESC:      sz = sizeof(struct C_Desc);
         case C_ENERGY:    sz = sizeof(struct C_Energy);
@@ -342,6 +350,21 @@ struct ComponentContainer **get_component_list(entity_id uid) {
 void *create_c_aicon(va_list args) {
     struct C_AICon *component = malloc(sizeof(struct C_AICon));
     component->state = va_arg(args, enum AI_STATE);
+
+    return component;
+}
+
+void *create_c_body(va_list args) {
+    struct C_Body *component = malloc(sizeof(struct C_Body));
+    // We need to copy the args over from what's been provided because the 
+    enum BodyPartType *part_ptr = va_arg(args, enum BodyPartType *);
+    int *hp_ptr                 = va_arg(args, int *);
+
+    for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
+        (component->parts)[i]   = *part_ptr++;
+        (component->part_hp)[i] = *hp_ptr++;
+        (component->wearing)[i] = -1;
+    }
 
     return component;
 }

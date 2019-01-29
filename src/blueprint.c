@@ -124,6 +124,7 @@ void init_hardcode_blueprints() {
     bp5.components[4] = create_component(-1, C_PLAYERCON, -1);
     bp5.components[5] = create_component(-1, C_HEALTH, 100, 100);
     bp5.components[6] = create_component(-1, C_SIGHT, 6, 0);
+    bp5.components[7] = create_component(-1, C_CAMERA, -1, 0);
 
     blueprints[bp_size++] = bp5;
 }
