@@ -20,6 +20,8 @@ struct d_Debug {
     struct ListNode *error_messages;
     struct ListNode *display_messages;
 
+    FILE *error_log;
+
     /* Command history - only saves upto MAX_BUFSIZE commands */
     wchar_t **com_his; // First command is empty so we can return to it
     int com_pos;

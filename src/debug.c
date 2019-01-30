@@ -6,6 +6,8 @@
  */
 
 #include <stdarg.h>
+#include <stdio.h>
+#include <time.h>
 #include <wchar.h>
 #include "debug.h" // defs.h already included in here
 #include "defs.h"
@@ -40,6 +42,11 @@ void d_debug_init() {
     d_debug.curs_pos_y = 0;
     d_debug.curs_ch    = L'_';
     d_debug.flags      = 0;
+
+    int t = time(NULL);
+    char fn[MAX_BUFSIZE_SMALL];
+    sprintf(fn, ".\\logs\\%derror.log", t);
+    d_debug.error_log = fopen(fn, "w");
 }
 
 void d_debug_deinit() {
@@ -50,6 +57,8 @@ void d_debug_deinit() {
     message_list_deinit(&d_debug.debug_messages);
     message_list_deinit(&d_debug.error_messages);
     message_list_deinit(&d_debug.display_messages);
+
+    fclose(d_debug.error_log);
 }
 
 // Creates a debug message, flag = 1 for debug, flag = 2 for error
@@ -60,11 +69,14 @@ void d_debug_message(unsigned char col, int flag, wchar_t *str, ...) {
     vswprintf(new_str, str, args);
     va_end(args);
 
-    if (flag == 1)
+    if (flag == DEBUG_D)
         add_message(&d_debug.debug_messages, (struct String) {new_str, col});
-    else if (flag == 2)
+    else if (flag == ERROR_D)
         add_message(&d_debug.error_messages, (struct String) {new_str, col});
 
+    // Adding any message to the error log for testing
+    fputws(new_str, d_debug.error_log);
+    fputwc('\n', d_debug.error_log);
     add_message(&d_debug.display_messages, (struct String) {new_str, col});
 
     // set unread messages flag

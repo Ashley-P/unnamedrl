@@ -13,3 +13,6 @@ error.log
 
 # Powershell scripts
 *.ps1
+
+# Logging files
+bin/logs/*.log
