@@ -168,8 +168,8 @@ int handle_keys(KEY_EVENT_RECORD kev) {
             }
         } else if (kev.dwControlKeyState & SHIFT_PRESSED) {
             switch (kev.wVirtualKeyCode) {
-                case 0x47:                  // 'G' key
-                    globals.program_state = GEAR;
+                case 0x49:                  // 'I' key
+                    globals.program_state = INV;
                     globals.control_state = MENU;
                     break;
                 default:

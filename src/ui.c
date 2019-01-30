@@ -123,10 +123,36 @@ void draw_ui_debug_full() {
 }
 
 /* Draws the ui for the gear screen */
-void draw_ui_gear() {
+void draw_ui_inv() {
     /* Draw the border for the screen */
     draw_border_box(0, 0, SCREENWIDTH, SCREENHEIGHT);
-    draw_string((int) (SCREENWIDTH / 2) - 2, 0, HORIZONTAL, L"GEAR", 0x07);
+    draw_string((int) (SCREENWIDTH / 2) - (w_string_len(L"Inventory") / 2), 0, HORIZONTAL, L"Inventory", 0x07);
+
+    draw_character_line(WIDTH_ONE_FIFTH, 1, SCREENHEIGHT - 2,VERTICAL, DOUBLE_VERTICAL, 0x07);
+    // Since we are drawing the player, we assume they have a head, a torso, two arms and two legs
+    // Dirty hardcoding though
+
+    draw_string(2, 2, HORIZONTAL, L"Wield", 0x07);
+    draw_string(3, 3, HORIZONTAL, L"NOTHING", 0x07);
+
+    draw_string(2, 5, HORIZONTAL, L"Head", 0x07);
+    draw_string(3, 6, HORIZONTAL, L"NOTHING", 0x07);
+
+    draw_string(2, 8, HORIZONTAL, L"Torso", 0x07);
+    draw_string(3, 9, HORIZONTAL, L"NOTHING", 0x07);
+
+    draw_string(2, 11, HORIZONTAL, L"Left Arm", 0x07);
+    draw_string(3, 12, HORIZONTAL, L"NOTHING", 0x07);
+    
+    draw_string(2, 14, HORIZONTAL, L"Right Arm", 0x07);
+    draw_string(3, 15, HORIZONTAL, L"NOTHING", 0x07);
+
+    draw_string(2, 17, HORIZONTAL, L"Left Leg", 0x07);
+    draw_string(3, 18, HORIZONTAL, L"NOTHING", 0x07);
+
+    draw_string(2, 20, HORIZONTAL, L"Right Leg", 0x07);
+    draw_string(3, 21, HORIZONTAL, L"NOTHING", 0x07);
+
 }
 
 /**
@@ -141,8 +167,8 @@ void draw_ui() {
         draw_ui_debug();
     } else if (globals.program_state == DEBUG_FULL) {
         draw_ui_debug_full();
-    } else if (globals.program_state == GEAR) {
-        draw_ui_gear();
+    } else if (globals.program_state == INV) {
+        draw_ui_inv();
     }
 
     // Draw a 'D' If there is a debug message to be read

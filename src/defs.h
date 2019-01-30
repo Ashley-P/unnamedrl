@@ -98,9 +98,9 @@ enum ProgState {
     GAME       = 0x1,
     DEBUG      = 0x2,
     DEBUG_FULL = 0x4, // Normal DEBUG mode but it takes up the entire screen with messages
-    GEAR       = 0x8,
+    INV        = 0x8,
     
-    MENU       = GEAR,
+    MENU       = INV,
 };
 
 /* Externs */
