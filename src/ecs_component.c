@@ -361,6 +361,10 @@ void *create_c_body(va_list args) {
     int *hp_ptr                 = va_arg(args, int *);
 
     for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
+        (component->parts)[i] = B_INVALID;
+    }
+
+    for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
         (component->parts)[i]   = *part_ptr++;
         (component->part_hp)[i] = *hp_ptr++;
         (component->wearing)[i] = -1;

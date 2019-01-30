@@ -15,8 +15,10 @@ enum AI_STATE {
 enum BodyPartType {
     B_INVALID,
     B_HEAD,
-    B_LEG,
-    B_ARM,
+    B_LARM,
+    B_RARM,
+    B_LLEG,
+    B_RLEG,
     B_TORSO,
     B_TAIL,
 };
