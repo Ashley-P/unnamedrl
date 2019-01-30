@@ -1,4 +1,4 @@
-#include <math.h>
+//#include <math.h>
 #include <stdio.h>
 #include "defs.h"
 #include "debug.h"
@@ -12,31 +12,6 @@
 #include "ui.h"
 #include "utils.h"
 
-
-/**
- * Drawing the status bars
- */
-void draw_stat_bar(const int x, const int y, const float len, const float current, const float max,
-        const unsigned char colour) {
-    draw_character_line(x, y, len, HORIZONTAL, LIGHT_HORIZONTAL, colour);
-    draw_character_line(x, y, (int) ceil((current / max) * len), HORIZONTAL, DOUBLE_HORIZONTAL, colour);
-}
-
-/**
- * Draws a box using unicode characters
- */
-void draw_border_box(const int x, const int y, const int width, const int height) {
-
-    draw_character_line(x            , y             , width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
-    draw_character_line(x            , y + height - 1, width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
-    draw_character_line(x            , y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
-    draw_character_line(x + width - 1, y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
-
-    draw_character(x            , y             , DOUBLE_DOWN_AND_RIGHT, 0x07); // Top Left
-    draw_character(x + width - 1, y             , DOUBLE_DOWN_AND_LEFT , 0x07); // Top Right 
-    draw_character(x            , y + height - 1, DOUBLE_UP_AND_RIGHT  , 0x07); // Bottom Left
-    draw_character(x + width - 1, y + height - 1, DOUBLE_UP_AND_LEFT   , 0x07); // Bottom Right 
-}
 
 /**
  * Draws the border for the UI splitting the screen up
@@ -147,6 +122,13 @@ void draw_ui_debug_full() {
     draw_string((int) (SCREENWIDTH / 2) - 7, 0, HORIZONTAL, L"DEBUG_FULL MODE", 0x07);
 }
 
+/* Draws the ui for the gear screen */
+void draw_ui_gear() {
+    /* Draw the border for the screen */
+    draw_border_box(0, 0, SCREENWIDTH, SCREENHEIGHT);
+    draw_string((int) (SCREENWIDTH / 2) - 2, 0, HORIZONTAL, L"GEAR", 0x07);
+}
+
 /**
  * Controller function to draw the correct UI based on globals.program_state
  */
@@ -159,6 +141,8 @@ void draw_ui() {
         draw_ui_debug();
     } else if (globals.program_state == DEBUG_FULL) {
         draw_ui_debug_full();
+    } else if (globals.program_state == GEAR) {
+        draw_ui_gear();
     }
 
     // Draw a 'D' If there is a debug message to be read

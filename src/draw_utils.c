@@ -5,7 +5,9 @@
  * Stuff like draw_actors belongs in the source file where the respective variable/struct is defined
  */
 
+#include <math.h>
 #include "draw_utils.h"
+#include "defs.h"
 #include "llist.h"
 #include "main.h"
 
@@ -67,3 +69,28 @@ int draw_string(const int x, const int y, const int direction,
 
     return j;
 } 
+
+/**
+ * Drawing the status bars
+ */
+void draw_stat_bar(const int x, const int y, const float len, const float current, const float max,
+        const unsigned char colour) {
+    draw_character_line(x, y, len, HORIZONTAL, LIGHT_HORIZONTAL, colour);
+    draw_character_line(x, y, (int) ceil((current / max) * len), HORIZONTAL, DOUBLE_HORIZONTAL, colour);
+}
+
+/**
+ * Draws a box using unicode characters
+ */
+void draw_border_box(const int x, const int y, const int width, const int height) {
+
+    draw_character_line(x            , y             , width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+    draw_character_line(x            , y + height - 1, width,  HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+    draw_character_line(x            , y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
+    draw_character_line(x + width - 1, y             , height, VERTICAL  , DOUBLE_VERTICAL  , 0x07);
+
+    draw_character(x            , y             , DOUBLE_DOWN_AND_RIGHT, 0x07); // Top Left
+    draw_character(x + width - 1, y             , DOUBLE_DOWN_AND_LEFT , 0x07); // Top Right 
+    draw_character(x            , y + height - 1, DOUBLE_UP_AND_RIGHT  , 0x07); // Bottom Left
+    draw_character(x + width - 1, y + height - 1, DOUBLE_UP_AND_LEFT   , 0x07); // Bottom Right 
+}

@@ -166,6 +166,15 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                 default:
                     break;
             }
+        } else if (kev.dwControlKeyState & SHIFT_PRESSED) {
+            switch (kev.wVirtualKeyCode) {
+                case 0x47:                  // 'G' key
+                    globals.program_state = GEAR;
+                    globals.control_state = MENU;
+                    break;
+                default:
+                    break;
+            }
         } else if (!(kev.dwControlKeyState & !(NUMLOCK_ON|SCROLLLOCK_ON))) {
             switch (kev.wVirtualKeyCode) {
                 /* Movement */
@@ -190,6 +199,17 @@ int handle_keys(KEY_EVENT_RECORD kev) {
 
             }
         }
+
+
+    /********* MENU *********/
+    } else if (globals.control_state == MENU) {
+        switch (kev.wVirtualKeyCode) {
+            case VK_ESCAPE:
+                globals.program_state = GAME;
+                globals.control_state = GAME;
+                break;
+        }
+
 
 
     /********* DEBUG *********/
