@@ -41,25 +41,34 @@ void draw_ui_game() {
     s_render();
 
     /* Drawing Stats */
-    /* TODO: Make it so the colour the stat gets drawn in changes with it's value */
+    /* @TODO: Make it so the colour the stat gets drawn in changes with it's value */
 
-    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, L"Player Stats", 0x0A);
-    draw_string(WIDTH_FOUR_FIFTH + 2, 3, HORIZONTAL, L"Coming Soon", 0x0A);
-    /* Health */
-    const struct C_Health *hp = (get_component(globals.player_id, C_HEALTH))->c;
+    // Hardcode central
+
+    /* Health - All body parts */
+    struct C_Body *p_b = (get_component(globals.player_id, C_BODY))->c;
+
+    // Head
+    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, L" Head:", 0x07);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 2, 9, (p_b->part_hp)[0], (p_b->max_hp)[0], 0x04);
+
+    draw_string(WIDTH_FOUR_FIFTH + 2, 3, HORIZONTAL, L"Torso:", 0x07);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 3, 9, (p_b->part_hp)[1], (p_b->max_hp)[1], 0x04);
+
+    draw_string(WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL, L" LArm:", 0x07);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 4, 9, (p_b->part_hp)[2], (p_b->max_hp)[2], 0x04);
+
+    draw_string(WIDTH_FOUR_FIFTH + 2, 5, HORIZONTAL, L" RArm:", 0x07);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 5, 9, (p_b->part_hp)[3], (p_b->max_hp)[3], 0x04);
+
+    draw_string(WIDTH_FOUR_FIFTH + 2, 6, HORIZONTAL, L" LLeg:", 0x07);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 6, 9, (p_b->part_hp)[4], (p_b->max_hp)[4], 0x04);
+
+    draw_string(WIDTH_FOUR_FIFTH + 2, 7, HORIZONTAL, L" RLeg:", 0x07);
+    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 7, 9, (p_b->part_hp)[5], (p_b->max_hp)[5], 0x04);
+
     
-    wchar_t *hp_str = create_string(L"HP:      %d/%d", hp->h, hp->max);
-    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, hp_str, 0x04);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 3, WIDTH_ONE_FIFTH - 4, hp->h, hp->max, 0x04);
-    free(hp_str);
-
-    ///* Energy */
-    //wchar_t *energy = create_string(L"Energy: %d/%d", (globals.player)->energy, MAX_ENERGY);
-    //draw_string(WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL, energy, 0x0E);
-    //draw_stat_bar(WIDTH_FOUR_FIFTH + 2, 5, WIDTH_ONE_FIFTH - 4, (globals.player)->energy, MAX_ENERGY, 0x0E);
-    //free(energy);
-
-    /* Drawing Messages */
+    // Drawing Messages
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, globals.message_list, HEIGHT_ONE_FIFTH - 2, DOWN);
 
     // Drawing hints for the menus
@@ -136,54 +145,10 @@ void draw_ui_inv() {
     // Since we are drawing the player, we assume they have a head, a torso, two arms and two legs
     // Dirty hardcoding
 
-    struct C_Body *body = (get_component(globals.player_id, C_BODY))->c;
-    struct C_Desc *desc; // Anything that can be worn should also have a description
 
+    // No code for wielding stuff yet
     draw_string(2, 2, HORIZONTAL, L"Wield:", 0x07);
     draw_string(3, 3, HORIZONTAL, L"NOTHING", 0x07);
-
-    draw_string(2, 5, HORIZONTAL, L"Head:", 0x07);
-    if (check_uid(*(body->wearing))) {
-        desc = (get_component(*(body->wearing), C_DESC))->c;
-        draw_string(3, 6, HORIZONTAL, desc->name, 0x07);
-    } else 
-        draw_string(3, 6, HORIZONTAL, L"NOTHING", 0x07);
-
-    draw_string(2, 8, HORIZONTAL, L"Torso:", 0x07);
-    if (check_uid(*(body->wearing + 1))) {
-        desc = (get_component(*(body->wearing + 1), C_DESC))->c;
-        draw_string(3, 9, HORIZONTAL, desc->name, 0x07);
-    } else 
-        draw_string(3, 9, HORIZONTAL, L"NOTHING", 0x07);
-
-    draw_string(2, 11, HORIZONTAL, L"Left Arm:", 0x07);
-    if (check_uid(*(body->wearing + 2))) {
-        desc = (get_component(*(body->wearing + 2), C_DESC))->c;
-        draw_string(3, 12, HORIZONTAL, desc->name, 0x07);
-    } else 
-        draw_string(3, 12, HORIZONTAL, L"NOTHING", 0x07);
-    
-    draw_string(2, 14, HORIZONTAL, L"Right Arm:", 0x07);
-    if (check_uid(*(body->wearing + 3))) {
-        desc = (get_component(*(body->wearing + 3), C_DESC))->c;
-        draw_string(3, 15, HORIZONTAL, desc->name, 0x07);
-    } else 
-        draw_string(3, 15, HORIZONTAL, L"NOTHING", 0x07);
-
-    draw_string(2, 17, HORIZONTAL, L"Left Leg:", 0x07);
-    if (check_uid(*(body->wearing + 4))) {
-        desc = (get_component(*(body->wearing + 4), C_DESC))->c;
-        draw_string(3, 18, HORIZONTAL, desc->name, 0x07);
-    } else 
-        draw_string(3, 18, HORIZONTAL, L"NOTHING", 0x07);
-
-    draw_string(2, 20, HORIZONTAL, L"Right Leg:", 0x07);
-    if (check_uid(*(body->wearing + 5))) {
-        desc = (get_component(*(body->wearing + 5), C_DESC))->c;
-        draw_string(3, 21, HORIZONTAL, desc->name, 0x07);
-    } else 
-        draw_string(3, 21, HORIZONTAL, L"NOTHING", 0x07);
-
 }
 
 /**

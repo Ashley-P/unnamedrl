@@ -122,9 +122,8 @@ void init_hardcode_blueprints() {
     bp5.components[2] = create_component(-1, C_ENERGY, 1);
     bp5.components[3] = create_component(-1, C_MOVEMENT, 1 << 0);
     bp5.components[4] = create_component(-1, C_PLAYERCON, -1);
-    bp5.components[5] = create_component(-1, C_HEALTH, 100, 100);
-    bp5.components[6] = create_component(-1, C_SIGHT, 6, 0);
-    bp5.components[7] = create_component(-1, C_CAMERA, -1, 0);
+    bp5.components[5] = create_component(-1, C_SIGHT, 6, 0);
+    bp5.components[6] = create_component(-1, C_CAMERA, -1, 0);
 
     // Uh oh
     enum BodyPartType types[MAX_BUFSIZE_TINY] = {0};
@@ -134,9 +133,11 @@ void init_hardcode_blueprints() {
     types[3] = B_RARM;
     types[4] = B_LLEG;
     types[5] = B_RLEG;
-    int hp[MAX_BUFSIZE_TINY] = {100, 100, 100, 100, 100, 100};
+    int hp[MAX_BUFSIZE_TINY]  = {100, 100, 100, 100, 100, 100};
+    int max[MAX_BUFSIZE_TINY] = {100, 100, 100, 100, 100, 100};
 
-    bp5.components[8] = create_component(-1, C_BODY, types, hp);
+    bp5.components[7] = create_component(-1, C_BODY, types, hp, max);
+    bp5.components[8] = create_component(-1, C_INVENTORY, 100); // Player has a implicit inventory
 
     blueprints[bp_size++] = bp5;
 }

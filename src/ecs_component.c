@@ -17,7 +17,6 @@ void *create_c_body(va_list args);
 void *create_c_camera(va_list args);
 void *create_c_desc(va_list args);
 void *create_c_energy(va_list args);
-void *create_c_health(va_list args);
 void *create_c_inventory(va_list args);
 void *create_c_item(va_list args);
 void *create_c_movement(va_list args);
@@ -43,7 +42,6 @@ static struct ComponentManager *cm_body;
 static struct ComponentManager *cm_camera;
 static struct ComponentManager *cm_desc;
 static struct ComponentManager *cm_energy;
-static struct ComponentManager *cm_health;
 static struct ComponentManager *cm_inventory;
 static struct ComponentManager *cm_item;
 static struct ComponentManager *cm_movement;
@@ -62,7 +60,6 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
         case C_CAMERA:    return L"CAMERA";
         case C_DESC:      return L"DESC";
         case C_ENERGY:    return L"ENERGY";
-        case C_HEALTH:    return L"HEALTH";
         case C_INVENTORY: return L"INVENTORY";
         case C_ITEM:      return L"ITEM";
         case C_MOVEMENT:  return L"MOVEMENT";
@@ -94,7 +91,6 @@ void init_component_managers() {
     init_component_manager(&cm_camera   , C_CAMERA);
     init_component_manager(&cm_desc     , C_DESC);
     init_component_manager(&cm_energy   , C_ENERGY);
-    init_component_manager(&cm_health   , C_HEALTH);
     init_component_manager(&cm_inventory, C_INVENTORY);
     init_component_manager(&cm_item     , C_ITEM);
     init_component_manager(&cm_movement , C_MOVEMENT);
@@ -124,7 +120,6 @@ void deinit_component_managers() {
     deinit_component_manager(cm_camera);
     deinit_component_manager(cm_desc);
     deinit_component_manager(cm_energy);
-    deinit_component_manager(cm_health);
     deinit_component_manager(cm_inventory);
     deinit_component_manager(cm_item);
     deinit_component_manager(cm_movement);
@@ -166,7 +161,6 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
         case C_CAMERA:    return cm_camera;
         case C_DESC:      return cm_desc;
         case C_ENERGY:    return cm_energy;
-        case C_HEALTH:    return cm_health;
         case C_INVENTORY: return cm_inventory;
         case C_ITEM:      return cm_item;
         case C_MOVEMENT:  return cm_movement;
@@ -226,7 +220,6 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
         case C_CAMERA:    a->c = create_c_camera(args);    break;
         case C_DESC:      a->c = create_c_desc(args);      break;
         case C_ENERGY:    a->c = create_c_energy(args);    break;
-        case C_HEALTH:    a->c = create_c_health(args);    break;
         case C_INVENTORY: a->c = create_c_inventory(args); break;
         case C_ITEM:      a->c = create_c_item(args);      break;
         case C_MOVEMENT:  a->c = create_c_movement(args);  break;
@@ -313,7 +306,6 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
         case C_CAMERA:    sz = sizeof(struct C_Camera);    break;
         case C_DESC:      sz = sizeof(struct C_Desc);      break;
         case C_ENERGY:    sz = sizeof(struct C_Energy);    break;
-        case C_HEALTH:    sz = sizeof(struct C_Health);    break;
         case C_INVENTORY: sz = sizeof(struct C_Inventory); break;
         case C_ITEM:      sz = sizeof(struct C_Item);      break;
         case C_MOVEMENT:  sz = sizeof(struct C_Movement);  break;
@@ -364,15 +356,16 @@ void *create_c_body(va_list args) {
     // We need to copy the args over from what's been provided because the 
     enum BodyPartType *part_ptr = va_arg(args, enum BodyPartType *);
     int *hp_ptr                 = va_arg(args, int *);
+    int *max_ptr                = va_arg(args, int *);
 
     for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
         *(component->parts + i) = B_INVALID;
     }
 
     for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
-        *(component->parts + i)  = *(part_ptr + i);
+        *(component->parts + i)   = *(part_ptr + i);
         *(component->part_hp + i) = *(hp_ptr + i);
-        *(component->wearing + i) = -1;
+        *(component->max_hp + i) = *(max_ptr + i);
     }
 
     return component;
@@ -411,18 +404,11 @@ void *create_c_energy(va_list args) {
     return component;
 }
 
-void *create_c_health(va_list args) {
-    struct C_Health *component = malloc(sizeof(struct C_Health));
-    component->h   = va_arg(args, int);
-    component->max = va_arg(args, int);
-
-    return component;
-}
-
-
 void *create_c_inventory(va_list args) {
     struct C_Inventory *component = malloc(sizeof(struct C_Inventory));
     component->max_weight = va_arg(args, size_t);
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++)
+        (component->storage)[i] = -1;
 
     return component;
 }

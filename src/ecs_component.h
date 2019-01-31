@@ -29,7 +29,6 @@ enum ComponentType {
     C_CAMERA,
     C_DESC,           // Descriptions
     C_ENERGY,
-    C_HEALTH,
     //C_INTERACT,       // interactable items
     C_INVENTORY,      // Can store entities
     C_ITEM,           // Let's the item be stored
@@ -99,7 +98,7 @@ struct C_AICon {
 struct C_Body {
     enum BodyPartType parts[MAX_BUFSIZE_TINY];
     int part_hp[MAX_BUFSIZE_TINY];
-    entity_id wearing[MAX_BUFSIZE_TINY];
+    int max_hp[MAX_BUFSIZE_TINY];
 };
 
 struct C_Camera {
@@ -121,11 +120,6 @@ struct C_Energy {
      */ 
     int energy;
     int e_gain; // How much energy is gained per tick
-};
-
-struct C_Health {
-    int h;
-    int max;
 };
 
 #if 0
