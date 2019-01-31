@@ -308,20 +308,20 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
     size_t sz;
 
     switch (src->type) {
-        case C_AICON:     sz = sizeof(struct C_AICon);
-        case C_BODY:      sz = sizeof(struct C_Body);
-        case C_CAMERA:    sz = sizeof(struct C_Camera);
-        case C_DESC:      sz = sizeof(struct C_Desc);
-        case C_ENERGY:    sz = sizeof(struct C_Energy);
-        case C_HEALTH:    sz = sizeof(struct C_Health);
-        case C_INVENTORY: sz = sizeof(struct C_Inventory);
-        case C_ITEM:      sz = sizeof(struct C_Item);
-        case C_MOVEMENT:  sz = sizeof(struct C_Movement);
-        case C_PLAYERCON: sz = sizeof(struct C_PlayerCon);
-        case C_POSITION:  sz = sizeof(struct C_Position);
-        case C_RENDER:    sz = sizeof(struct C_Render);
-        case C_SIGHT:     sz = sizeof(struct C_Sight);
-        case C_TERRAIN:   sz = sizeof(struct C_Terrain);
+        case C_AICON:     sz = sizeof(struct C_AICon);     break;
+        case C_BODY:      sz = sizeof(struct C_Body);      break;
+        case C_CAMERA:    sz = sizeof(struct C_Camera);    break;
+        case C_DESC:      sz = sizeof(struct C_Desc);      break;
+        case C_ENERGY:    sz = sizeof(struct C_Energy);    break;
+        case C_HEALTH:    sz = sizeof(struct C_Health);    break;
+        case C_INVENTORY: sz = sizeof(struct C_Inventory); break;
+        case C_ITEM:      sz = sizeof(struct C_Item);      break;
+        case C_MOVEMENT:  sz = sizeof(struct C_Movement);  break;
+        case C_PLAYERCON: sz = sizeof(struct C_PlayerCon); break;
+        case C_POSITION:  sz = sizeof(struct C_Position);  break;
+        case C_RENDER:    sz = sizeof(struct C_Render);    break;
+        case C_SIGHT:     sz = sizeof(struct C_Sight);     break;
+        case C_TERRAIN:   sz = sizeof(struct C_Terrain);   break;
     }
 
     comp = malloc(sz);
@@ -356,18 +356,19 @@ void *create_c_aicon(va_list args) {
 
 void *create_c_body(va_list args) {
     struct C_Body *component = malloc(sizeof(struct C_Body));
+
     // We need to copy the args over from what's been provided because the 
     enum BodyPartType *part_ptr = va_arg(args, enum BodyPartType *);
     int *hp_ptr                 = va_arg(args, int *);
 
     for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
-        (component->parts)[i] = B_INVALID;
+        *(component->parts + i) = B_INVALID;
     }
 
     for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
-        (component->parts)[i]   = *part_ptr++;
-        (component->part_hp)[i] = *hp_ptr++;
-        (component->wearing)[i] = -1;
+        *(component->parts + i)  = *(part_ptr + i);
+        *(component->part_hp + i) = *(hp_ptr + i);
+        *(component->wearing + i) = -1;
     }
 
     return component;

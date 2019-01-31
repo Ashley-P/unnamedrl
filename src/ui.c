@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "draw_utils.h"
 #include "ecs_component.h"
+#include "ecs_entity.h"
 #include "ecs_system.h"
 #include "llist.h"
 #include "map.h"
@@ -60,6 +61,9 @@ void draw_ui_game() {
 
     /* Drawing Messages */
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, globals.message_list, HEIGHT_ONE_FIFTH - 2, DOWN);
+
+    // Drawing hints for the menus
+    draw_string(WIDTH_FOUR_FIFTH + 2, HEIGHT_FOUR_FIFTH - 3, HORIZONTAL, L"[I]nventory", 0x07);
 }
 
 
@@ -130,28 +134,55 @@ void draw_ui_inv() {
 
     draw_character_line(WIDTH_ONE_FIFTH, 1, SCREENHEIGHT - 2,VERTICAL, DOUBLE_VERTICAL, 0x07);
     // Since we are drawing the player, we assume they have a head, a torso, two arms and two legs
-    // Dirty hardcoding though
+    // Dirty hardcoding
 
-    draw_string(2, 2, HORIZONTAL, L"Wield", 0x07);
+    struct C_Body *body = (get_component(globals.player_id, C_BODY))->c;
+    struct C_Desc *desc; // Anything that can be worn should also have a description
+
+    draw_string(2, 2, HORIZONTAL, L"Wield:", 0x07);
     draw_string(3, 3, HORIZONTAL, L"NOTHING", 0x07);
 
-    draw_string(2, 5, HORIZONTAL, L"Head", 0x07);
-    draw_string(3, 6, HORIZONTAL, L"NOTHING", 0x07);
+    draw_string(2, 5, HORIZONTAL, L"Head:", 0x07);
+    if (check_uid(*(body->wearing))) {
+        desc = (get_component(*(body->wearing), C_DESC))->c;
+        draw_string(3, 6, HORIZONTAL, desc->name, 0x07);
+    } else 
+        draw_string(3, 6, HORIZONTAL, L"NOTHING", 0x07);
 
-    draw_string(2, 8, HORIZONTAL, L"Torso", 0x07);
-    draw_string(3, 9, HORIZONTAL, L"NOTHING", 0x07);
+    draw_string(2, 8, HORIZONTAL, L"Torso:", 0x07);
+    if (check_uid(*(body->wearing + 1))) {
+        desc = (get_component(*(body->wearing + 1), C_DESC))->c;
+        draw_string(3, 9, HORIZONTAL, desc->name, 0x07);
+    } else 
+        draw_string(3, 9, HORIZONTAL, L"NOTHING", 0x07);
 
-    draw_string(2, 11, HORIZONTAL, L"Left Arm", 0x07);
-    draw_string(3, 12, HORIZONTAL, L"NOTHING", 0x07);
+    draw_string(2, 11, HORIZONTAL, L"Left Arm:", 0x07);
+    if (check_uid(*(body->wearing + 2))) {
+        desc = (get_component(*(body->wearing + 2), C_DESC))->c;
+        draw_string(3, 12, HORIZONTAL, desc->name, 0x07);
+    } else 
+        draw_string(3, 12, HORIZONTAL, L"NOTHING", 0x07);
     
-    draw_string(2, 14, HORIZONTAL, L"Right Arm", 0x07);
-    draw_string(3, 15, HORIZONTAL, L"NOTHING", 0x07);
+    draw_string(2, 14, HORIZONTAL, L"Right Arm:", 0x07);
+    if (check_uid(*(body->wearing + 3))) {
+        desc = (get_component(*(body->wearing + 3), C_DESC))->c;
+        draw_string(3, 15, HORIZONTAL, desc->name, 0x07);
+    } else 
+        draw_string(3, 15, HORIZONTAL, L"NOTHING", 0x07);
 
-    draw_string(2, 17, HORIZONTAL, L"Left Leg", 0x07);
-    draw_string(3, 18, HORIZONTAL, L"NOTHING", 0x07);
+    draw_string(2, 17, HORIZONTAL, L"Left Leg:", 0x07);
+    if (check_uid(*(body->wearing + 4))) {
+        desc = (get_component(*(body->wearing + 4), C_DESC))->c;
+        draw_string(3, 18, HORIZONTAL, desc->name, 0x07);
+    } else 
+        draw_string(3, 18, HORIZONTAL, L"NOTHING", 0x07);
 
-    draw_string(2, 20, HORIZONTAL, L"Right Leg", 0x07);
-    draw_string(3, 21, HORIZONTAL, L"NOTHING", 0x07);
+    draw_string(2, 20, HORIZONTAL, L"Right Leg:", 0x07);
+    if (check_uid(*(body->wearing + 5))) {
+        desc = (get_component(*(body->wearing + 5), C_DESC))->c;
+        draw_string(3, 21, HORIZONTAL, desc->name, 0x07);
+    } else 
+        draw_string(3, 21, HORIZONTAL, L"NOTHING", 0x07);
 
 }
 

@@ -127,14 +127,14 @@ void init_hardcode_blueprints() {
     bp5.components[7] = create_component(-1, C_CAMERA, -1, 0);
 
     // Uh oh
-    enum BodyPartType types[16] = {0};
+    enum BodyPartType types[MAX_BUFSIZE_TINY] = {0};
     types[0] = B_HEAD;
     types[1] = B_TORSO;
     types[2] = B_LARM;
     types[3] = B_RARM;
     types[4] = B_LLEG;
     types[5] = B_RLEG;
-    int hp[16] = {100};
+    int hp[MAX_BUFSIZE_TINY] = {100, 100, 100, 100, 100, 100};
 
     bp5.components[8] = create_component(-1, C_BODY, types, hp);
 
