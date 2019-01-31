@@ -322,6 +322,10 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
         case C_RENDER:    sz = sizeof(struct C_Render);    break;
         case C_SIGHT:     sz = sizeof(struct C_Sight);     break;
         case C_TERRAIN:   sz = sizeof(struct C_Terrain);   break;
+        default:
+            d_debug_message(0x07, ERROR_D, L"Error in copy_component, unknown type %x", src->type);
+            free(a);
+            return;
     }
 
     comp = malloc(sz);
