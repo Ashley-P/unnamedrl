@@ -8,8 +8,8 @@
 
 enum AI_STATE {
     AI_INVALID,
-    AI_DECIDING, // This is where the ai get's to choose what it want's to do next
-    AI_TEST,     // Test value before I implement it properly
+    AI_DECIDING,      // This is where the ai get's to choose what it want's to do next
+    AI_TEST,          // Test value before I implement it properly
 };
 
 enum BodyPartType {
@@ -29,6 +29,7 @@ enum ComponentType {
     C_CAMERA,
     C_DESC,           // Descriptions
     C_ENERGY,
+    C_GEAR,
     //C_INTERACT,       // interactable items
     C_INVENTORY,      // Can store entities
     C_ITEM,           // Let's the item be stored
@@ -42,7 +43,7 @@ enum ComponentType {
 
 enum ItemType {
     I_INVALID,
-    I_OBJ,      // For testing
+    I_OBJ,            // For testing
 };
 
 enum TerrainType {
@@ -122,12 +123,19 @@ struct C_Energy {
     int e_gain; // How much energy is gained per tick
 };
 
+struct C_Gear {
+    entity_id wield;
+    enum BodyPartType parts[MAX_BUFSIZE_TINY]; // Should be copied over from C_Body
+    entity_id wear[MAX_BUFSIZE_TINY];
+};
+
 #if 0
 struct C_Interact {
 };
 #endif
 
 struct C_Inventory {
+    int cur_weight;
     int max_weight;
     entity_id storage[MAX_BUFSIZE_SMALL];
 };

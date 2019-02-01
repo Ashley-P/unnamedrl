@@ -48,25 +48,17 @@ void draw_ui_game() {
     /* Health - All body parts */
     struct C_Body *p_b = (get_component(globals.player_id, C_BODY))->c;
 
-    // Head
-    draw_string(WIDTH_FOUR_FIFTH + 2, 2, HORIZONTAL, L" Head:", 0x07);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 2, 9, (p_b->part_hp)[0], (p_b->max_hp)[0], 0x04);
+    wchar_t *names[] = {L" Head:",
+                        L"Torso:",
+                        L" LArm:",
+                        L" RArm:",
+                        L" LLeg:",
+                        L" RLeg:"};
 
-    draw_string(WIDTH_FOUR_FIFTH + 2, 3, HORIZONTAL, L"Torso:", 0x07);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 3, 9, (p_b->part_hp)[1], (p_b->max_hp)[1], 0x04);
-
-    draw_string(WIDTH_FOUR_FIFTH + 2, 4, HORIZONTAL, L" LArm:", 0x07);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 4, 9, (p_b->part_hp)[2], (p_b->max_hp)[2], 0x04);
-
-    draw_string(WIDTH_FOUR_FIFTH + 2, 5, HORIZONTAL, L" RArm:", 0x07);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 5, 9, (p_b->part_hp)[3], (p_b->max_hp)[3], 0x04);
-
-    draw_string(WIDTH_FOUR_FIFTH + 2, 6, HORIZONTAL, L" LLeg:", 0x07);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 6, 9, (p_b->part_hp)[4], (p_b->max_hp)[4], 0x04);
-
-    draw_string(WIDTH_FOUR_FIFTH + 2, 7, HORIZONTAL, L" RLeg:", 0x07);
-    draw_stat_bar(WIDTH_FOUR_FIFTH + 9, 7, 9, (p_b->part_hp)[5], (p_b->max_hp)[5], 0x04);
-
+    for (int i = 0; i < 6; i++) {
+        draw_string(WIDTH_FOUR_FIFTH + 2, i+2, HORIZONTAL, *(names + i), 0x07);
+        draw_stat_bar(WIDTH_FOUR_FIFTH + 9, i+2, 9, (p_b->part_hp)[i], (p_b->max_hp)[i], 0x04);
+    }
     
     // Drawing Messages
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, globals.message_list, HEIGHT_ONE_FIFTH - 2, DOWN);
@@ -135,20 +127,50 @@ void draw_ui_debug_full() {
     draw_string((int) (SCREENWIDTH / 2) - 7, 0, HORIZONTAL, L"DEBUG_FULL MODE", 0x07);
 }
 
-/* Draws the ui for the gear screen */
+/* Draws the ui for the inventory/gear screen */
 void draw_ui_inv() {
     /* Draw the border for the screen */
     draw_border_box(0, 0, SCREENWIDTH, SCREENHEIGHT);
     draw_string((int) (SCREENWIDTH / 2) - (w_string_len(L"Inventory") / 2), 0, HORIZONTAL, L"Inventory", 0x07);
 
     draw_character_line(WIDTH_ONE_FIFTH, 1, SCREENHEIGHT - 2,VERTICAL, DOUBLE_VERTICAL, 0x07);
-    // Since we are drawing the player, we assume they have a head, a torso, two arms and two legs
+
+    // Since we are drawing the player's inventory, we assume they have a head, a torso, two arms and two legs
+    // We also assume that anything that has a C_Gear struct or C_Item struct also has a C_Desc struct
     // Dirty hardcoding
+    // Drawing the gear panel
+    struct C_Gear *gear = (get_component(globals.player_id, C_GEAR))->c;
+    struct C_Desc *desc;
+    int a = 2;
+    wchar_t *names[] = {L"Head:",
+                        L"Torso:",
+                        L"Left Arm:",
+                        L"Right Arm:",
+                        L"Left Leg:",
+                        L"Right Leg:"};
 
 
-    // No code for wielding stuff yet
-    draw_string(2, 2, HORIZONTAL, L"Wield:", 0x07);
-    draw_string(3, 3, HORIZONTAL, L"NOTHING", 0x07);
+    draw_string(a, a, HORIZONTAL, L"Wield:", 0x07);
+    if (!check_uid(gear->wield)) {
+        draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
+    } else {
+        desc = (get_component(gear->wield, C_DESC))->c;
+        draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
+    }
+    a += 3;
+    
+    for (int i = 0; i < 6; i++) { // 6 being the number of body parts that you can wear
+        draw_string(2, a, HORIZONTAL, *(names + i), 0x07);
+        if (!check_uid((gear->wear)[i])) {
+            draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
+        } else {
+            desc = (get_component((gear->wear)[i], C_DESC))->c;
+            draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
+        }
+        a += 3;
+    }
+
+    // Drawing the inventory
 }
 
 /**

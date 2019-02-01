@@ -139,6 +139,8 @@ void init_hardcode_blueprints() {
     bp5.components[7] = create_component(-1, C_BODY, types, hp, max);
     bp5.components[8] = create_component(-1, C_INVENTORY, 100); // Player has a implicit inventory
 
+    bp5.components[9] = create_component(-1, C_GEAR, ((struct C_Body *) (bp5.components[7])->c)->parts);
+
     blueprints[bp_size++] = bp5;
 }
 
