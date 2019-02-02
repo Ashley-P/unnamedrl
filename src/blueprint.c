@@ -79,7 +79,7 @@ void init_hardcode_blueprints() {
     struct Blueprint bp1 = create_blueprint();
     bp1.name = L"Wall";
     bp1.components[0] = create_component(-1, C_POSITION, -1, -1);
-    bp1.components[1] = create_component(-1, C_RENDER, L'#', 0x07);
+    bp1.components[1] = create_component(-1, C_RENDER, L'#', 0x07, C_RENDER_RENDER_ENTITY);
     bp1.components[2] = create_component(-1, C_TERRAIN, T_WALL, 1 | 2);
 
     blueprints[bp_size++] = bp1;
@@ -89,7 +89,7 @@ void init_hardcode_blueprints() {
     struct Blueprint bp2 = create_blueprint();
     bp2.name = L"Floor";
     bp2.components[0] = create_component(-1, C_POSITION, -1, -1);
-    bp2.components[1] = create_component(-1, C_RENDER, L'.', 0x07);
+    bp2.components[1] = create_component(-1, C_RENDER, L'.', 0x07, C_RENDER_RENDER_ENTITY);
     bp2.components[2] = create_component(-1, C_TERRAIN, T_FLOOR, 0);
 
     blueprints[bp_size++] = bp2;
@@ -99,7 +99,7 @@ void init_hardcode_blueprints() {
     struct Blueprint bp3 = create_blueprint();
     bp3.name = L"Test_actor";
     bp3.components[0] = create_component(-1, C_POSITION, -1, -1);
-    bp3.components[1] = create_component(-1, C_RENDER, L'X', 0x08);
+    bp3.components[1] = create_component(-1, C_RENDER, L'X', 0x08, C_RENDER_RENDER_ENTITY);
     bp3.components[2] = create_component(-1, C_AICON, AI_TEST);
     bp3.components[3] = create_component(-1, C_ENERGY, 1);
 
@@ -118,10 +118,10 @@ void init_hardcode_blueprints() {
     struct Blueprint bp5 = create_blueprint();
     bp5.name = L"Player";
 
-    bp5.components[0] = create_component(-1, C_RENDER, L'@', 0x07);
+    bp5.components[0] = create_component(-1, C_RENDER, L'@', 0x07, C_RENDER_RENDER_ENTITY);
     bp5.components[1] = create_component(-1, C_POSITION, 2, 2);
     bp5.components[2] = create_component(-1, C_ENERGY, 1);
-    bp5.components[3] = create_component(-1, C_MOVEMENT, 1 << 0);
+    bp5.components[3] = create_component(-1, C_MOVEMENT, C_MOVEMENT_ENABLE_MOVE);
     bp5.components[4] = create_component(-1, C_PLAYERCON, -1);
     bp5.components[5] = create_component(-1, C_SIGHT, 6, 0);
     bp5.components[6] = create_component(-1, C_CAMERA, -1, 0);
@@ -149,7 +149,7 @@ void init_hardcode_blueprints() {
     struct Blueprint bp6 = create_blueprint();
     bp6.name = L"Test_object";
 
-    bp6.components[0] = create_component(-1, C_RENDER, L'o', 0x02);
+    bp6.components[0] = create_component(-1, C_RENDER, L'o', 0x02, C_RENDER_RENDER_ENTITY);
     bp6.components[1] = create_component(-1, C_POSITION, -1, -1);
     bp6.components[2] = create_component(-1, C_ITEM, I_OBJ, 0, 10);
 

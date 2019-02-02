@@ -254,6 +254,8 @@ void s_render() {
             const struct C_Position *pos = p->c;
             const struct C_Render *ren   = r->c;
 
+            if (ren->flags & !C_RENDER_RENDER_ENTITY) continue;
+
             draw_character(pos->x + offset_x, pos->y + offset_y, ren->ch, ren->col);
         }
     } else {
@@ -283,8 +285,16 @@ void s_render() {
         struct ComponentManager *r_manager = get_component_manager(C_RENDER);
         for (int i = 0; i < r_manager->size; i++) {
             entity_id uid = (*(r_manager->containers + i))->owner;
-            const struct C_Position *ent_pos = (get_component(uid, C_POSITION))->c;
-            const struct C_Render *ent_ren   = (get_component(uid, C_RENDER))->c;
+            const struct ComponentContainer *e_p = get_component(uid, C_POSITION);
+            const struct ComponentContainer *e_r = get_component(uid, C_RENDER);
+
+            if (!e_p) continue;
+
+            const struct C_Position *ent_pos = e_p->c;
+            const struct C_Render *ent_ren   = e_r->c;
+
+            if (ent_ren->flags & !C_RENDER_RENDER_ENTITY) continue;
+
             if (ent_pos->x + offset_x > 1 && ent_pos->x < WIDTH_FOUR_FIFTH - 1 &&
                 ent_pos->y + offset_y > 1 && ent_pos->y < HEIGHT_FOUR_FIFTH - 1)
                 draw_character(ent_pos->x + offset_x, ent_pos->y + offset_y, ent_ren->ch, ent_ren->col);

@@ -192,8 +192,7 @@ int handle_keys(KEY_EVENT_RECORD kev) {
 
                 /* Other */
                 case 0x47:                  // 'G' key
-                    player_get_item(globals.player_id);
-                    break;
+                    return player_get_item(globals.player_id);
                 case VK_ESCAPE:
                     exit(0); break; // No cleanup needed @TODO: Make this open a menu
 

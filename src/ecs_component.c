@@ -472,7 +472,7 @@ void *create_c_render(va_list args) {
     struct C_Render *component = malloc(sizeof(struct C_Render));
     component->ch    = va_arg(args, int); // Should be wchar_t
     component->col   = va_arg(args, int); // Should be unsigned char
-    component->flags = 0;
+    component->flags = va_arg(args, int);
 
     return component;
 }

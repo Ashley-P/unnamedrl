@@ -46,14 +46,14 @@ void d_print_commands() {
 
 void d_toggle_token_printing(int a) {
     if (!a)
-        d_debug.flags &= ~(1 << 0);
+        d_debug.flags &= ~(D_DEBUG_TOKEN_PRINTING);
     else 
-        d_debug.flags |= 1 << 0;
+        d_debug.flags |= D_DEBUG_TOKEN_PRINTING;
 }
 
 void d_fov(int a) {
     if (!a)
-        d_debug.flags |= 1 << 2;
+        d_debug.flags |= D_DEBUG_FOV;
     else 
-        d_debug.flags &= ~(1 << 2);
+        d_debug.flags &= ~(D_DEBUG_FOV);
 }

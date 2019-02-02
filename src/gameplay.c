@@ -104,7 +104,7 @@ int wait_entity(entity_id uid) {
  * @TODO @NOTE : Make it so that the player can
  * @TODO : Add some encumberance mechanics
  */
-void player_get_item(entity_id player) {
+int player_get_item(entity_id player) {
     struct ComponentManager *p_manager = get_component_manager(C_POSITION);
     struct C_Position *player_pos      = (get_component(player, C_POSITION))->c;
     struct C_Inventory *player_inv     = (get_component(player, C_INVENTORY))->c;
@@ -127,19 +127,20 @@ void player_get_item(entity_id player) {
     // Some checks
     if (!check_uid(item)) {
         game_message(0x07, L"There's nothing to pick up!");
-        return;
+        return 0;
     }
 
-    struct C_Item *item_item = (get_component(item, C_ITEM))->c;
-    struct C_Desc *item_desc = (get_component(item, C_DESC))->c; 
+    struct C_Item *item_item  = (get_component(item, C_ITEM))->c;
+    struct C_Desc *item_desc  = (get_component(item, C_DESC))->c; 
+    struct C_Render *item_ren = (get_component(item, C_RENDER))->c; 
 
     // Checking if there are too many elements in the inventory
     if (player_inv->sz == MAX_BUFSIZE_SMALL - 1) {
         game_message(0x07, L"You have too many items!");
-        return;
+        return 0;
     } else if (player_inv->cur_weight + item_item->weight > player_inv->max_weight) {
         game_message(0x07, L"That item is too much for you to carry right now!");
-        return;
+        return 0;
     }
 
     // @FIXME : Currently the object still gets rendered whilst inside the inventory
@@ -147,6 +148,13 @@ void player_get_item(entity_id player) {
     player_inv->sz++;
     player_inv->cur_weight += item_item->weight;
     game_message(0x07, L"You picked up the %ls.", item_desc->name);
+
+    // Making sure the item doesn't get rendered and can't be picked up again
+    delete_component(item, C_POSITION);
+    item_ren->flags |= !C_RENDER_RENDER_ENTITY;
+
+    // @TODO : Look into having it return a different action cost depending on weight of the item
+    return 20;
 }
 
 /* Places the item into the inventory */

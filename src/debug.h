@@ -8,7 +8,7 @@
 
 
 #define D_DEBUG_TOKEN_PRINTING 0x1
-#define D_DEBUG_FOV            0x2
+#define D_DEBUG_FOV            0x4
 /**
  * A struct to hold onto everything relevant to the debug file
  * and to prevent namespace pollution
