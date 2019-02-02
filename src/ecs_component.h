@@ -159,6 +159,7 @@ struct C_Item {
 };
 
 
+#define C_MOVEMENT_ENABLE_MOVE 0x1
 struct C_Movement {
     /** 
      * Flags from MSB to LSB
@@ -183,6 +184,7 @@ struct C_Position {
     int y;
 };
 
+#define C_RENDER_RENDER_ENTITY 0x1
 /* Required for the entity to be displayed on the screen */
 struct C_Render {
     wchar_t ch;
@@ -201,6 +203,7 @@ struct C_Render {
     uint8_t flags;
 };
 
+#define C_SIGHT_NIGHTVISION 0x1
 struct C_Sight {
     int fov_distance; // How far the unit can see
     /**
@@ -218,6 +221,8 @@ struct C_Sight {
 
 };
 
+#define C_TERRAIN_BLOCKS_MOVE 0x1
+#define C_TERRAIN_BLOCKS_LOS  0x2
 struct C_Terrain {
     enum TerrainType type;
     /**
@@ -229,7 +234,7 @@ struct C_Terrain {
      * UNUSED
      * UNUSED
      * Whether this tile blocks LOS
-     * Whether this tile is passable by an entity (aka can an entity move onto it)
+     * Whether this tile blocks movement by an entity (aka can an entity move onto it)
      */
     uint8_t flags;
 };

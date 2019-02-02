@@ -31,7 +31,7 @@ int move_entity(entity_id uid, int x, int y) {
     struct C_Movement *mov = m->c;
 
     // Checking if the entity can move
-    if (!(mov->flags & (1 << 0))) {
+    if (!(mov->flags & (C_MOVEMENT_ENABLE_MOVE))) {
         // If it's the player then we send a message
         if (uid == globals.player_id) {
             game_message(0x07, L"You can't move right now!");
@@ -64,7 +64,7 @@ int move_entity(entity_id uid, int x, int y) {
         return 0;
     }
     // Check flags for movement
-    if (ter->flags & (1 << 0)) {
+    if (ter->flags & (C_TERRAIN_BLOCKS_MOVE)) {
         if (uid == globals.player_id) {
             game_message(0x07, L"You can't walk into that!");
         }

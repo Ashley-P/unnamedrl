@@ -107,7 +107,7 @@ int calc_los(int x0, int y0, int x1, int y1) {
                     *(line->x + i), *(line->y + i));
             return 1;
         }
-        if (terrain->flags & (1 << 1)) {
+        if (terrain->flags & (C_TERRAIN_BLOCKS_LOS)) {
             if (i == line->sz) {
                 rtn = 1;
                 break;
@@ -225,7 +225,7 @@ void s_render() {
     const struct Map *map = get_map();
 
     // If the FOV is toggled off then we do the entire map
-    if (d_debug.flags & (1 << 2)) {
+    if (d_debug.flags & (D_DEBUG_FOV)) {
         // @FIXME : Doesn't render correctly with the camera system
         // Map render, will probably change in the future
         for (int i = 0; i < map->width * map->height; i++) {

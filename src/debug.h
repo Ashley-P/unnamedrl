@@ -7,6 +7,8 @@
 #include "message.h" // Needed for the macro expansion
 
 
+#define D_DEBUG_TOKEN_PRINTING 0x1
+#define D_DEBUG_FOV            0x2
 /**
  * A struct to hold onto everything relevant to the debug file
  * and to prevent namespace pollution
@@ -38,6 +40,7 @@ struct d_Debug {
 
     /* What character the text cursor displays */
     wchar_t curs_ch;
+
 
     /** 
      * Flags for debug stuff MSB to LSB
