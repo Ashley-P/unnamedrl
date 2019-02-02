@@ -35,6 +35,7 @@
 
 
 /* Define Other Constants */
+/* @NOTE : Defines for components are placed directly above the component that they exist for */
 #define SCREENWIDTH  100
 #define SCREENHEIGHT 40
 

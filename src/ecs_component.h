@@ -130,12 +130,14 @@ struct C_Gear {
 };
 
 struct C_Interact {
+    void (*interact)(entity_id, ...);
 };
 
 struct C_Inventory {
     int cur_weight;
     int max_weight;
     entity_id storage[MAX_BUFSIZE_SMALL];
+    size_t sz;
 };
 
 struct C_Item {
@@ -194,7 +196,7 @@ struct C_Render {
      * UNUSED
      * UNUSED
      * UNUSED
-     * Is this tile visible from the player's perspective 
+     * Should the object be rendered?
      */
     uint8_t flags;
 };

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "blueprint.h"
 #include "defs.h"
 #include "debug.h"
@@ -142,6 +143,29 @@ void init_hardcode_blueprints() {
     bp5.components[9] = create_component(-1, C_GEAR, ((struct C_Body *) (bp5.components[7])->c)->parts);
 
     blueprints[bp_size++] = bp5;
+
+
+    // Test Item
+    struct Blueprint bp6 = create_blueprint();
+    bp6.name = L"Test_object";
+
+    bp6.components[0] = create_component(-1, C_RENDER, L'o', 0x02);
+    bp6.components[1] = create_component(-1, C_POSITION, -1, -1);
+    bp6.components[2] = create_component(-1, C_ITEM, I_OBJ, 0, 10);
+
+
+    wchar_t name[] = L"Test Object";
+    wchar_t *short_desc[MAX_BUFSIZE_TINY] = {L"Short", L"Description"};
+    wchar_t *long_desc[MAX_BUFSIZE_TINY]  = {L"Long",  L"Description"};
+
+    for (int i = 2; i < MAX_BUFSIZE_TINY; i++) {
+        short_desc[i] = L"";
+        long_desc[i]  = L"";
+    }
+
+    bp6.components[3] = create_component(-1, C_DESC, name, short_desc, long_desc);
+
+    blueprints[bp_size++] = bp6;
 }
 
 void deinit_blueprints() {

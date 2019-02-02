@@ -387,6 +387,7 @@ void *create_c_camera(va_list args) {
     return component;
 }
 
+/* @NOTE : Really important that the arguments passed are properlly initialised */
 void *create_c_desc(va_list args) {
     struct C_Desc *component = malloc(sizeof(struct C_Desc));
     // We assume we get 3 pointers to each of the description variables
@@ -428,6 +429,7 @@ void *create_c_inventory(va_list args) {
     struct C_Inventory *component = malloc(sizeof(struct C_Inventory));
     component->cur_weight = 0;
     component->max_weight = va_arg(args, size_t);
+    component->sz         = 0;
     for (int i = 0; i < MAX_BUFSIZE_SMALL; i++)
         (component->storage)[i] = -1;
 
