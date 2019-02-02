@@ -30,7 +30,7 @@ enum ComponentType {
     C_DESC,           // Descriptions
     C_ENERGY,
     C_GEAR,
-    //C_INTERACT,       // interactable items
+    C_INTERACT,       // interactable items
     C_INVENTORY,      // Can store entities
     C_ITEM,           // Let's the item be stored
     C_MOVEMENT,
@@ -129,10 +129,8 @@ struct C_Gear {
     entity_id wear[MAX_BUFSIZE_TINY];
 };
 
-#if 0
 struct C_Interact {
 };
-#endif
 
 struct C_Inventory {
     int cur_weight;

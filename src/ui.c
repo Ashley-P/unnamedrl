@@ -63,7 +63,13 @@ void draw_ui_game() {
     // Drawing Messages
     draw_messages(2, HEIGHT_FOUR_FIFTH + 1, globals.message_list, HEIGHT_ONE_FIFTH - 2, DOWN);
 
-    // Drawing hints for the menus
+    // Text
+    draw_string((int) (WIDTH_ONE_FIFTH / 2) - (w_string_len(L"Stats") / 2) + WIDTH_FOUR_FIFTH,
+            0, HORIZONTAL, L"Stats", 0x70);
+    draw_string((int) (SCREENWIDTH / 2) - (w_string_len(L"Messages") / 2),
+            HEIGHT_FOUR_FIFTH, HORIZONTAL, L"Messages", 0x70);
+
+    // Hints for the keybinds
     draw_string(WIDTH_FOUR_FIFTH + 2, HEIGHT_FOUR_FIFTH - 3, HORIZONTAL, L"[I]nventory", 0x07);
 }
 
@@ -77,9 +83,12 @@ void draw_ui_game() {
  */
 void draw_ui_debug() {
     /* Clear the bottom fifth of the screen */
-
     for (int i = HEIGHT_FOUR_FIFTH; i < SCREENHEIGHT; i++)
         draw_character_line(0, i, SCREENWIDTH, HORIZONTAL, L' ', 0x07);
+
+    /* Text */
+    draw_string((int) (SCREENWIDTH / 2) - (w_string_len(L"Debug") / 2),
+            HEIGHT_FOUR_FIFTH, HORIZONTAL, L"Debug", 0x70);
 
     /* Redraw the box - This is somewhat inefficient but leads to nicer looking code */
     draw_border_box(0, HEIGHT_FOUR_FIFTH, SCREENWIDTH, HEIGHT_ONE_FIFTH);
@@ -124,16 +133,25 @@ void draw_ui_debug_full() {
     else
         draw_character(d_debug.curs_pos_x + 2, SCREENHEIGHT - 2, d_debug.curs_ch, 0x07);
 
-    draw_string((int) (SCREENWIDTH / 2) - 7, 0, HORIZONTAL, L"DEBUG_FULL MODE", 0x07);
+    draw_string((int) (SCREENWIDTH / 2) - 7, 0, HORIZONTAL, L"DEBUG_FULL MODE", 0x70);
 }
 
 /* Draws the ui for the inventory/gear screen */
 void draw_ui_inv() {
-    /* Draw the border for the screen */
+    /* Drawing borders and panels */
     draw_border_box(0, 0, SCREENWIDTH, SCREENHEIGHT);
-    draw_string((int) (SCREENWIDTH / 2) - (w_string_len(L"Inventory") / 2), 0, HORIZONTAL, L"Inventory", 0x07);
 
-    draw_character_line(WIDTH_ONE_FIFTH, 1, SCREENHEIGHT - 2,VERTICAL, DOUBLE_VERTICAL, 0x07);
+    // Panels
+    draw_character_line(WIDTH_ONE_FIFTH, 1, SCREENHEIGHT - 2, VERTICAL, DOUBLE_VERTICAL, 0x07);
+    draw_character_line(WIDTH_ONE_FIFTH + 1, HEIGHT_FOUR_FIFTH,
+            WIDTH_FOUR_FIFTH - 2, HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+
+    // Text
+    draw_string((int) (WIDTH_FOUR_FIFTH / 2) - (w_string_len(L"Inventory") / 2) + WIDTH_ONE_FIFTH,
+            0, HORIZONTAL, L"Inventory", 0x70);
+    draw_string((int) (WIDTH_FOUR_FIFTH / 2) - (w_string_len(L"Description") / 2) + WIDTH_ONE_FIFTH,
+            HEIGHT_FOUR_FIFTH, HORIZONTAL, L"Description", 0x70);
+    draw_string((int) (WIDTH_ONE_FIFTH / 2) - (w_string_len(L"Wearing") / 2), 0, HORIZONTAL, L"Wearing", 0x70);
 
     // Since we are drawing the player's inventory, we assume they have a head, a torso, two arms and two legs
     // We also assume that anything that has a C_Gear struct or C_Item struct also has a C_Desc struct
