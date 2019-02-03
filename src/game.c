@@ -11,6 +11,7 @@
 #include "ecs_system.h"
 #include "game.h"
 #include "gameplay.h"
+#include "gui.h"
 #include "llist.h"
 #include "main.h"
 #include "map.h"
@@ -50,6 +51,7 @@ void game_init() {
 
     /* message_list doesn't need initialisation */
     d_debug_init();
+    init_guis();
 
     init_events();
     init_entity_manager();
@@ -203,12 +205,30 @@ int handle_keys(KEY_EVENT_RECORD kev) {
         }
 
 
-    /********* MENU *********/
+    /********* INVENTORY *********/
     } else if (globals.control_state == INV) {
+        // Grab the gui controller
+        struct GUI_Controller *cont = get_gui_controller(INV);
+        struct GUI_List *inv_list = (cont->list + cont->active)->g;
         switch (kev.wVirtualKeyCode) {
+            case VK_UP:
+                if (inv_list->cur > inv_list->min)
+                    inv_list->cur -= 1;
+                break;
+            case VK_DOWN:
+                if (inv_list->cur < inv_list->max - 1)
+                    inv_list->cur += 1;
+                break;
+            case VK_LEFT:
+                set_active_gui(INV, inv_list->left);
+                break;
+            case VK_RIGHT:
+                set_active_gui(INV, inv_list->right);
+                break;
             case VK_ESCAPE:
                 globals.program_state = GAME;
                 globals.control_state = GAME;
+                inv_list->cur = 0;
                 break;
         }
 

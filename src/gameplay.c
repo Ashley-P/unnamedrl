@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "ecs_component.h"
 #include "ecs_entity.h"
+#include "gui.h"
 #include "map.h"
 #include "message.h"
 #include "utils.h"
@@ -152,6 +153,11 @@ int player_get_item(entity_id player) {
     // Making sure the item doesn't get rendered and can't be picked up again
     delete_component(item, C_POSITION);
     item_ren->flags |= !C_RENDER_RENDER_ENTITY;
+
+    // Make sure the gui gets updated
+    struct GUI_Controller *inv_cont = get_gui_controller(INV);
+    struct GUI_List *inv_list = (inv_cont->list)->g;
+    inv_list->max++;
 
     // @TODO : Look into having it return a different action cost depending on weight of the item
     return 20;

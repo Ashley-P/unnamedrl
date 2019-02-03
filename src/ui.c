@@ -6,6 +6,7 @@
 #include "ecs_component.h"
 #include "ecs_entity.h"
 #include "ecs_system.h"
+#include "gui.h"
 #include "llist.h"
 #include "map.h"
 #include "main.h"
@@ -136,21 +137,28 @@ void draw_ui_debug_full() {
     draw_string((int) (SCREENWIDTH / 2) - 7, 0, HORIZONTAL, L"DEBUG_FULL MODE", 0x70);
 }
 
+
 /* Draws the ui for the inventory/gear screen */
 void draw_ui_inv() {
+    struct GUI_Controller *inv_controller = get_gui_controller(INV);
+
+    // We skip straight to a list because both gui wrappers contain are lists
+    struct GUI_List *inv_list = (inv_controller->list + inv_controller->active)->g;
+
     /* Drawing borders and panels */
     draw_border_box(0, 0, SCREENWIDTH, SCREENHEIGHT);
 
     // Panels
-    draw_character_line(WIDTH_ONE_FIFTH, 1, SCREENHEIGHT - 2, VERTICAL, DOUBLE_VERTICAL, 0x07);
-    draw_character_line(WIDTH_ONE_FIFTH + 1, HEIGHT_FOUR_FIFTH,
-            WIDTH_FOUR_FIFTH - 2, HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
+    draw_character_line(WIDTH_ONE_FIFTH, 1, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH,
+            VERTICAL, DOUBLE_VERTICAL, 0x07);
+    draw_character_line(1, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH,
+            SCREENWIDTH - 2, HORIZONTAL, DOUBLE_HORIZONTAL, 0x07);
 
     // Text
     draw_string((int) (WIDTH_FOUR_FIFTH / 2) - (w_string_len(L"Inventory") / 2) + WIDTH_ONE_FIFTH,
             0, HORIZONTAL, L"Inventory", 0x70);
-    draw_string((int) (WIDTH_FOUR_FIFTH / 2) - (w_string_len(L"Description") / 2) + WIDTH_ONE_FIFTH,
-            HEIGHT_FOUR_FIFTH, HORIZONTAL, L"Description", 0x70);
+    draw_string((int) (SCREENWIDTH / 2) - (w_string_len(L"Description") / 2),
+            HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH, HORIZONTAL, L"Description", 0x70);
     draw_string((int) (WIDTH_ONE_FIFTH / 2) - (w_string_len(L"Wearing") / 2), 0, HORIZONTAL, L"Wearing", 0x70);
 
     // Since we are drawing the player's inventory, we assume they have a head, a torso, two arms and two legs
@@ -170,33 +178,55 @@ void draw_ui_inv() {
 
     draw_string(a, a, HORIZONTAL, L"Wield:", 0x07);
     if (!check_uid(gear->wield)) {
-        draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
+        if (inv_list->cur == 0 && inv_controller->active == 1)
+            draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x70);
+        else
+            draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
     } else {
         desc = (get_component(gear->wield, C_DESC))->c;
-        draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
+        if (inv_list->cur == 0 && inv_controller->active == 1)
+            draw_string(3, a+1, HORIZONTAL, desc->name, 0x70);
+        else
+            draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
     }
     a += 3;
     
     for (int i = 0; i < 6; i++) { // 6 being the number of body parts that you can wear
         draw_string(2, a, HORIZONTAL, *(names + i), 0x07);
         if (!check_uid((gear->wear)[i])) {
-            draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
+            if (inv_list->cur == i+1 && inv_controller->active == 1)
+                draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x70);
+            else 
+                draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
         } else {
             desc = (get_component((gear->wear)[i], C_DESC))->c;
-            draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
+            if (inv_list->cur == i+1 && inv_controller->active == 1)
+                draw_string(3, a+1, HORIZONTAL, desc->name, 0x70);
+            else
+                draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
         }
         a += 3;
     }
 
     // Drawing the inventory
+
     struct C_Inventory *inv = (get_component(globals.player_id, C_INVENTORY))->c;
     struct C_Desc *item_desc;
     entity_id item_id;
 
-    for (int i = 0; i < inv->sz; i++) {
-        item_id   = *(inv->storage + i);
-        item_desc = (get_component(item_id, C_DESC))->c;
-        draw_string(WIDTH_ONE_FIFTH + 2, i+5, HORIZONTAL, item_desc->name, 0x07);
+    // If it's empty then we just show a string
+    if (inv->sz == 0) {
+        draw_string(WIDTH_ONE_FIFTH + 2, 5, HORIZONTAL, L"<Nothing>", 0x07);
+    } else {
+        for (int i = 0; i < inv->sz; i++) {
+            item_id   = *(inv->storage + i);
+            item_desc = (get_component(item_id, C_DESC))->c;
+            // Highlighting depending on what the gui is hovering over 
+            if (i == inv_list->cur && inv_controller->active == 0) 
+                draw_string(WIDTH_ONE_FIFTH + 2, i+5, HORIZONTAL, item_desc->name, 0x70);
+            else
+                draw_string(WIDTH_ONE_FIFTH + 2, i+5, HORIZONTAL, item_desc->name, 0x07);
+        }
     }
 
     // Display the weight
