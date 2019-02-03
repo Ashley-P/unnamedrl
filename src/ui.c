@@ -189,6 +189,21 @@ void draw_ui_inv() {
     }
 
     // Drawing the inventory
+    struct C_Inventory *inv = (get_component(globals.player_id, C_INVENTORY))->c;
+    struct C_Desc *item_desc;
+    entity_id item_id;
+
+    for (int i = 0; i < inv->sz; i++) {
+        item_id   = *(inv->storage + i);
+        item_desc = (get_component(item_id, C_DESC))->c;
+        draw_string(WIDTH_ONE_FIFTH + 2, i+5, HORIZONTAL, item_desc->name, 0x07);
+    }
+
+    // Display the weight
+    wchar_t weight_str[MAX_BUFSIZE_TINY];
+    swprintf(weight_str, L"Weight %d/%d", inv->cur_weight, inv->max_weight);
+    draw_string(WIDTH_ONE_FIFTH + 2, 2, HORIZONTAL, weight_str, 0x07);
+
 }
 
 /**

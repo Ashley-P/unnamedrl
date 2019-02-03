@@ -144,7 +144,7 @@ int player_get_item(entity_id player) {
     }
 
     // @FIXME : Currently the object still gets rendered whilst inside the inventory
-    (player_inv->storage)[player_inv->sz] = item;
+    *(player_inv->storage + player_inv->sz) = item;
     player_inv->sz++;
     player_inv->cur_weight += item_item->weight;
     game_message(0x07, L"You picked up the %ls.", item_desc->name);

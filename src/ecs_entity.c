@@ -130,12 +130,18 @@ void test_entities() {
     delete_component(d, C_POSITION);
     create_component(d, C_POSITION, 3, 3);
 
-    // Test Item
-    entity_id e = create_entity_from_blueprint(L"Test_object");
-    struct C_Desc *e_desc = (get_component(e, C_DESC))->c;
-    w_string_cpy(L"Test Object 1", e_desc->name);
+    // Test Items
+    entity_id e;
+    struct C_Desc *e_desc;
+    wchar_t e_name[MAX_BUFSIZE_TINY];
+    for (int i = 0; i < 5; i++) {
+        e = create_entity_from_blueprint(L"Test_object");
+        e_desc = (get_component(e, C_DESC))->c;
+        swprintf(e_name, L"Test Object %d", i+1);
+        w_string_cpy(e_name, e_desc->name);
 
-    delete_component(e, C_POSITION);
-    create_component(e, C_POSITION, 2, 4);
+        delete_component(e, C_POSITION);
+        create_component(e, C_POSITION, 2, i+3);
+    }
 
 }

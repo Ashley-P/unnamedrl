@@ -170,7 +170,7 @@ int handle_keys(KEY_EVENT_RECORD kev) {
             switch (kev.wVirtualKeyCode) {
                 case 0x49:                  // 'I' key
                     globals.program_state = INV;
-                    globals.control_state = MENU;
+                    globals.control_state = INV;
                     break;
                 default:
                     break;
@@ -204,7 +204,7 @@ int handle_keys(KEY_EVENT_RECORD kev) {
 
 
     /********* MENU *********/
-    } else if (globals.control_state == MENU) {
+    } else if (globals.control_state == INV) {
         switch (kev.wVirtualKeyCode) {
             case VK_ESCAPE:
                 globals.program_state = GAME;
