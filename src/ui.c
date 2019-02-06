@@ -176,42 +176,53 @@ void draw_ui_inv() {
                         L"Right Leg:"};
 
 
+    unsigned char col = 0x07;
     draw_string(a, a, HORIZONTAL, L"Wield:", 0x07);
     if (!check_uid(gear->wield)) {
         if (inv_list->cur == 0 && inv_controller->active == 1)
-            draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x70);
-        else
-            draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
+            col = 0x70;
+
+        draw_string(3, a+1, HORIZONTAL, L"NOTHING", col);
     } else {
+
         desc = (get_component(gear->wield, C_DESC))->c;
-        if (inv_list->cur == 0 && inv_controller->active == 1)
-            draw_string(3, a+1, HORIZONTAL, desc->name, 0x70);
-        else
-            draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
+        if (inv_list->cur == 0 && inv_controller->active == 1) {
+            col = 0x70;
+            print_inv_desc(gear->wield);
+        }
+
+        draw_string(3, a+1, HORIZONTAL, desc->name, col);
     }
     a += 3;
     
     for (int i = 0; i < 6; i++) { // 6 being the number of body parts that you can wear
-        draw_string(2, a, HORIZONTAL, *(names + i), 0x07);
+        col = 0x07;
+        draw_string(2, a, HORIZONTAL, *(names + i), col);
+
         if (!check_uid((gear->wear)[i])) {
+
             if (inv_list->cur == i+1 && inv_controller->active == 1)
-                draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x70);
-            else 
-                draw_string(3, a+1, HORIZONTAL, L"NOTHING", 0x07);
+                col = 0x70;
+
+            draw_string(3, a+1, HORIZONTAL, L"NOTHING", col);
+
         } else {
             desc = (get_component((gear->wear)[i], C_DESC))->c;
-            if (inv_list->cur == i+1 && inv_controller->active == 1)
-                draw_string(3, a+1, HORIZONTAL, desc->name, 0x70);
-            else
-                draw_string(3, a+1, HORIZONTAL, desc->name, 0x07);
+
+            if (inv_list->cur == i+1 && inv_controller->active == 1) {
+                col = 0x70;
+                print_inv_desc((gear->wear)[i]);
+            }
+
+            draw_string(3, a+1, HORIZONTAL, desc->name, col);
         }
         a += 3;
     }
 
-    // Drawing the inventory
 
-    struct C_Inventory *inv = (get_component(globals.player_id, C_INVENTORY))->c;
-    struct C_Desc *item_desc;
+    // Drawing the inventory
+    const struct C_Inventory *inv = (get_component(globals.player_id, C_INVENTORY))->c;
+    const struct C_Desc *item_desc;
     entity_id item_id;
 
     // If it's empty then we just show a string
@@ -219,13 +230,16 @@ void draw_ui_inv() {
         draw_string(WIDTH_ONE_FIFTH + 2, 5, HORIZONTAL, L"<Nothing>", 0x07);
     } else {
         for (int i = 0; i < inv->sz; i++) {
+            col = 0x07;
             item_id   = *(inv->storage + i);
             item_desc = (get_component(item_id, C_DESC))->c;
             // Highlighting depending on what the gui is hovering over 
-            if (i == inv_list->cur && inv_controller->active == 0) 
-                draw_string(WIDTH_ONE_FIFTH + 2, i+5, HORIZONTAL, item_desc->name, 0x70);
-            else
-                draw_string(WIDTH_ONE_FIFTH + 2, i+5, HORIZONTAL, item_desc->name, 0x07);
+            if (i == inv_list->cur && inv_controller->active == 0) {
+                col = 0x70;
+                print_inv_desc(item_id);
+            }
+
+            draw_string(WIDTH_ONE_FIFTH + 2, i+5, HORIZONTAL, item_desc->name, col);
         }
     }
 

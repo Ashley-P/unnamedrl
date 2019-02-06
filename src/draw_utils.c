@@ -52,8 +52,7 @@ void draw_character_line(const int x, const int y, const int len, const int dire
  * If strings aren't null terminated then it's all over
  * Returns character's written
  */
-int draw_string(const int x, const int y, const int direction,
-        const wchar_t *str, const unsigned char colour) {
+int draw_string(const int x, const int y, const int direction, const wchar_t *str, const unsigned char colour) {
     int j = 0;
     if (direction == HORIZONTAL) {
         while (*(str + j) != L'\0') {
@@ -69,6 +68,18 @@ int draw_string(const int x, const int y, const int direction,
 
     return j;
 } 
+
+/* Draws an array of strings */
+void draw_strings(const int x, const int y, const int direction, const wchar_t **str, const size_t sz,
+        const unsigned char colour) {
+    if (direction == HORIZONTAL) {
+        for (int i = 0; i < sz; i++)
+            draw_string(x, y+i, direction, *(str + i), colour);
+    } else if (direction == VERTICAL) {
+        for (int i = 0; i < sz; i++)
+            draw_string(x+i, y, direction, *(str + i), colour);
+    }
+}
 
 /**
  * Drawing the status bars
@@ -94,3 +105,5 @@ void draw_border_box(const int x, const int y, const int width, const int height
     draw_character(x            , y + height - 1, DOUBLE_UP_AND_RIGHT  , 0x07); // Bottom Left
     draw_character(x + width - 1, y + height - 1, DOUBLE_UP_AND_LEFT   , 0x07); // Bottom Right 
 }
+
+void print_inv_desc(entity_id uid) {}
