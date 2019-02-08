@@ -109,8 +109,8 @@ struct C_Camera {
 
 struct C_Desc {
     wchar_t name[MAX_BUFSIZE_MINI];
-    wchar_t short_desc[MAX_BUFSIZE_TINY][MAX_BUFSIZE_TINY];
-    wchar_t long_desc[MAX_BUFSIZE_TINY][MAX_BUFSIZE_TINY];
+    wchar_t *short_desc;
+    wchar_t *long_desc;
 };
 
 /* Required for the entity to be managed by the S_Turns system */

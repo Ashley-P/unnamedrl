@@ -154,14 +154,9 @@ void init_hardcode_blueprints() {
     bp6.components[2] = create_component(-1, C_ITEM, I_OBJ, 0, 10);
 
 
-    wchar_t name[] = L"Test Object";
-    wchar_t *short_desc[MAX_BUFSIZE_TINY] = {L"Short", L"Description"};
-    wchar_t *long_desc[MAX_BUFSIZE_TINY]  = {L"Long",  L"Description"};
-
-    for (int i = 2; i < MAX_BUFSIZE_TINY; i++) {
-        short_desc[i] = L"";
-        long_desc[i]  = L"";
-    }
+    wchar_t name[]       = L"Test Object";
+    wchar_t short_desc[] = L"Short Description";
+    wchar_t long_desc[]  = L"Long Description";
 
     bp6.components[3] = create_component(-1, C_DESC, name, short_desc, long_desc);
 

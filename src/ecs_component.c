@@ -391,16 +391,18 @@ void *create_c_camera(va_list args) {
 void *create_c_desc(va_list args) {
     struct C_Desc *component = malloc(sizeof(struct C_Desc));
     // We assume we get 3 pointers to each of the description variables
-    wchar_t *name        = va_arg(args, wchar_t *);
-    wchar_t **short_desc = va_arg(args, wchar_t **);
-    wchar_t **long_desc  = va_arg(args, wchar_t **);
+    wchar_t *name       = va_arg(args, wchar_t *);
+    wchar_t *short_desc = va_arg(args, wchar_t *);
+    wchar_t *long_desc  = va_arg(args, wchar_t *);
+
+    // Allocate some space for the strings
+    component->short_desc = malloc(sizeof(wchar_t) * (w_string_len(short_desc) + 1));
+    component->long_desc  = malloc(sizeof(wchar_t) * (w_string_len(long_desc)  + 1));
 
     // Then we copy the args to the component
     w_string_cpy(name, component->name);
-    for (int i = 0; i < MAX_BUFSIZE_TINY; i++) {
-        w_string_cpy(&short_desc[i][0], &(component->short_desc)[i][0]);
-        w_string_cpy(&long_desc[i][0], &(component->long_desc)[i][0]);
-    }
+    w_string_cpy(short_desc, component->short_desc);
+    w_string_cpy(long_desc, component->long_desc);
 
     return component;
 }
