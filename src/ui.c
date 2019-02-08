@@ -15,6 +15,9 @@
 #include "utils.h"
 
 
+void print_inv_desc(entity_id uid);
+
+
 /**
  * Draws the border for the UI splitting the screen up
  * Hardcoding values because I'm bad
@@ -300,9 +303,34 @@ void print_inv_desc(entity_id uid) {
     const struct C_Desc *item_desc = item_desc_container->c;
     // @TODO: Linewrapping happens here
     draw_string(WIDTH_ONE_FIFTH + 2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + 2,
-            HORIZONTAL, item_desc->short_desc, 0x07);
+            HORIZONTAL, item_desc->long_desc, 0x07);
 
     // Next we figure out what type of item is it so we can display some relevant information
     // No check because this is called from inside the inventory
     const struct C_Item *item_item = (get_component(uid, C_ITEM))->c;
+
+    int y = 2;
+
+    // Name
+    draw_string(2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + y, HORIZONTAL, item_desc->name, 0x07);
+
+    // Weight
+    y += 2;
+    wchar_t weight[MAX_BUFSIZE_TINY];
+    swprintf(weight, L"Weight : %d", item_item->weight);
+    draw_string(2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + y, HORIZONTAL, weight, 0x07);
+
+    // Item type specifics
+    switch (item_item->type) {
+        case I_OBJ:
+            for (int i = 0; i < 4; i++) {
+                y += 2;
+                draw_string(2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + y, HORIZONTAL, L"STAT", 0x07);
+            }
+            break;
+        default:
+            d_debug_message(0x0E, ERROR_D, L"Warning in print_inv_desc: entity %d has item type I_INVALID",
+                    uid);
+            break;
+    }
 }
