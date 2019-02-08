@@ -103,22 +103,6 @@ void d_tokens_deinit(struct d_Token *tokens) {
     free(tokens);
 }
 
-
-
-/**
- * Other quick helper functions go here 
- */
-static inline unsigned char d_is_digit(wchar_t ch) {
-    if (ch >= L'0' && ch <= L'9') return 1;
-    else return 0;
-}
-
-static inline unsigned char d_is_alpha(wchar_t ch) {
-    if (ch >= L'a' && ch <= L'z') return 1;
-    else if (ch >= L'A' && ch <= L'Z') return 1;
-    else return 0;
-}
-
 /**
  * Used to help provide error messages
  */
@@ -247,10 +231,10 @@ struct d_Token *d_lexer(const wchar_t *line) {
         }
 
         /* Integers - Conversions are done later also we just assume that no one misstypes anything */
-        else if (d_is_digit(ch)) {
+        else if (is_digit(ch)) {
             T_NAME[col++] = ch;
 
-            while(d_is_digit(ch = d_scanner_getch(line)))
+            while(is_digit(ch = d_scanner_getch(line)))
                 T_NAME[col++] = ch;
 
             if (ch == L'\0' || ch == L' ')
@@ -287,13 +271,13 @@ struct d_Token *d_lexer(const wchar_t *line) {
          * Or any symbols in the symbol list 
          * or else it's considered an integer 
          */
-        else if (d_is_alpha(ch) || ch == L'_') {
+        else if (is_alpha(ch) || ch == L'_') {
             T_NAME[col++] = ch;
             T_TYPE = ARG_STD;
 
             while(1) {
                 ch = d_scanner_getch(line);
-                if (d_is_digit(ch) || d_is_alpha(ch))
+                if (is_digit(ch) || is_alpha(ch))
                     T_NAME[col++] = ch;
                 else if (ch == L'"') { // Don't allow quotes in the middle
                     d_debug_message(0x0C, 1, L"Lexer error, Token #%d: Stray quote inside of argument",

@@ -156,7 +156,11 @@ void init_hardcode_blueprints() {
 
     wchar_t name[]       = L"Test Object";
     wchar_t short_desc[] = L"Short\nDescription";
-    wchar_t long_desc[]  = L"Long\nDescription";
+    wchar_t long_desc[]  = L"Long\nDescription.\n This is a really really long description. and to prove it "
+        L"I'm going to put lots and lots of text inside of it. Including place holder text like this.\n"
+        L"Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
+        L"Donec dictum sollicitudin justo nec elementum. "
+        L"Vivamus commodo mauris vitae imperdiet aliquam. ";
 
     bp6.components[3] = create_component(-1, C_DESC, name, short_desc, long_desc);
 

@@ -302,8 +302,25 @@ void print_inv_desc(entity_id uid) {
 
     const struct C_Desc *item_desc = item_desc_container->c;
     // @TODO: Linewrapping happens here
+    /*
     draw_string(WIDTH_ONE_FIFTH + 2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + 2,
             HORIZONTAL, item_desc->long_desc, 0x07);
+            */
+    int description_line_wrap = WIDTH_FOUR_FIFTH - 4;
+
+    wchar_t **long_desc = line_wrap(item_desc->long_desc, description_line_wrap);
+    int p = 0;
+    while (**(long_desc + p) != L'\0') {
+        draw_string(WIDTH_ONE_FIFTH + 2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + p + 2,
+                HORIZONTAL, *(long_desc + p), 0x07);
+            p++;
+    }
+
+    // Free up memory from line_wrap
+    for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
+        free(*(long_desc + i));
+    }
+    free(long_desc);
 
     // Next we figure out what type of item is it so we can display some relevant information
     // No check because this is called from inside the inventory

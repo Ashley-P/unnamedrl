@@ -221,10 +221,112 @@ int w_str_to_int(const wchar_t *str) {
     return a;
 }
 
+unsigned char is_digit(wchar_t ch) {
+    if (ch >= L'0' && ch <= L'9') return 1;
+    else return 0;
+}
+
+unsigned char is_alpha(wchar_t ch) {
+    if (ch >= L'a' && ch <= L'z') return 1;
+    else if (ch >= L'A' && ch <= L'Z') return 1;
+    else return 0;
+}
+
+unsigned char is_special_ch(wchar_t ch) {
+    wchar_t special[] = L".,_-\"\'\\/();:";
+    for (int i = 0; i < w_string_len(special); i++) {
+        if (ch == special[i])
+            return 1;
+    }
+    return 0;
+}
+
 /**
  * Takes an argument to a string and the length that you want the lines to be, and wraps it preserving
- * words. 
+ * words. The array returned is of MAX_BUFSIZE_MINI, but will contain an empty array at the end of the
+ * similar to '\0' at the end of a string
  * @NOTE : Doesn't free the provided string
+ * @NOTE @FIXME : Will probably break if there is a word in the string that is longer than the len
  */
-wchar_t **line_wrap(wchar_t *str, int len) {
+wchar_t **line_wrap(const wchar_t *str, int len) {
+    if (len < 2) {
+        d_debug_message(0x0C, ERROR_D, L"Error in line_wrap: len is less than 2. (%d)", len);
+        return NULL;
+    }
+    // Allocating the size, each array is of size len + 1
+    wchar_t **rtn_str = calloc(MAX_BUFSIZE_MINI, sizeof(wchar_t *));
+    for (int i = 0; i < MAX_BUFSIZE_MINI; i++) {
+        *(rtn_str + i) = calloc(len + 1, sizeof(wchar_t));
+    }
+
+    int str_cnt  = 0;
+    int ch_cnt   = 0; // what characther we are on
+    int line_cnt = 0; // What line we are on
+    /**
+     * Count of characters in a word. A word being some alphanum characters delimited by spaces, other
+     * characters are counted in this to make the wrapping look proper (e.g It won't split a full stop
+     * into it's own line
+     */
+    int word_ch_cnt = 0;
+    wchar_t *line = rtn_str[0];
+    int j = 0;
+
+    while (*(str + str_cnt) != '\0') {
+        // If we are at the end of a line or we hit a newline we start a new line
+        if (ch_cnt == len || *(str + str_cnt) == L'\n') {
+            ch_cnt = 0;
+            line_cnt++;
+            if (*(str + str_cnt) == L'\n')
+                str_cnt++; // We skip over the newline character after we've read it
+            line = &rtn_str[line_cnt][0];
+            continue;
+        }
+
+        // If we are at the start of a line and there is a space we just skip it.
+        if (ch_cnt == 0 && *(str + str_cnt) == L' ') {
+            str_cnt++;
+            continue;
+        }
+            
+        // Start counting the number of characters in the next word
+        if (is_alpha(*(str + str_cnt)) || is_digit(*(str + str_cnt)) || is_special_ch(*(str + str_cnt))) {
+            word_ch_cnt = 0;
+            j = str_cnt;
+            while (*(str + j) != L'\0' && *(str + j) != L'\n' && *(str + j) != L' ') {
+                word_ch_cnt++;
+                j++;
+            }
+
+            // If the word is bigger than len then we print an error and return the half built string
+            if (word_ch_cnt > len) {
+                // Copy the word into a temporary array so we can put it in the error message
+                wchar_t temp[word_ch_cnt];
+                for (int i = 0; i < word_ch_cnt; i++)
+                    temp[i] = *(str + str_cnt + i);
+
+                d_debug_message(0x0C, ERROR_D, L"Error in line_wrap: word %ls is too long (%d/%d)",
+                        temp, word_ch_cnt, len);
+                return rtn_str;
+            // If the word goes over the length, then we just go to the next line
+            } else if (word_ch_cnt + ch_cnt > len) {
+                ch_cnt = 0;
+                line_cnt++;
+                line = &rtn_str[line_cnt][0];
+            }
+            // Then we add the word to the line
+            for (int k = 0; k < word_ch_cnt; k++)
+                *(line + ch_cnt + k) = *(str + str_cnt + k);
+
+            ch_cnt += word_ch_cnt;
+            str_cnt += word_ch_cnt;
+
+            continue;
+        }
+
+        *(line + ch_cnt) = *(str + str_cnt);
+        str_cnt++;
+        ch_cnt++;
+    }
+
+    return rtn_str;
 }
