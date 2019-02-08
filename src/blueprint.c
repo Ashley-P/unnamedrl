@@ -155,8 +155,8 @@ void init_hardcode_blueprints() {
 
 
     wchar_t name[]       = L"Test Object";
-    wchar_t short_desc[] = L"Short Description";
-    wchar_t long_desc[]  = L"Long Description";
+    wchar_t short_desc[] = L"Short\nDescription";
+    wchar_t long_desc[]  = L"Long\nDescription";
 
     bp6.components[3] = create_component(-1, C_DESC, name, short_desc, long_desc);
 

@@ -285,3 +285,24 @@ void redraw_screen() {
             (COORD) {0, 0},
             &SMALLRECTsize);
 }
+
+/* Some functions to print descriptions */
+void print_inv_desc(entity_id uid) {
+    // Printing the description
+    // We do a check just incase
+    const struct ComponentContainer *item_desc_container = get_component(uid, C_DESC);
+    if (!item_desc_container) {
+        d_debug_message(0x0E, ERROR_D, L"Warning in print_inv_desc: entity %d has no C_DESC component",
+                uid);
+        return;
+    }
+
+    const struct C_Desc *item_desc = item_desc_container->c;
+    // @TODO: Linewrapping happens here
+    draw_string(WIDTH_ONE_FIFTH + 2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + 2,
+            HORIZONTAL, item_desc->short_desc, 0x07);
+
+    // Next we figure out what type of item is it so we can display some relevant information
+    // No check because this is called from inside the inventory
+    const struct C_Item *item_item = (get_component(uid, C_ITEM))->c;
+}

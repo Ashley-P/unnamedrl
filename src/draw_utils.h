@@ -20,6 +20,4 @@ void draw_stat_bar(const int x, const int y, const float len, const float curren
 
 void draw_border_box(const int x, const int y, const int width, const int height);
 
-void print_inv_desc(entity_id uid); 
-
 #endif
