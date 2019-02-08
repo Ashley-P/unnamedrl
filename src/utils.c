@@ -220,3 +220,11 @@ int w_str_to_int(const wchar_t *str) {
     a /= 10;
     return a;
 }
+
+/**
+ * Takes an argument to a string and the length that you want the lines to be, and wraps it preserving
+ * words. 
+ * @NOTE : Doesn't free the provided string
+ */
+wchar_t **line_wrap(wchar_t *str, int len) {
+}

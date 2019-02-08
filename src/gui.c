@@ -61,7 +61,7 @@ void init_guis() {
 struct GUI_Controller *get_gui_controller(enum ProgState state) {
     switch (state) {
         case INV: return inv_gui;
-        default: d_debug_message(0x07, ERROR_D, L"Error in get_gui_controller, unknown gui type \"%d\"", state);
+        default: d_debug_message(0x0C, ERROR_D, L"Error in get_gui_controller, unknown gui type \"%d\"", state);
                  return NULL;
     }
 };

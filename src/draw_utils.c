@@ -7,7 +7,9 @@
 
 #include <math.h>
 #include "draw_utils.h"
+#include "debug.h"
 #include "defs.h"
+#include "ecs_component.h"
 #include "llist.h"
 #include "main.h"
 
@@ -106,4 +108,16 @@ void draw_border_box(const int x, const int y, const int width, const int height
     draw_character(x + width - 1, y + height - 1, DOUBLE_UP_AND_LEFT   , 0x07); // Bottom Right 
 }
 
-void print_inv_desc(entity_id uid) {}
+void print_inv_desc(entity_id uid) {
+    // Printing the description
+    // We do a check just incase
+    const struct ComponentContainer *item_desc_container = get_component(uid, C_DESC);
+    if (!item_desc_container) {
+        d_debug_message(0x0E, ERROR_D, L"Warning in print_inv_desc: entity %d has no C_DESC component",
+                uid);
+        return;
+    }
+
+    const struct C_Desc *item_desc = item_desc_container->c;
+    // First we figure out what type of item is it so we can display some relevant information
+}
