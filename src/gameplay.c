@@ -215,6 +215,11 @@ void player_drop_item(entity_id player, entity_id uid) {
     }
     player_inv->sz--;
     player_inv->cur_weight -= item_item->weight;
+
+    // Updating the gui
+    struct GUI_Controller *inv_cont = get_gui_controller(INV);
+    struct GUI_List *inv_list = (inv_cont->list)->g;
+    inv_list->max--;
 }
 
 /* Places the item into the inventory */
