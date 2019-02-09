@@ -220,6 +220,9 @@ void player_drop_item(entity_id player, entity_id uid) {
     struct GUI_Controller *inv_cont = get_gui_controller(INV);
     struct GUI_List *inv_list = (inv_cont->list)->g;
     inv_list->max--;
+    if (inv_list->cur >= inv_list->max)
+        inv_list->cur--;
+
 }
 
 /* Places the item into the inventory */
