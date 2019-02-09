@@ -119,6 +119,9 @@ int player_get_item(entity_id player) {
             if (item == globals.player_id) {
                 item = -1;
                 continue;
+            } else if (get_component(item, C_ITEM) == NULL) {
+                item = -1;
+                continue;
             } else
                 break;
         }
