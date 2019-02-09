@@ -6,6 +6,7 @@
 
 #include "debug.h"
 #include "defs.h"
+#include "ecs_component.h"
 #include "gui.h"
 #include "message.h"
 
@@ -77,7 +78,7 @@ struct GUI_Controller *get_gui_controller(enum ProgState state) {
 };
 
 /* Returns the active gui from the controller */
-void *get_gui(enum ProgState state) {
+struct GUI_Wrapper *get_gui(enum ProgState state) {
     struct GUI_Controller *controller = get_gui_controller(state);
     return (controller->list + controller->active);
 };
@@ -94,6 +95,23 @@ void set_active_gui(enum ProgState state, void *wrapper) {
             controller->active = i;
             break;
         }
+    }
+}
+
+/* Returns the id of whatever the user is hovering over in the inventory screen */
+entity_id inv_gui_get_id() {
+    struct GUI_Controller *inv_gui  = get_gui_controller(INV);
+    struct GUI_Wrapper *inv_wrapper = get_gui(INV);
+    struct GUI_List *inv_list       = inv_wrapper->g;
+
+    if (inv_gui->active == 0) {
+        struct C_Inventory *player_inv = (get_component(globals.player_id, C_INVENTORY))->c;
+        return *(player_inv->storage + inv_list->cur);
+    } else if (inv_gui->active == 1) {
+        struct C_Gear *player_gear = (get_component(globals.player_id, C_GEAR))->c;
+        return *(player_gear->wear + inv_list->cur);
+    } else {
+        return -1;
     }
 }
 

@@ -166,6 +166,57 @@ int player_get_item(entity_id player) {
     return 20;
 }
 
+/**
+ * Drops an item from the players inventory
+ */
+void player_drop_item(entity_id player, entity_id uid) {
+
+    if (!check_uid(uid)) {
+        d_debug_message(0x0C, ERROR_D, L"Error in player_drop_item: Unknown entity id %d", uid);
+        return;
+    }
+
+    // We check the inventory and gear so we can remove the item from it
+    struct C_Gear *player_gear     = (get_component(player, C_GEAR))->c;
+    struct C_Inventory *player_inv = (get_component(player, C_INVENTORY))->c;
+
+    int j = -1;
+    for (int i = 0; i < 6; i++) {
+        if (player_gear->wear[i] == uid) {
+            player_gear->wear[i] = -1;
+            break;
+        } 
+    }
+
+    for (int i = 0; i < MAX_BUFSIZE_SMALL; i++) {
+        if (player_inv->storage[i] == uid) {
+            player_inv->storage[i] = -1;
+            j = i;
+            break;
+        }
+    }
+
+    struct C_Position *player_pos = (get_component(player, C_POSITION))->c;
+    struct C_Render *item_ren     = (get_component(uid, C_RENDER))->c;
+    struct C_Item *item_item      = (get_component(uid, C_ITEM))->c;
+
+    // Add the position component back to the entity
+    create_component(uid, C_POSITION, player_pos->x, player_pos->y);
+
+    // Let it be rendered again
+    item_ren->flags |= C_RENDER_RENDER_ENTITY;
+
+    // Shift all the items to the left in the inventory
+    if (j != -1) {
+        for (int i = j; i < MAX_BUFSIZE_SMALL - 1; i++)
+            *(player_inv->storage + i) = *(player_inv->storage + i + 1);
+
+        *(player_inv->storage + MAX_BUFSIZE_SMALL - 1) = -1;
+    }
+    player_inv->sz--;
+    player_inv->cur_weight -= item_item->weight;
+}
+
 /* Places the item into the inventory */
 void entity_get_item(entity_id item, struct C_Inventory *inventory) {
 }

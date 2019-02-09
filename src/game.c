@@ -212,19 +212,27 @@ int handle_keys(KEY_EVENT_RECORD kev) {
         struct GUI_List *inv_list   = (cont->list + cont->active)->g;
         struct GUI_Text *inv_text   = (cont->list + 2)->g;
         switch (kev.wVirtualKeyCode) {
+            case 0x44:                            // 'D' Key
+                inv_text->cur_line = 0;
+                player_drop_item(globals.player_id, inv_gui_get_id());
+                break;
             case VK_UP:
                 if (inv_list->cur > inv_list->min)
                     inv_list->cur -= 1;
+                inv_text->cur_line = 0;
                 break;
             case VK_DOWN:
                 if (inv_list->cur < inv_list->max - 1)
                     inv_list->cur += 1;
+                inv_text->cur_line = 0;
                 break;
             case VK_LEFT:
                 set_active_gui(INV, inv_list->left);
+                inv_text->cur_line = 0;
                 break;
             case VK_RIGHT:
                 set_active_gui(INV, inv_list->right);
+                inv_text->cur_line = 0;
                 break;
             case VK_PRIOR:                  // Page Up
                 if (inv_text->cur_line > 0)
@@ -239,6 +247,7 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                 globals.control_state = GAME;
                 inv_list->cur = 0;
                 cont->active  = 0;
+                inv_text->cur_line = 0;
                 break;
         }
 

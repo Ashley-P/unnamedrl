@@ -51,7 +51,8 @@ struct GUI_Text {
 /* Extern functions */
 void init_guis();
 struct GUI_Controller *get_gui_controller(enum ProgState state);
-void *get_gui(enum ProgState state);
+struct GUI_Wrapper *get_gui(enum ProgState state);
 void set_active_gui(enum ProgState state, void *wrapper);
+entity_id inv_gui_get_id();
 
 #endif
