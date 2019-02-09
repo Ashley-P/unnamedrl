@@ -58,12 +58,14 @@ int draw_string(const int x, const int y, const int direction, const wchar_t *st
     int j = 0;
     if (direction == HORIZONTAL) {
         while (*(str + j) != L'\0') {
-            draw_character(x + j, y, *(str + j), colour);
+            if (*(str + j) != L'\n')
+                draw_character(x + j, y, *(str + j), colour);
             j++;
         }
     } else if (direction == VERTICAL) {
         while (*(str + j) != L'\0') {
-            draw_character(x, y + j, *(str + j), colour);
+            if (*(str + j) != L'\n')
+                draw_character(x, y + j, *(str + j), colour);
             j++;
         }
     }

@@ -4,6 +4,27 @@
 #include "debug.h"
 #include "utils.h"
 
+// Text for testing
+wchar_t long_desc[]  = L"Long\nDescription.\n This is a really really long description. and to prove it\n"
+L"Proin nibh velit, tempus id enim vitae, imperdiet faucibus leo. Ut ornare imperdiet diam a vulputate. "
+L"Praesent id sapien ornare, fringilla lectus nec, volutpat orci. Suspendisse sit amet efficitur neque. "
+L"Nunc sit amet lacus tempus, sollicitudin lorem sed, viverra turpis. "
+L"Ut aliquet risus id felis sollicitudin rutrum. "
+L"Praesent hendrerit sapien purus, sit amet tincidunt diam hendrerit ut. "
+L"Curabitur eu enim felis. Etiam nisl erat, dictum a eleifend eu, ullamcorper vel enim.\n\n"
+L"Morbi vehicula metus ut massa vestibulum, ac ullamcorper dui tempus. "
+L"Nullam suscipit elementum lacus a mattis. "
+L"Maecenas mauris justo, ornare et urna id, porttitor tempus sapien. "
+L"Fusce bibendum lectus at ex feugiat, at condimentum nibh bibendum. "
+L"Nullam cursus eleifend est, vel facilisis erat porta sed. "
+L"Nunc in malesuada elit, sit amet vehicula tortor. Sed iaculis pulvinar mauris in ultrices. "
+L"Donec eu rhoncus nulla. Ut pharetra diam elit. "
+L"Mauris ante tortor, malesuada et cursus vel, sollicitudin et eros. "
+L"Etiam eleifend malesuada est, in posuere sem ullamcorper in. "
+L"Vestibulum accumsan, massa fermentum varius vehicula, ante erat malesuada felis, "
+L"varius libero justo vulputate erat. "
+L"nec dignissim erat. Duis consequat magna in ante scelerisque commodo.";
+
 
 /* Blueprints should only get returned by value since they don't get edited */
 struct Blueprint blueprints[MAX_BUFSIZE_MINI]; // 64
@@ -156,11 +177,6 @@ void init_hardcode_blueprints() {
 
     wchar_t name[]       = L"Test Object";
     wchar_t short_desc[] = L"Short\nDescription";
-    wchar_t long_desc[]  = L"Long\nDescription.\n This is a really really long description. and to prove it "
-        L"I'm going to put lots and lots of text inside of it. Including place holder text like this.\n"
-        L"Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-        L"Donec dictum sollicitudin justo nec elementum. "
-        L"Vivamus commodo mauris vitae imperdiet aliquam. ";
 
     bp6.components[3] = create_component(-1, C_DESC, name, short_desc, long_desc);
 

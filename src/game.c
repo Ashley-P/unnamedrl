@@ -209,7 +209,8 @@ int handle_keys(KEY_EVENT_RECORD kev) {
     } else if (globals.control_state == INV) {
         // Grab the gui controller
         struct GUI_Controller *cont = get_gui_controller(INV);
-        struct GUI_List *inv_list = (cont->list + cont->active)->g;
+        struct GUI_List *inv_list   = (cont->list + cont->active)->g;
+        struct GUI_Text *inv_text   = (cont->list + 2)->g;
         switch (kev.wVirtualKeyCode) {
             case VK_UP:
                 if (inv_list->cur > inv_list->min)
@@ -225,10 +226,19 @@ int handle_keys(KEY_EVENT_RECORD kev) {
             case VK_RIGHT:
                 set_active_gui(INV, inv_list->right);
                 break;
+            case VK_PRIOR:                  // Page Up
+                if (inv_text->cur_line > 0)
+                    inv_text->cur_line--;
+                break;
+            case VK_NEXT:                   // Page Down
+                if (inv_text->cur_line < inv_text->text_height - inv_text->panel_height)
+                    inv_text->cur_line++;
+                break;
             case VK_ESCAPE:
                 globals.program_state = GAME;
                 globals.control_state = GAME;
                 inv_list->cur = 0;
+                cont->active  = 0;
                 break;
         }
 

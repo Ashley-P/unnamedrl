@@ -309,11 +309,20 @@ void print_inv_desc(entity_id uid) {
     int description_line_wrap = WIDTH_FOUR_FIFTH - 4;
 
     wchar_t **long_desc = line_wrap(item_desc->long_desc, description_line_wrap);
-    int p = 0;
-    while (**(long_desc + p) != L'\0') {
-        draw_string(WIDTH_ONE_FIFTH + 2, HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + p + 2,
-                HORIZONTAL, *(long_desc + p), 0x07);
-            p++;
+    struct GUI_Controller *inv_controller = get_gui_controller(INV);
+    struct GUI_Text *desc_text = (inv_controller->list + 2)->g;
+
+    for (desc_text->text_height = 0;; desc_text->text_height++)
+        if (**(long_desc + desc_text->text_height) == L'\0')
+            break;
+
+    int pos = HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + 2;
+    int p = desc_text->cur_line;
+
+    while (p <= desc_text->panel_height + desc_text->cur_line && p < MAX_BUFSIZE_MINI) {
+        draw_string(WIDTH_ONE_FIFTH + 2, pos, HORIZONTAL, *(long_desc + p), 0x07);
+        pos++;
+        p++;
     }
 
     // Free up memory from line_wrap

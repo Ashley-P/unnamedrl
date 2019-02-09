@@ -5,6 +5,7 @@
  */
 
 #include "debug.h"
+#include "defs.h"
 #include "gui.h"
 #include "message.h"
 
@@ -16,11 +17,12 @@ void init_inv_gui() {
     inv_gui = malloc(sizeof(struct GUI_Controller));
     inv_gui->state  = INV;
     inv_gui->active = 0; // The inv panel should start active
-    inv_gui->list   = malloc(sizeof(struct GUI_Wrapper) * 2);
-    inv_gui->sz     = 2;
+    inv_gui->list   = malloc(sizeof(struct GUI_Wrapper) * 3);
+    inv_gui->sz     = 3;
 
     struct GUI_List *inv_panel  = malloc(sizeof(struct GUI_List));
     struct GUI_List *gear_panel = malloc(sizeof(struct GUI_List));
+    struct GUI_Text *desc_panel = malloc(sizeof(struct GUI_Text));
 
     inv_panel->left   = gear_panel;
     gear_panel->right = inv_panel;
@@ -36,17 +38,25 @@ void init_inv_gui() {
     gear_panel->max = 7;
     gear_panel->cur = 0;
 
+    desc_panel->cur_line     = 0;
+    desc_panel->panel_height = SCREENHEIGHT - (HEIGHT_FOUR_FIFTH - HEIGHT_ONE_FIFTH + 4);
+    desc_panel->text_height  = 0;
+
     struct GUI_Wrapper inv_wrapper;
     struct GUI_Wrapper gear_wrapper;
+    struct GUI_Wrapper desc_wrapper;
 
     inv_wrapper.g  = inv_panel;
     gear_wrapper.g = gear_panel;
+    desc_wrapper.g = desc_panel;
 
     inv_wrapper.type  = GUI_LIST;
     gear_wrapper.type = GUI_LIST;
+    desc_wrapper.type = GUI_TEXT;
 
     (inv_gui->list)[0] = inv_wrapper;
     (inv_gui->list)[1] = gear_wrapper;
+    (inv_gui->list)[2] = desc_wrapper;
 }
 
 /**
@@ -61,7 +71,7 @@ void init_guis() {
 struct GUI_Controller *get_gui_controller(enum ProgState state) {
     switch (state) {
         case INV: return inv_gui;
-        default: d_debug_message(0x0C, ERROR_D, L"Error in get_gui_controller, unknown gui type \"%d\"", state);
+        default: d_debug_message(0x0C, ERROR_D, L"Error in get_gui_controller: unknown gui type \"%d\"", state);
                  return NULL;
     }
 };

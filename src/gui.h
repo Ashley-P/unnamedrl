@@ -7,6 +7,7 @@
 enum GUI_Type {
     GUI_INVALID,
     GUI_LIST,
+    GUI_TEXT,
 };
 
 /**
@@ -36,6 +37,15 @@ struct GUI_List {
     int min;
     int max;
     int cur;
+};
+
+/**
+ * Basic text type to hold values for scrolling text
+ */ 
+struct GUI_Text {
+    int cur_line;
+    int panel_height;
+    int text_height;
 };
 
 /* Extern functions */

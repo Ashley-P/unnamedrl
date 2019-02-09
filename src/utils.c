@@ -274,10 +274,12 @@ wchar_t **line_wrap(const wchar_t *str, int len) {
     while (*(str + str_cnt) != '\0') {
         // If we are at the end of a line or we hit a newline we start a new line
         if (ch_cnt == len || *(str + str_cnt) == L'\n') {
+            if (*(str + str_cnt) == L'\n') {
+                *(line + ch_cnt) = *(str + str_cnt);
+                str_cnt++;
+            }
             ch_cnt = 0;
             line_cnt++;
-            if (*(str + str_cnt) == L'\n')
-                str_cnt++; // We skip over the newline character after we've read it
             line = &rtn_str[line_cnt][0];
             continue;
         }
