@@ -31,8 +31,8 @@ int handle_keys(KEY_EVENT_RECORD kev);
  * Initialising the game, mainly by calling other init functions
  */
 void game_init() {
-    globals.program_state = GAME;
-    globals.control_state = GAME;
+    globals.program_state = P_GAME;
+    globals.control_state = P_GAME;
     globals.done_playing = 0;
     globals.ticks = 0;
     globals.s_tick_lock = 0;
@@ -144,19 +144,19 @@ int handle_keys(KEY_EVENT_RECORD kev) {
     /* state checking */
 
     /********* GAME *********/
-    if (globals.control_state == GAME) {
+    if (globals.control_state == P_GAME) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
                 case 0x31:                  // '1' key - DEBUG MODE
-                    globals.program_state = DEBUG;
-                    globals.control_state = DEBUG;
+                    globals.program_state = P_DEBUG;
+                    globals.control_state = P_DEBUG;
                     d_debug.flags &= ~(1 << 1);
                     lock_s_tick();
                     break;
 
                 case 0x32:                  // '2' key - DEBUG_FULL MODE
-                    globals.program_state = DEBUG_FULL;
-                    globals.control_state = DEBUG;
+                    globals.program_state = P_DEBUG_FULL;
+                    globals.control_state = P_DEBUG;
                     d_debug.flags &= ~(1 << 1);
                     lock_s_tick();
                     break;
@@ -171,8 +171,8 @@ int handle_keys(KEY_EVENT_RECORD kev) {
         } else if (kev.dwControlKeyState & SHIFT_PRESSED) {
             switch (kev.wVirtualKeyCode) {
                 case 0x49:                  // 'I' key
-                    globals.program_state = INV;
-                    globals.control_state = INV;
+                    globals.program_state = P_INV;
+                    globals.control_state = P_INV;
                     break;
                 default:
                     break;
@@ -206,9 +206,9 @@ int handle_keys(KEY_EVENT_RECORD kev) {
 
 
     /********* INVENTORY *********/
-    } else if (globals.control_state == INV) {
+    } else if (globals.control_state == P_INV) {
         // Grab the gui controller
-        struct GUI_Controller *cont = get_gui_controller(INV);
+        struct GUI_Controller *cont = get_gui_controller(P_INV);
         struct GUI_List *inv_list   = (cont->list + cont->active)->g;
         struct GUI_Text *inv_text   = (cont->list + 2)->g;
         switch (kev.wVirtualKeyCode) {
@@ -227,11 +227,11 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                 inv_text->cur_line = 0;
                 break;
             case VK_LEFT:
-                set_active_gui(INV, inv_list->left);
+                set_active_gui(P_INV, inv_list->left);
                 inv_text->cur_line = 0;
                 break;
             case VK_RIGHT:
-                set_active_gui(INV, inv_list->right);
+                set_active_gui(P_INV, inv_list->right);
                 inv_text->cur_line = 0;
                 break;
             case VK_PRIOR:                  // Page Up
@@ -243,8 +243,8 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                     inv_text->cur_line++;
                 break;
             case VK_ESCAPE:
-                globals.program_state = GAME;
-                globals.control_state = GAME;
+                globals.program_state = P_GAME;
+                globals.control_state = P_GAME;
                 inv_list->cur = 0;
                 cont->active  = 0;
                 inv_text->cur_line = 0;
@@ -254,20 +254,20 @@ int handle_keys(KEY_EVENT_RECORD kev) {
 
 
     /********* DEBUG *********/
-    } else if (globals.control_state == DEBUG) {
+    } else if (globals.control_state == P_DEBUG) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
                 case 0x31:                  // '1' key - DEBUG MODE UI
-                    globals.program_state = DEBUG;
+                    globals.program_state = P_DEBUG;
                     break;
 
                 case 0x32:                  // '2' key - DEBUG_FULL UI
-                    globals.program_state = DEBUG_FULL;
+                    globals.program_state = P_DEBUG_FULL;
                     break;
 
                 case 0x41:                  // 'a' key - GAME MODE
-                    globals.program_state = GAME;
-                    globals.control_state = GAME;
+                    globals.program_state = P_GAME;
+                    globals.control_state = P_GAME;
                     unlock_s_tick();
                     break;
 

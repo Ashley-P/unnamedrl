@@ -80,7 +80,7 @@ void d_debug_message(unsigned char col, int flag, wchar_t *str, ...) {
     add_message(&d_debug.display_messages, (struct String) {new_str, col});
 
     // set unread messages flag
-    if (globals.program_state != DEBUG && globals.program_state != DEBUG_FULL)
+    if (globals.program_state != P_DEBUG && globals.program_state != P_DEBUG_FULL)
         d_debug.flags |= 1 << 1;
 }
 

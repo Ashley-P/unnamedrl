@@ -81,12 +81,12 @@ typedef long entity_id;
  * and knows which ui it should be displaying
  */
 enum ProgState {
-    GAME       = 0x1,
-    DEBUG      = 0x2,
-    DEBUG_FULL = 0x4, // Normal DEBUG mode but it takes up the entire screen with messages
-    INV        = 0x8,
-    
-    MENU       = INV,
+    P_GAME       = 0x1,
+    P_DEBUG      = 0x2,
+    P_DEBUG_FULL = 0x4, // Normal DEBUG mode but it takes up the entire screen with messages
+    P_INV        = 0x8,
+
+    P_MENU       = P_INV,
 };
 
 /* Externs */

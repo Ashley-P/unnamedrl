@@ -143,7 +143,7 @@ void draw_ui_debug_full() {
 
 /* Draws the ui for the inventory/gear screen */
 void draw_ui_inv() {
-    struct GUI_Controller *inv_controller = get_gui_controller(INV);
+    struct GUI_Controller *inv_controller = get_gui_controller(P_INV);
 
     // We skip straight to a list because both gui wrappers contain are lists
     struct GUI_List *inv_list = (inv_controller->list + inv_controller->active)->g;
@@ -257,15 +257,15 @@ void draw_ui_inv() {
  * Controller function to draw the correct UI based on globals.program_state
  */
 void draw_ui() {
-    if (globals.program_state == GAME) {
+    if (globals.program_state == P_GAME) {
         draw_ui_game();
-    } else if (globals.program_state == DEBUG) {
+    } else if (globals.program_state == P_DEBUG) {
         /* Draw the normal game ui then the debug menu ontop */
         draw_ui_game();
         draw_ui_debug();
-    } else if (globals.program_state == DEBUG_FULL) {
+    } else if (globals.program_state == P_DEBUG_FULL) {
         draw_ui_debug_full();
-    } else if (globals.program_state == INV) {
+    } else if (globals.program_state == P_INV) {
         draw_ui_inv();
     }
 
@@ -309,7 +309,7 @@ void print_inv_desc(entity_id uid) {
     int description_line_wrap = WIDTH_FOUR_FIFTH - 4;
 
     wchar_t **long_desc = line_wrap(item_desc->long_desc, description_line_wrap);
-    struct GUI_Controller *inv_controller = get_gui_controller(INV);
+    struct GUI_Controller *inv_controller = get_gui_controller(P_INV);
     struct GUI_Text *desc_text = (inv_controller->list + 2)->g;
 
     for (desc_text->text_height = 0;; desc_text->text_height++)

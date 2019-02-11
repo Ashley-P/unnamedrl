@@ -158,7 +158,7 @@ int player_get_item(entity_id player) {
     item_ren->flags |= !C_RENDER_RENDER_ENTITY;
 
     // Make sure the gui gets updated
-    struct GUI_Controller *inv_cont = get_gui_controller(INV);
+    struct GUI_Controller *inv_cont = get_gui_controller(P_INV);
     struct GUI_List *inv_list = (inv_cont->list)->g;
     inv_list->max++;
 
@@ -217,7 +217,7 @@ void player_drop_item(entity_id player, entity_id uid) {
     player_inv->cur_weight -= item_item->weight;
 
     // Updating the gui
-    struct GUI_Controller *inv_cont = get_gui_controller(INV);
+    struct GUI_Controller *inv_cont = get_gui_controller(P_INV);
     struct GUI_List *inv_list = (inv_cont->list)->g;
     inv_list->max--;
     if (inv_list->cur >= inv_list->max)

@@ -16,7 +16,7 @@ struct GUI_Controller *inv_gui;
 
 void init_inv_gui() {
     inv_gui = malloc(sizeof(struct GUI_Controller));
-    inv_gui->state  = INV;
+    inv_gui->state  = P_INV;
     inv_gui->active = 0; // The inv panel should start active
     inv_gui->list   = malloc(sizeof(struct GUI_Wrapper) * 3);
     inv_gui->sz     = 3;
@@ -71,7 +71,7 @@ void init_guis() {
 
 struct GUI_Controller *get_gui_controller(enum ProgState state) {
     switch (state) {
-        case INV: return inv_gui;
+        case P_INV: return inv_gui;
         default: d_debug_message(0x0C, ERROR_D, L"Error in get_gui_controller: unknown gui type \"%d\"", state);
                  return NULL;
     }
@@ -100,8 +100,8 @@ void set_active_gui(enum ProgState state, void *wrapper) {
 
 /* Returns the id of whatever the user is hovering over in the inventory screen */
 entity_id inv_gui_get_id() {
-    struct GUI_Controller *inv_gui  = get_gui_controller(INV);
-    struct GUI_Wrapper *inv_wrapper = get_gui(INV);
+    struct GUI_Controller *inv_gui  = get_gui_controller(P_INV);
+    struct GUI_Wrapper *inv_wrapper = get_gui(P_INV);
     struct GUI_List *inv_list       = inv_wrapper->g;
 
     if (inv_gui->active == 0) {
