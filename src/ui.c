@@ -6,6 +6,7 @@
 #include "ecs_component.h"
 #include "ecs_entity.h"
 #include "ecs_system.h"
+#include "game_utils.h"
 #include "gui.h"
 #include "llist.h"
 #include "map.h"
@@ -48,6 +49,7 @@ void draw_ui_game() {
     /* @TODO: Make it so the colour the stat gets drawn in changes with it's value */
 
     // Hardcode central
+    int a = 2;
 
     /* Health - All body parts */
     struct C_Body *p_b = (get_component(globals.player_id, C_BODY))->c;
@@ -60,8 +62,9 @@ void draw_ui_game() {
                         L" RLeg:"};
 
     for (int i = 0; i < 6; i++) {
-        draw_string(WIDTH_FOUR_FIFTH + 2, i+2, HORIZONTAL, *(names + i), 0x07);
-        draw_stat_bar(WIDTH_FOUR_FIFTH + 9, i+2, 9, (p_b->part_hp)[i], (p_b->max_hp)[i], 0x04);
+        draw_string(WIDTH_FOUR_FIFTH + 2, a, HORIZONTAL, *(names + i), 0x07);
+        draw_stat_bar(WIDTH_FOUR_FIFTH + 9, a, 9, (p_b->part_hp)[i], (p_b->max_hp)[i], 0x04);
+        a++;
     }
     
     // Drawing Messages
@@ -72,6 +75,38 @@ void draw_ui_game() {
             0, HORIZONTAL, L"Stats", 0x70);
     draw_string((int) (SCREENWIDTH / 2) - (w_string_len(L"Messages") / 2),
             HEIGHT_FOUR_FIFTH, HORIZONTAL, L"Messages", 0x70);
+
+
+    // On Floor
+    a++;
+    draw_string(WIDTH_FOUR_FIFTH + ((WIDTH_ONE_FIFTH / 2) - (w_string_len(L"On Floor") / 2)),
+                    a, HORIZONTAL, L"On floor", 0x07);
+    a++;
+
+    // Find what items are on the floor
+    const struct C_Position *player_pos = (get_component(globals.player_id, C_POSITION))->c;
+    entity_id *entities = find_entities(player_pos, C_ITEM);
+
+    // Post the names of the first 4 items in the list
+    // If there is more then we just put a [MORE] tag at the end
+    // Also we assume the items have a C_DESC component 
+    struct C_Desc *item_desc;
+    for (int i = 0; i < 4; i++) {
+        if (check_uid(entities[i])) {
+            item_desc = (get_component(entities[i], C_DESC))->c;
+            // Printing the name centered in the side panel
+            draw_string(WIDTH_FOUR_FIFTH + ((WIDTH_ONE_FIFTH / 2) - (w_string_len(item_desc->name) / 2)),
+                    a, HORIZONTAL, item_desc->name, 0x07);
+            a++;
+        } else
+            break;
+    }
+
+    if (check_uid(entities[4]))
+        draw_string(WIDTH_FOUR_FIFTH + ((WIDTH_ONE_FIFTH / 2) - (w_string_len(L"[MORE]") / 2)),
+                a, HORIZONTAL, L"[MORE]", 0x07);
+
+    free(entities);
 
     // Hints for the keybinds
     draw_string(WIDTH_FOUR_FIFTH + 2, HEIGHT_FOUR_FIFTH - 3, HORIZONTAL, L"[I]nventory", 0x07);
