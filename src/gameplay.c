@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "ecs_component.h"
 #include "ecs_entity.h"
+#include "game_utils.h"
 #include "gui.h"
 #include "map.h"
 #include "message.h"
@@ -106,27 +107,12 @@ int wait_entity(entity_id uid) {
  * @TODO : Add some encumberance mechanics
  */
 int player_get_item(entity_id player) {
-    struct ComponentManager *p_manager = get_component_manager(C_POSITION);
     struct C_Position *player_pos      = (get_component(player, C_POSITION))->c;
     struct C_Inventory *player_inv     = (get_component(player, C_INVENTORY))->c;
-    entity_id item                     = -1;
-    struct C_Position *item_pos;
 
-    for (int i = 0; i < p_manager->size; i++) {
-        item_pos = (*(p_manager->containers + i))->c;
-        if (item_pos->x == player_pos->x && item_pos->y == player_pos->y) {
-            item = (*(p_manager->containers + i))->owner;
-            if (item == globals.player_id) {
-                item = -1;
-                continue;
-            } else if (get_component(item, C_ITEM) == NULL) {
-                item = -1;
-                continue;
-            } else
-                break;
-        }
-    } 
-
+    // Right now we just pick up the first item in the list
+    entity_id *items = find_entities(player_pos, C_ITEM);
+    entity_id item = *items;
 
     // Some checks
     if (!check_uid(item)) {
