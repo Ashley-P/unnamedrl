@@ -8,6 +8,7 @@ enum GUI_Type {
     GUI_INVALID,
     GUI_LIST,
     GUI_TEXT,
+    GUI_DIALOGUE,
 };
 
 /**
@@ -48,11 +49,24 @@ struct GUI_Text {
     int text_height;
 };
 
+/**
+ * struct for holding information about a Dialogue Box
+ */ 
+struct GUI_Dialogue {
+    wchar_t *info_text;
+    wchar_t *left_text;
+    wchar_t *right_text;
+    int cur;
+};
+
 /* Extern functions */
 void init_guis();
 struct GUI_Controller *get_gui_controller(enum ProgState state);
 struct GUI_Wrapper *get_gui(enum ProgState state);
 void set_active_gui(enum ProgState state, void *wrapper);
 entity_id inv_gui_get_id();
+void delete_dialogue_box();
+struct GUI_Dialogue *get_dialogue_box();
+struct GUI_Dialogue *create_dialogue_box(wchar_t *info_text, wchar_t *left_text, wchar_t *right_text);
 
 #endif

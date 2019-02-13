@@ -81,10 +81,12 @@ typedef long entity_id;
  * and knows which ui it should be displaying
  */
 enum ProgState {
+    P_INVALID    = 0,
     P_GAME       = 0x1,
     P_DEBUG      = 0x2,
     P_DEBUG_FULL = 0x4, // Normal DEBUG mode but it takes up the entire screen with messages
     P_INV        = 0x8,
+    P_DIALOGUE   = 0x16,
 
     P_MENU       = P_INV,
 };
@@ -100,6 +102,7 @@ struct Globals {
     int s_tick_lock;
     enum ProgState program_state;
     enum ProgState control_state;
+    enum ProgState prev_control_state;
 
     struct ListNode *message_list;
 

@@ -33,6 +33,7 @@ int handle_keys(KEY_EVENT_RECORD kev);
 void game_init() {
     globals.program_state = P_GAME;
     globals.control_state = P_GAME;
+    globals.prev_control_state = P_INVALID;
     globals.done_playing = 0;
     globals.ticks = 0;
     globals.s_tick_lock = 0;
@@ -252,6 +253,26 @@ int handle_keys(KEY_EVENT_RECORD kev) {
         }
 
 
+
+
+    /********* DIALOGUE BOX *********/
+    } else if (globals.control_state == P_DIALOGUE) {
+        // Setting the control state to P_DIALOGUE happens in one place
+        // Which is where the dialogue box is created
+        struct GUI_Dialogue *d_box = get_dialogue_box();
+        switch (kev.wVirtualKeyCode) {
+            case VK_LEFT:
+                if (d_box->cur > 1)
+                    d_box->cur--;
+                break;
+            case VK_RIGHT:
+                if (d_box->cur < 2)
+                    d_box->cur++;
+                break;
+            case VK_RETURN:
+                globals.control_state = globals.prev_control_state;
+                return d_box->cur;
+        }
 
     /********* DEBUG *********/
     } else if (globals.control_state == P_DEBUG) {

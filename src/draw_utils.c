@@ -10,8 +10,10 @@
 #include "debug.h"
 #include "defs.h"
 #include "ecs_component.h"
+#include "gui.h"
 #include "llist.h"
 #include "main.h"
+#include "utils.h"
 
 /**
  * Sets all characters in the buffer to be spaces
@@ -108,4 +110,43 @@ void draw_border_box(const int x, const int y, const int width, const int height
     draw_character(x + width - 1, y             , DOUBLE_DOWN_AND_LEFT , 0x07); // Top Right 
     draw_character(x            , y + height - 1, DOUBLE_UP_AND_RIGHT  , 0x07); // Bottom Left
     draw_character(x + width - 1, y + height - 1, DOUBLE_UP_AND_LEFT   , 0x07); // Bottom Right 
+}
+
+void draw_dialogue_box() {
+    const struct GUI_Dialogue *d_box = get_dialogue_box();
+    int left_len = w_string_len(d_box->left_text);
+    int right_len = w_string_len(d_box->right_text);
+    int width = left_len + right_len + 5;
+    if (width < 30)
+        width = 30;
+
+    wchar_t **info_text = line_wrap(d_box->info_text, width - 4);
+    int text_height = 0;
+    for (text_height = 0; **(info_text + text_height) != L'\0'; text_height++) {}
+
+    int height = text_height + 5;
+    int tl_x = (SCREENWIDTH / 2) - (width / 2);
+    int tl_y = (SCREENHEIGHT / 2) - (height / 2);
+    int z = 0;
+
+    // Clear space for the box
+    for (int i = 0; i < height; i++)
+        draw_character_line(tl_x, tl_y, width, HORIZONTAL, L' ', 0x07);
+
+   
+    draw_border_box(tl_x, tl_y, width, height);
+    while (**(info_text + z) != L'\0') {
+        draw_string(tl_x + 2, tl_y + 2 + z, HORIZONTAL, *(info_text + z), 0x07);
+        z++;
+    }
+    // Drawing the options
+    if (d_box->cur == 1) {
+        draw_string(tl_x + 2, tl_y + height - 2, HORIZONTAL, d_box->left_text, 0x70);
+        draw_string(tl_x + width - w_string_len(d_box->right_text) - 2, tl_y + height - 2,
+                HORIZONTAL, d_box->right_text, 0x07);
+    } else {
+        draw_string(tl_x + 2, tl_y + height - 2, HORIZONTAL, d_box->left_text, 0x07);
+        draw_string(tl_x + width - w_string_len(d_box->right_text) - 2, tl_y + height - 2,
+                HORIZONTAL, d_box->right_text, 0x70);
+    }
 }

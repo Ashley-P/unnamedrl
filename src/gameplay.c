@@ -9,7 +9,9 @@
 #include "ecs_component.h"
 #include "ecs_entity.h"
 #include "game_utils.h"
+#include "game.h"
 #include "gui.h"
+#include "ui.h"
 #include "map.h"
 #include "message.h"
 #include "utils.h"
@@ -154,13 +156,27 @@ int player_get_item(entity_id player) {
 
 /**
  * Drops an item from the players inventory
+ *
  */
-void player_drop_item(entity_id player, entity_id uid) {
+void player_drop_item(entity_id player, entity_id uid, int force_drop) {
 
     if (!check_uid(uid)) {
-        d_debug_message(0x0C, ERROR_D, L"Error in player_drop_item: Unknown entity id %d", uid);
+        if (uid != -1)
+            d_debug_message(0x0C, ERROR_D, L"Error in player_drop_item: Unknown entity id %d", uid);
         return;
     }
+
+    // Throw up a dialogue box about asking whether the player should drop this item
+    create_dialogue_box(L"Are you sure you want to drop this item?", L"Yes", L"No");
+
+    int a = 0;
+    while (a == 0) {
+        redraw_screen();
+        a = event_handler();
+    }
+    delete_dialogue_box();
+
+    if (a == 2) return;
 
     // We check the inventory and gear so we can remove the item from it
     struct C_Gear *player_gear     = (get_component(player, C_GEAR))->c;
