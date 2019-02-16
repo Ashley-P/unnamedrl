@@ -18,6 +18,7 @@ void *create_c_camera(va_list args);
 void *create_c_desc(va_list args);
 void *create_c_energy(va_list args);
 void *create_c_gear(va_list args);
+void *create_c_interact(va_list args);
 void *create_c_inventory(va_list args);
 void *create_c_item(va_list args);
 void *create_c_movement(va_list args);
@@ -44,6 +45,7 @@ static struct ComponentManager *cm_camera;
 static struct ComponentManager *cm_desc;
 static struct ComponentManager *cm_energy;
 static struct ComponentManager *cm_gear;
+static struct ComponentManager *cm_interact;
 static struct ComponentManager *cm_inventory;
 static struct ComponentManager *cm_item;
 static struct ComponentManager *cm_movement;
@@ -63,6 +65,7 @@ static inline wchar_t *component_type_finder(enum ComponentType type) {
         case C_DESC:      return L"DESC";
         case C_ENERGY:    return L"ENERGY";
         case C_GEAR:      return L"GEAR";
+        case C_INTERACT:  return L"INTERACT";
         case C_INVENTORY: return L"INVENTORY";
         case C_ITEM:      return L"ITEM";
         case C_MOVEMENT:  return L"MOVEMENT";
@@ -95,6 +98,7 @@ void init_component_managers() {
     init_component_manager(&cm_desc     , C_DESC);
     init_component_manager(&cm_energy   , C_ENERGY);
     init_component_manager(&cm_gear     , C_GEAR);
+    init_component_manager(&cm_interact , C_INTERACT);
     init_component_manager(&cm_inventory, C_INVENTORY);
     init_component_manager(&cm_item     , C_ITEM);
     init_component_manager(&cm_movement , C_MOVEMENT);
@@ -125,6 +129,7 @@ void deinit_component_managers() {
     deinit_component_manager(cm_desc);
     deinit_component_manager(cm_energy);
     deinit_component_manager(cm_gear);
+    deinit_component_manager(cm_interact);
     deinit_component_manager(cm_inventory);
     deinit_component_manager(cm_item);
     deinit_component_manager(cm_movement);
@@ -167,6 +172,7 @@ struct ComponentManager *get_component_manager(enum ComponentType type) {
         case C_DESC:      return cm_desc;
         case C_ENERGY:    return cm_energy;
         case C_GEAR:      return cm_gear;
+        case C_INTERACT:  return cm_interact;
         case C_INVENTORY: return cm_inventory;
         case C_ITEM:      return cm_item;
         case C_MOVEMENT:  return cm_movement;
@@ -227,6 +233,7 @@ struct ComponentContainer *create_component(const entity_id uid, enum ComponentT
         case C_DESC:      a->c = create_c_desc(args);      break;
         case C_ENERGY:    a->c = create_c_energy(args);    break;
         case C_GEAR:      a->c = create_c_gear(args);      break;
+        case C_INTERACT:  a->c = create_c_interact(args);  break;
         case C_INVENTORY: a->c = create_c_inventory(args); break;
         case C_ITEM:      a->c = create_c_item(args);      break;
         case C_MOVEMENT:  a->c = create_c_movement(args);  break;
@@ -314,6 +321,7 @@ void copy_component(entity_id dest, const struct ComponentContainer *src) {
         case C_DESC:      sz = sizeof(struct C_Desc);      break;
         case C_ENERGY:    sz = sizeof(struct C_Energy);    break;
         case C_GEAR:      sz = sizeof(struct C_Gear);      break;
+        case C_INTERACT:  sz = sizeof(struct C_Interact);  break;
         case C_INVENTORY: sz = sizeof(struct C_Inventory); break;
         case C_ITEM:      sz = sizeof(struct C_Item);      break;
         case C_MOVEMENT:  sz = sizeof(struct C_Movement);  break;
@@ -423,6 +431,13 @@ void *create_c_gear(va_list args) {
         (component->parts)[i] = parts[i];
         (component->wear)[i]  = -1;
     }
+
+    return component;
+}
+
+void *create_c_interact(va_list args) {
+    struct C_Interact *component = malloc(sizeof(struct C_Interact));
+    component->type = va_arg(args, enum InteractType);
 
     return component;
 }

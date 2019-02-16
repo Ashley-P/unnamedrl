@@ -12,6 +12,7 @@
 #include "game.h"
 #include "gameplay.h"
 #include "gui.h"
+#include "interact.h"
 #include "llist.h"
 #include "main.h"
 #include "map.h"
@@ -142,7 +143,7 @@ int handle_keys(KEY_EVENT_RECORD kev) {
     if (!kev.bKeyDown) return 0;
 
 
-    /* state checking */
+    /* state checking - No else ifs on the first check to facilitate fall through*/
 
     /********* GAME *********/
     if (globals.control_state == P_GAME) {
@@ -204,15 +205,24 @@ int handle_keys(KEY_EVENT_RECORD kev) {
 
             }
         }
+    }
 
+    /********* GENERAL MENUS *********/
+    if (globals.control_state & P_MENU) {
+        // Getting the gui controller
+        struct GUI_Controller *cont = get_gui_controller(P_INV);
+    }
 
     /********* INVENTORY *********/
-    } else if (globals.control_state == P_INV) {
+    if (globals.control_state == P_INV) {
         // Grab the gui controller
         struct GUI_Controller *cont = get_gui_controller(P_INV);
         struct GUI_List *inv_list   = (cont->list + cont->active)->g;
         struct GUI_Text *inv_text   = (cont->list + 2)->g;
         switch (kev.wVirtualKeyCode) {
+            case 0x41:
+                player_interact(inv_gui_get_id());
+                break;
             case 0x44:                            // 'D' Key
                 inv_text->cur_line = 0;
                 player_drop_item(globals.player_id, inv_gui_get_id());
@@ -251,12 +261,13 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                 inv_text->cur_line = 0;
                 break;
         }
+    }
 
 
 
 
     /********* DIALOGUE BOX *********/
-    } else if (globals.control_state == P_DIALOGUE) {
+    if (globals.control_state == P_DIALOGUE) {
         // Setting the control state to P_DIALOGUE happens in one place
         // Which is where the dialogue box is created
         struct GUI_Dialogue *d_box = get_dialogue_box();
@@ -273,9 +284,10 @@ int handle_keys(KEY_EVENT_RECORD kev) {
                 globals.control_state = globals.prev_control_state;
                 return d_box->cur;
         }
+    }
 
     /********* DEBUG *********/
-    } else if (globals.control_state == P_DEBUG) {
+    if (globals.control_state == P_DEBUG) {
         if (kev.dwControlKeyState & LEFT_CTRL_PRESSED) {
             switch (kev.wVirtualKeyCode) {
                 case 0x31:                  // '1' key - DEBUG MODE UI

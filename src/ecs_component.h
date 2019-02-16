@@ -41,6 +41,11 @@ enum ComponentType {
     C_TERRAIN,
 }; 
 
+enum InteractType {
+    IT_INVALID,
+    IT_NULL,
+};
+
 enum ItemType {
     I_INVALID,
     I_OBJ,            // For testing
@@ -130,7 +135,7 @@ struct C_Gear {
 };
 
 struct C_Interact {
-    void (*interact)(entity_id, ...);
+    enum InteractType type;
 };
 
 struct C_Inventory {

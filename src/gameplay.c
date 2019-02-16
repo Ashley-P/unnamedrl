@@ -230,9 +230,3 @@ void player_drop_item(entity_id player, entity_id uid, int force_drop) {
 /* Places the item into the inventory */
 void entity_get_item(entity_id item, struct C_Inventory *inventory) {
 }
-
-/**
- * Interact system:
- * Each item has a function that is called when pressing the soon-to-be-decided interact button
- */
-void set_interact(struct C_Interact *interactable) {}

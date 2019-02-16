@@ -126,15 +126,6 @@ void init_hardcode_blueprints() {
 
     blueprints[bp_size++] = bp3;
 
-    // Camera
-    struct Blueprint bp4 = create_blueprint();
-    bp4.name = L"Camera";
-    bp4.components[0] = create_component(-1, C_POSITION, -1, -1);
-    bp4.components[1] = create_component(-1, C_CAMERA, -1, 0);
-
-    blueprints[bp_size++] = bp4;
-
-
     // Player
     struct Blueprint bp5 = create_blueprint();
     bp5.name = L"Player";
@@ -179,6 +170,7 @@ void init_hardcode_blueprints() {
     wchar_t short_desc[] = L"Short\nDescription";
 
     bp6.components[3] = create_component(-1, C_DESC, name, short_desc, long_desc);
+    bp6.components[4] = create_component(-1, C_INTERACT, IT_NULL);
 
     blueprints[bp_size++] = bp6;
 }
